@@ -1,6 +1,6 @@
 # MikroTik MCP — Website
 
-Source for the **[MikroTik MCP](https://github.com/jeff-nasseri/mikrotik-mcp)** project website —
+Source for the **[MikroTik MCP](https://github.com/wiresage/mikrotik-mcp)** project website —
 the landing page and documentation for an open-source [Model Context Protocol](https://modelcontextprotocol.io)
 server that lets AI assistants manage MikroTik RouterOS devices in plain English.
 
@@ -31,5 +31,5 @@ See [`website-src/README.md`](website-src/README.md) for the full development an
 
 ## License
 
-MIT — see the [main project license](https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE).
+MIT — see the [main project license](https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE).
 Not affiliated with or endorsed by MikroTik / SIA Mikrotīkls.

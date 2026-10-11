@@ -47,7 +47,7 @@
   </div>
   <div class="nav-right">
     <span class="pill"><span class="dot"></span> MIT licensed</span>
-    <a class="btn" href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </nav>
 
@@ -87,7 +87,7 @@
     <h6>Project</h6>
     <ul>
       <li><a href="contributing.html">Contributing</a></li>
-      <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
     </ul>
   </aside>
 
@@ -128,7 +128,7 @@
       in one command without hand-editing config files.</p>
 
     <div class="code-header"><span># One-line install for registry-aware clients</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> claude mcp add io.github.jeff-nasseri/mikrotik-mcp</pre>
+    <pre class="code"><span class="p">$</span> claude mcp add io.github.wiresage/mikrotik-mcp</pre>
 
     <p>The client fetches the server metadata from the registry, installs
       <code>mcp-server-mikrotik</code> from PyPI, and prompts you for the required environment variables —
@@ -150,13 +150,13 @@
     <h3 id="ghcr">Official prebuilt image (GHCR)</h3>
     <p>A multi-arch image (<code>linux/amd64</code> + <code>linux/arm64</code>) is published to the GitHub
       Container Registry — pull it directly instead of building from source. You can substitute
-      <code>ghcr.io/jeff-nasseri/mikrotik-mcp:latest</code> anywhere <code>mikrotik-mcp</code> appears below.</p>
+      <code>ghcr.io/wiresage/mikrotik-mcp:latest</code> anywhere <code>mikrotik-mcp</code> appears below.</p>
     <div class="code-header"><span># pull the published image</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="c"># Latest release</span>
-<span class="p">$</span> docker pull ghcr.io/jeff-nasseri/mikrotik-mcp:latest
+<span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:latest
 
 <span class="c"># A specific version (matches the PyPI / git tag)</span>
-<span class="p">$</span> docker pull ghcr.io/jeff-nasseri/mikrotik-mcp:0.10.1</pre>
+<span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:0.10.1</pre>
     <table class="table">
       <thead><tr><th>Tag</th><th>Points to</th></tr></thead>
       <tbody>
@@ -169,7 +169,7 @@
 
     <h3 id="build">Build from source</h3>
     <div class="code-header"><span>1 · Clone &amp; build</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> git clone https://github.com/jeff-nasseri/mikrotik-mcp.git
+    <pre class="code"><span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
 <span class="p">$</span> docker build <span class="k">-t</span> mikrotik-mcp .</pre>
 
@@ -239,7 +239,7 @@
       <div>
         Passing <code>MIKROTIK_PASSWORD</code> as an environment variable makes it visible via
         <code>docker inspect</code>. For safer alternatives, see
-        <a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/SECURITY.md" target="_blank" rel="noopener">SECURITY.md</a>.
+        <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/SECURITY.md" target="_blank" rel="noopener">SECURITY.md</a>.
       </div>
     </div>
 
@@ -251,7 +251,7 @@
     <div class="code-header"><span>docker-compose.yml</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="k">services</span>:
   <span class="k">mikrotik-mcp</span>:
-    <span class="k">image</span>: ghcr.io/jeff-nasseri/mikrotik-mcp:latest
+    <span class="k">image</span>: ghcr.io/wiresage/mikrotik-mcp:latest
     <span class="k">container_name</span>: mikrotik-mcp
     <span class="k">restart</span>: unless-stopped
     <span class="k">ports</span>:
@@ -277,7 +277,7 @@
       mount point. A mounted file is also the safer channel: unlike an environment variable, its
       contents do not show up in <code>docker inspect</code>. A ready-to-copy template ships at the
       repository root as
-      <a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/inventory.example.yml" target="_blank" rel="noopener"><code>inventory.example.yml</code></a>.</p>
+      <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/inventory.example.yml" target="_blank" rel="noopener"><code>inventory.example.yml</code></a>.</p>
 
     <div class="code-header"><span>inventory.yaml</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="k">- title</span>: office-core
@@ -297,12 +297,12 @@
     <pre class="code"><span class="p">$</span> docker run <span class="k">--rm -i</span> \
     <span class="k">-v</span> <span class="s">"$PWD/inventory.yaml:/config/inventory.yaml:ro"</span> \
     <span class="k">-e</span> MIKROTIK_INVENTORY_FILE=<span class="s">/config/inventory.yaml</span> \
-    ghcr.io/jeff-nasseri/mikrotik-mcp:latest</pre>
+    ghcr.io/wiresage/mikrotik-mcp:latest</pre>
 
     <div class="code-header"><span>docker-compose.yml — fleet variant</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="k">services</span>:
   <span class="k">mikrotik-mcp</span>:
-    <span class="k">image</span>: ghcr.io/jeff-nasseri/mikrotik-mcp:latest
+    <span class="k">image</span>: ghcr.io/wiresage/mikrotik-mcp:latest
     <span class="k">restart</span>: unless-stopped
     <span class="k">ports</span>:
       - <span class="s">"8000:8000"</span>
@@ -409,7 +409,7 @@
 
     <div class="code-header"><span># Source install</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="c"># Clone the repository</span>
-<span class="p">$</span> git clone https://github.com/jeff-nasseri/mikrotik-mcp.git
+<span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
 
 <span class="c"># Create &amp; activate virtual environment</span>
@@ -474,7 +474,7 @@
     <p>A browser tab opens with the tool catalog. Try <code>mikrotik_list_vlan_interfaces</code> with empty
       arguments — if you get back a JSON list, you're in. Contributors can also run the project's
       <code>pytest</code> suite against a RouterOS container; see
-      <a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/docs/getting-started/testing.md" target="_blank" rel="noopener">testing.md</a>.</p>
+      <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/docs/getting-started/testing.md" target="_blank" rel="noopener">testing.md</a>.</p>
 
     <h3 id="pytest">Integration test suite</h3>
     <p>The project ships a <strong>pytest</strong> integration suite that runs against a temporary RouterOS
@@ -601,8 +601,8 @@
     <div>
       <h5>Source</h5>
       <ul>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
         <li><a href="contributing.html">Contributing</a></li>
       </ul>
     </div>
