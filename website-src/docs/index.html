@@ -156,13 +156,13 @@
 <span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:latest
 
 <span class="c"># A specific version (matches the PyPI / git tag)</span>
-<span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:0.10.1</pre>
+<span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:&lt;version&gt;</pre>
     <table class="table">
       <thead><tr><th>Tag</th><th>Points to</th></tr></thead>
       <tbody>
         <tr><td><code class="mono">latest</code></td><td>The most recent release</td></tr>
-        <tr><td><code class="mono">X.Y.Z</code></td><td>A specific released version (e.g. <code>0.10.1</code>), aligned with the PyPI release</td></tr>
-        <tr><td><code class="mono">X.Y</code></td><td>The latest patch of a minor line (e.g. <code>0.10</code>)</td></tr>
+        <tr><td><code class="mono">X.Y.Z</code></td><td>A specific released version, aligned with the PyPI release</td></tr>
+        <tr><td><code class="mono">X.Y</code></td><td>The latest patch of a minor line</td></tr>
         <tr><td><code class="mono">sha-&lt;short&gt;</code></td><td>A specific commit</td></tr>
       </tbody>
     </table>
@@ -495,7 +495,7 @@
 
     <!-- CONTEXT -->
     <h2 id="context">Context length optimization</h2>
-    <p>MikroTik MCP ships <strong>192 tools</strong>. At full verbosity the tool schema can occupy
+    <p>MikroTik MCP ships <strong>196 tools</strong>. At full verbosity the tool schema can occupy
       <strong>≈ 54,000 tokens</strong> — more than the entire context window of many local LLMs
       (LM Studio, Ollama, and similar).</p>
 

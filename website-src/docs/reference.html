@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta name="theme-color" content="#0a0d12" />
 <title>API Reference — MikroTik MCP docs</title>
-<meta name="description" content="Complete API reference for the MikroTik MCP server — 190+ tools across 21 categories: a multi-device inventory, interfaces, PoE, VLAN, IPv4 and IPv6 addressing, IPv4 and IPv6 firewalls, address lists, DHCP, DNS, routes, firewall, NAT, WireGuard, wireless, queues, users, backup, logs, and safe mode." />
+<meta name="description" content="Complete API reference for the MikroTik MCP server — 190+ tools across 22 categories: a multi-device inventory, interfaces, PoE, VLAN, IPv4 and IPv6 addressing, IPv4 and IPv6 firewalls, address lists, DHCP, ARP and IPv6 neighbors, DNS, routes, firewall, NAT, WireGuard, wireless, queues, users, backup, logs, and safe mode." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -217,7 +217,7 @@
     </div>
     <h1 class="doc-title">API reference</h1>
     <p class="doc-lede">
-      Every tool the server exposes, grouped into <strong>21 categories</strong> (192 tools total). Each
+      Every tool the server exposes, grouped into <strong>22 categories</strong> (196 tools total). Each
       entry shows the name, what it does, its parameters (required vs optional), and a canonical example.
     </p>
     <p class="doc-lede" style="font-size:15px;">
@@ -240,20 +240,21 @@
       <a href="#ip-address"><span class="ci-num">05</span><span class="ci-name">IP Address</span><span class="ci-count">4 tools</span></a>
       <a href="#ipv6-address"><span class="ci-num">06</span><span class="ci-name">IPv6 Address</span><span class="ci-count">4 tools</span></a>
       <a href="#ip-pool"><span class="ci-num">07</span><span class="ci-name">IP Pool</span><span class="ci-count">7 tools</span></a>
-      <a href="#dhcp"><span class="ci-num">08</span><span class="ci-name">DHCP</span><span class="ci-count">8 tools</span></a>
-      <a href="#dns"><span class="ci-num">09</span><span class="ci-name">DNS</span><span class="ci-count">15 tools</span></a>
-      <a href="#routes"><span class="ci-num">10</span><span class="ci-name">Routes</span><span class="ci-count">14 tools</span></a>
-      <a href="#firewall"><span class="ci-num">11</span><span class="ci-name">Firewall</span><span class="ci-count">9 tools</span></a>
-      <a href="#ipv6-firewall"><span class="ci-num">12</span><span class="ci-name">IPv6 Firewall</span><span class="ci-count">8 tools</span></a>
-      <a href="#address-list"><span class="ci-num">13</span><span class="ci-name">Address Lists</span><span class="ci-count">7 tools</span></a>
-      <a href="#nat"><span class="ci-num">14</span><span class="ci-name">NAT</span><span class="ci-count">8 tools</span></a>
-      <a href="#wireguard"><span class="ci-num">15</span><span class="ci-name">WireGuard</span><span class="ci-count">15 tools</span></a>
-      <a href="#wireless"><span class="ci-num">16</span><span class="ci-name">Wireless</span><span class="ci-count">19 tools</span></a>
-      <a href="#queue"><span class="ci-num">17</span><span class="ci-name">Queues</span><span class="ci-count">19 tools</span></a>
-      <a href="#users"><span class="ci-num">18</span><span class="ci-name">Users</span><span class="ci-count">18 tools</span></a>
-      <a href="#backup"><span class="ci-num">19</span><span class="ci-name">Backup &amp; Export</span><span class="ci-count">10 tools</span></a>
-      <a href="#logs"><span class="ci-num">20</span><span class="ci-name">Logs</span><span class="ci-count">10 tools</span></a>
-      <a href="#safe-mode"><span class="ci-num">21</span><span class="ci-name">Safe Mode</span><span class="ci-count">4 tools</span></a>
+      <a href="#dhcp"><span class="ci-num">08</span><span class="ci-name">DHCP</span><span class="ci-count">10 tools</span></a>
+      <a href="#neighbors"><span class="ci-num">09</span><span class="ci-name">Neighbors</span><span class="ci-count">2 tools</span></a>
+      <a href="#dns"><span class="ci-num">10</span><span class="ci-name">DNS</span><span class="ci-count">15 tools</span></a>
+      <a href="#routes"><span class="ci-num">11</span><span class="ci-name">Routes</span><span class="ci-count">14 tools</span></a>
+      <a href="#firewall"><span class="ci-num">12</span><span class="ci-name">Firewall</span><span class="ci-count">9 tools</span></a>
+      <a href="#ipv6-firewall"><span class="ci-num">13</span><span class="ci-name">IPv6 Firewall</span><span class="ci-count">8 tools</span></a>
+      <a href="#address-list"><span class="ci-num">14</span><span class="ci-name">Address Lists</span><span class="ci-count">7 tools</span></a>
+      <a href="#nat"><span class="ci-num">15</span><span class="ci-name">NAT</span><span class="ci-count">8 tools</span></a>
+      <a href="#wireguard"><span class="ci-num">16</span><span class="ci-name">WireGuard</span><span class="ci-count">15 tools</span></a>
+      <a href="#wireless"><span class="ci-num">17</span><span class="ci-name">Wireless</span><span class="ci-count">19 tools</span></a>
+      <a href="#queue"><span class="ci-num">18</span><span class="ci-name">Queues</span><span class="ci-count">19 tools</span></a>
+      <a href="#users"><span class="ci-num">19</span><span class="ci-name">Users</span><span class="ci-count">18 tools</span></a>
+      <a href="#backup"><span class="ci-num">20</span><span class="ci-name">Backup &amp; Export</span><span class="ci-count">10 tools</span></a>
+      <a href="#logs"><span class="ci-num">21</span><span class="ci-name">Logs</span><span class="ci-count">10 tools</span></a>
+      <a href="#safe-mode"><span class="ci-num">22</span><span class="ci-name">Safe Mode</span><span class="ci-count">4 tools</span></a>
     </div>
     <!-- ============ 01 INVENTORY ============ -->
     <div class="section-hd">
@@ -776,7 +777,7 @@
         <p class="section-intro">Three-piece model: a <em>pool</em> defines the address range,
           a <em>network</em> defines gateway and DNS, and a <em>server</em> binds them to an interface.</p>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 08</div>
+      <div class="meta"><b>10</b> tools<br>category 08</div>
     </div>
     <div class="tool">
       <div class="tool-head">
@@ -797,6 +798,22 @@
     <div class="tool"><div class="tool-head"><span class="verb read">list · get</span><span class="tname">mikrotik_list_dhcp_servers · mikrotik_get_dhcp_server</span></div>
       <div class="tool-body"><p>List all DHCP servers or fetch one by name.</p></div>
     </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">leases · bindings</span><span class="tname">mikrotik_list_dhcp_leases · mikrotik_list_dhcpv6_bindings</span></div>
+      <div class="tool-body"><p>Raw, detailed views of who actually holds an address — IPv4 DHCP <em>leases</em> and DHCPv6
+        <em>bindings</em>. Identity filters match the <strong>active</strong> lease fields. Address and identity filters use
+        substring matching; server, status, and lease time use exact matching.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_filter · mac_filter</span><span class="pkind">optional</span><span class="pdesc">Active address / MAC (leases); assigned address or prefix (bindings)</span></div>
+          <div class="row"><span class="pname">client_id_filter · hostname_filter · class_id_filter</span><span class="pkind">optional</span><span class="pdesc">Leases only — active client ID, hostname, class ID</span></div>
+          <div class="row"><span class="pname">duid_filter · iaid_filter</span><span class="pkind">optional</span><span class="pdesc">Bindings only — DUID (substring) and IAID (exact)</span></div>
+          <div class="row"><span class="pname">server_filter · status_filter</span><span class="pkind">optional</span><span class="pdesc">Exact match on DHCP server / lease or binding status</span></div>
+          <div class="row"><span class="pname">lease_time_filter</span><span class="pkind">optional</span><span class="pdesc">Configured time — the RouterOS <code>lease-time</code> field for leases, <code>life-time</code> for bindings</span></div>
+          <div class="row"><span class="pname">last_seen_within</span><span class="pkind">optional</span><span class="pdesc">Only entries seen within a duration such as <code>1h</code> or <code>24h</code></span></div>
+        </div>
+        <div class="ex"><span class="lbl">Examples</span><span class="fn">mikrotik_list_dhcp_leases</span>(<span class="key">status_filter</span>=<span class="str">"bound"</span>, <span class="key">last_seen_within</span>=<span class="str">"24h"</span>)
+<span class="fn">mikrotik_list_dhcpv6_bindings</span>(<span class="key">status_filter</span>=<span class="str">"bound"</span>, <span class="key">last_seen_within</span>=<span class="str">"1h"</span>)</div>
+      </div>
+    </div>
     <div class="tool"><div class="tool-head"><span class="verb update">network update · remove</span><span class="tname">mikrotik_update_dhcp_network · mikrotik_remove_dhcp_network</span></div>
       <div class="tool-body"><p>Edit or delete a DHCP <em>network</em> record (the gateway/DNS half of the
         three-piece model), keyed by its <code>network</code> CIDR. <code>update</code> takes any of
@@ -810,7 +827,57 @@
     <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_dhcp_server</span></div>
       <div class="tool-body"><p>Removes a DHCP server. The underlying pool and network records survive.</p></div>
     </div>
-    <!-- ============ 09 DNS ============ -->
+    <!-- ============ 09 NEIGHBORS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="neighbors">Neighbors — ARP &amp; IPv6 ND</h2>
+        <p class="section-intro">Read-only views of the neighbour tables: raw, detailed <strong>IPv4 ARP</strong>
+          entries and <strong>IPv6 Neighbor Discovery</strong> entries. Useful for answering "what is on this
+          segment, and on which port?" Address and MAC filters use substring matching; interface and status
+          filters use exact matching.</p>
+      </div>
+      <div class="meta"><b>2</b> tools<br>category 09</div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">mikrotik_list_arp_entries</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists raw detailed IPv4 ARP entries.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_filter</span><span class="pkind">optional</span><span class="pdesc">IP address (substring)</span></div>
+          <div class="row"><span class="pname">mac_filter</span><span class="pkind">optional</span><span class="pdesc">MAC address (substring)</span></div>
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Interface (exact)</span></div>
+          <div class="row"><span class="pname">status_filter</span><span class="pkind">optional</span><span class="pdesc">Neighbor status (exact)</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">mikrotik_list_arp_entries</span>(<span class="key">interface_filter</span>=<span class="str">"bridge"</span>, <span class="key">status_filter</span>=<span class="str">"reachable"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">mikrotik_list_ipv6_neighbors</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists raw detailed IPv6 Neighbor Discovery entries.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_filter</span><span class="pkind">optional</span><span class="pdesc">IPv6 address (substring) — <code>"fe80"</code> finds link-local neighbors</span></div>
+          <div class="row"><span class="pname">mac_filter</span><span class="pkind">optional</span><span class="pdesc">MAC address (substring)</span></div>
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Interface (exact)</span></div>
+          <div class="row"><span class="pname">status_filter</span><span class="pkind">optional</span><span class="pdesc">Neighbor status (exact)</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">mikrotik_list_ipv6_neighbors</span>(<span class="key">address_filter</span>=<span class="str">"fe80"</span>, <span class="key">interface_filter</span>=<span class="str">"bridge"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 10 DNS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="dns">DNS — Resolution &amp; Static Records</h2>
@@ -818,7 +885,7 @@
           A/CNAME/MX/SRV/TXT records, regex blocklists, and inspect or flush the cache.
           Run live test queries with <code>mikrotik_test_dns_query</code>.</p>
       </div>
-      <div class="meta"><b>15</b> tools<br>category 09</div>
+      <div class="meta"><b>15</b> tools<br>category 10</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_set_dns_servers · mikrotik_add_dns_static · mikrotik_add_dns_regexp</span></div>
       <div class="tool-body"><p>Configure upstream resolvers, add static records, and define regex-based blocklists.
@@ -849,14 +916,14 @@
       <div class="tool-body"><div class="params"><div class="row"><span class="pname">entry_id</span><span class="pkind req">required</span><span class="pdesc">Static record ID</span></div></div></div>
     </div>
 
-    <!-- ============ 10 ROUTES ============ -->
+    <!-- ============ 11 ROUTES ============ -->
     <div class="section-hd">
       <div>
         <h2 id="routes">Routes — Routing Table</h2>
         <p class="section-intro">Add static, default, and blackhole routes. Inspect active routes,
           check the path to a destination, dump routing tables, and read the route cache and statistics.</p>
       </div>
-      <div class="meta"><b>14</b> tools<br>category 10</div>
+      <div class="meta"><b>14</b> tools<br>category 11</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_route · mikrotik_add_default_route · mikrotik_add_blackhole_route</span></div>
       <div class="tool-body"><p>Three flavors of route creation. <code>add_route</code> takes <code>dst_address</code> +
@@ -881,7 +948,7 @@
       <div class="tool-body"><div class="params"><div class="row"><span class="pname">route_id</span><span class="pkind req">required</span><span class="pdesc">RouterOS route ID</span></div></div></div>
     </div>
 
-    <!-- ============ 11 FIREWALL ============ -->
+    <!-- ============ 12 FIREWALL ============ -->
     <div class="section-hd">
       <div>
         <h2 id="firewall">Firewall — Filter Rules</h2>
@@ -889,7 +956,7 @@
           and <code>output</code> chains. Includes rule ordering, enable/disable, and basic
           firewall scaffolding. For IPv6, see <a href="#ipv6-firewall">IPv6 Firewall</a>.</p>
       </div>
-      <div class="meta"><b>9</b> tools<br>category 11</div>
+      <div class="meta"><b>9</b> tools<br>category 12</div>
     </div>
 
     <div class="tool">
@@ -950,7 +1017,7 @@
       </div>
     </div>
 
-    <!-- ============ 12 IPV6 FIREWALL ============ -->
+    <!-- ============ 13 IPV6 FIREWALL ============ -->
     <div class="section-hd">
       <div>
         <h2 id="ipv6-firewall">IPv6 Firewall — Filter Rules</h2>
@@ -961,7 +1028,7 @@
           prefixes such as <code>2001:db8::/64</code>.</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 12</div>
+      <div class="meta"><b>8</b> tools<br>category 13</div>
     </div>
 
     <div class="tool">
@@ -1050,7 +1117,7 @@
       </div>
     </div>
 
-    <!-- ============ 13 ADDRESS LISTS ============ -->
+    <!-- ============ 14 ADDRESS LISTS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="address-list">Address Lists — Named IP Sets</h2>
@@ -1062,7 +1129,7 @@
           <code>"ipv6"</code> rather than duplicating seven tools per family.</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
       </div>
-      <div class="meta"><b>7</b> tools<br>category 13</div>
+      <div class="meta"><b>7</b> tools<br>category 14</div>
     </div>
 
     <div class="callout">
@@ -1158,14 +1225,14 @@
       </div>
     </div>
 
-    <!-- ============ 14 NAT ============ -->
+    <!-- ============ 15 NAT ============ -->
     <div class="section-hd">
       <div>
         <h2 id="nat">NAT — Translation Rules</h2>
         <p class="section-intro">Source-NAT (masquerade) for outbound, destination-NAT (port forwarding)
           for inbound, plus rule ordering and toggle.</p>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 14</div>
+      <div class="meta"><b>8</b> tools<br>category 15</div>
     </div>
     <div class="tool">
       <div class="tool-head">
@@ -1206,7 +1273,7 @@
     <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_nat_rule</span></div>
       <div class="tool-body"><div class="params"><div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div></div></div>
     </div>
-    <!-- ============ 15 WIREGUARD ============ -->
+    <!-- ============ 16 WIREGUARD ============ -->
     <div class="section-hd">
       <div>
         <h2 id="wireguard">WireGuard — Tunnels &amp; Peers</h2>
@@ -1214,7 +1281,7 @@
           and generate ready-to-paste client configs. The interface's public key is returned by
           <code>get_wireguard_interface</code> — hand it to clients. WireGuard requires RouterOS v7+.</p>
       </div>
-      <div class="meta"><b>15</b> tools<br>category 15</div>
+      <div class="meta"><b>15</b> tools<br>category 16</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_wireguard_interface</span></div>
       <div class="tool-body"><p>Stands up a WireGuard interface. If no private key is supplied, one is generated; read the
@@ -1292,7 +1359,7 @@
       </div>
     </div>
 
-    <!-- ============ 16 WIRELESS ============ -->
+    <!-- ============ 17 WIRELESS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="wireless">Wireless — WiFi Interfaces &amp; Security</h2>
@@ -1300,7 +1367,7 @@
           Call <code>check_wireless_support</code> first — wireless tooling depends on the device's
           RouterOS wireless package.</p>
       </div>
-      <div class="meta"><b>19</b> tools<br>category 16</div>
+      <div class="meta"><b>19</b> tools<br>category 17</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">interface create</span><span class="tname">mikrotik_create_wireless_interface</span></div>
       <div class="tool-body"><p>Creates / configures a wireless interface (SSID, band, channel, mode, and an attached security profile).</p>
@@ -1332,7 +1399,7 @@
       </div>
     </div>
 
-    <!-- ============ 17 QUEUES ============ -->
+    <!-- ============ 18 QUEUES ============ -->
     <div class="section-hd">
       <div>
         <h2 id="queue">Queues — Traffic Shaping</h2>
@@ -1340,7 +1407,7 @@
           policies, and queue types for the underlying discipline (CAKE, fq-codel, SFQ, RED, PCQ, …).</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
       </div>
-      <div class="meta"><b>19</b> tools<br>category 17</div>
+      <div class="meta"><b>19</b> tools<br>category 18</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">simple queue</span><span class="tname">create_simple_queue · list_simple_queues · get_simple_queue · update_simple_queue · remove_simple_queue · enable_simple_queue · disable_simple_queue</span></div>
       <div class="tool-body"><p>Per-target rate limits — the simplest way to throttle a host or subnet. <code>max_limit</code> takes
@@ -1362,14 +1429,14 @@
         can't be modified or removed.</p>
       </div>
     </div>
-    <!-- ============ 18 USERS ============ -->
+    <!-- ============ 19 USERS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="users">Users — Accounts, Groups &amp; SSH Keys</h2>
         <p class="section-intro">Local users, groups, policies, active sessions, and SSH key management.
           Used to provision scoped accounts for tooling rather than sharing <code>admin</code>.</p>
       </div>
-      <div class="meta"><b>18</b> tools<br>category 18</div>
+      <div class="meta"><b>18</b> tools<br>category 19</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_user · mikrotik_add_user_group</span></div>
       <div class="tool-body"><p>Create users and permission groups. Groups take a <code>policy</code> list (e.g. <code>read,write,ssh</code>).</p>
@@ -1394,14 +1461,14 @@
       <div class="tool-body"><p>Remove a user or a group.</p></div>
     </div>
 
-    <!-- ============ 19 BACKUP ============ -->
+    <!-- ============ 20 BACKUP ============ -->
     <div class="section-hd">
       <div>
         <h2 id="backup">Backup &amp; Export — Configuration State</h2>
         <p class="section-intro">Binary backups, RouterOS <code>.rsc</code> exports, section dumps,
           file transfer, restore, and import.</p>
       </div>
-      <div class="meta"><b>10</b> tools<br>category 19</div>
+      <div class="meta"><b>10</b> tools<br>category 20</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_backup · mikrotik_create_export · mikrotik_export_section</span></div>
       <div class="tool-body"><p>Three formats: a binary <code>.backup</code> (full snapshot), a <code>.rsc</code> export (declarative,
@@ -1427,14 +1494,14 @@
       <div class="tool-body"><p>Removes any file from the device's filesystem.</p></div>
     </div>
 
-    <!-- ============ 20 LOGS ============ -->
+    <!-- ============ 21 LOGS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="logs">Logs — System Events</h2>
         <p class="section-intro">Stream and analyze RouterOS logs by topic, severity, or free-text search.
           Pull system events and security logs, aggregate statistics, live-tail, and export to CSV.</p>
       </div>
-      <div class="meta"><b>10</b> tools<br>category 20</div>
+      <div class="meta"><b>10</b> tools<br>category 21</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_get_logs · mikrotik_get_logs_by_severity · mikrotik_get_logs_by_topic · mikrotik_search_logs · mikrotik_get_system_events · mikrotik_get_security_logs · mikrotik_get_log_statistics</span></div>
       <div class="tool-body"><p>Seven lenses on the log buffer — by topic, by severity
@@ -1454,7 +1521,7 @@
       <div class="tool-body"><p>Clears the in-memory log buffer. Doesn't affect file-backed logs.</p></div>
     </div>
 
-    <!-- ============ 21 SAFE MODE ============ -->
+    <!-- ============ 22 SAFE MODE ============ -->
     <div class="section-hd">
       <div>
         <h2 id="safe-mode">Safe Mode — Atomic Sessions</h2>
@@ -1463,7 +1530,7 @@
           firewall or connectivity rules remotely.</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category · no parameters</span>
       </div>
-      <div class="meta"><b>4</b> tools<br>category 21</div>
+      <div class="meta"><b>4</b> tools<br>category 22</div>
     </div>
     <div class="callout">
       <span class="icon">HOW IT WORKS</span>
@@ -1535,19 +1602,20 @@
       <li><a href="#ipv6-address">06 — IPv6 Address</a></li>
       <li><a href="#ip-pool">07 — IP Pool</a></li>
       <li><a href="#dhcp">08 — DHCP</a></li>
-      <li><a href="#dns">09 — DNS</a></li>
-      <li><a href="#routes">10 — Routes</a></li>
-      <li><a href="#firewall">11 — Firewall</a></li>
-      <li><a href="#ipv6-firewall">12 — IPv6 Firewall</a></li>
-      <li><a href="#address-list">13 — Address Lists</a></li>
-      <li><a href="#nat">14 — NAT</a></li>
-      <li><a href="#wireguard">15 — WireGuard</a></li>
-      <li><a href="#wireless">16 — Wireless</a></li>
-      <li><a href="#queue">17 — Queues</a></li>
-      <li><a href="#users">18 — Users</a></li>
-      <li><a href="#backup">19 — Backup</a></li>
-      <li><a href="#logs">20 — Logs</a></li>
-      <li><a href="#safe-mode">21 — Safe Mode</a></li>
+      <li><a href="#neighbors">09 — Neighbors</a></li>
+      <li><a href="#dns">10 — DNS</a></li>
+      <li><a href="#routes">11 — Routes</a></li>
+      <li><a href="#firewall">12 — Firewall</a></li>
+      <li><a href="#ipv6-firewall">13 — IPv6 Firewall</a></li>
+      <li><a href="#address-list">14 — Address Lists</a></li>
+      <li><a href="#nat">15 — NAT</a></li>
+      <li><a href="#wireguard">16 — WireGuard</a></li>
+      <li><a href="#wireless">17 — Wireless</a></li>
+      <li><a href="#queue">18 — Queues</a></li>
+      <li><a href="#users">19 — Users</a></li>
+      <li><a href="#backup">20 — Backup</a></li>
+      <li><a href="#logs">21 — Logs</a></li>
+      <li><a href="#safe-mode">22 — Safe Mode</a></li>
     </ul>
   </aside>
 </div>

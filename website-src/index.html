@@ -329,7 +329,7 @@
       </h1>
       <p class="lede">
         MikroTik MCP is the bridge between your AI assistant and your RouterOS fleet — let Claude, ChatGPT, or any
-        MCP-capable client manage VLANs, IPv4 and IPv6 firewall rules, DHCP, NAT, WireGuard, and 16 other categories from a single
+        MCP-capable client manage VLANs, IPv4 and IPv6 firewall rules, DHCP, NAT, WireGuard, and 17 other categories from a single
         prompt — on one router or across a whole fleet. No web UI clicks. No Winbox tabs.
       </p>
       <div class="hero-ctas">
@@ -344,8 +344,8 @@
         </a>
       </div>
       <div class="meta-row">
-        <div><b>21</b> tool categories</div>
-        <div><b>192</b> RouterOS tools</div>
+        <div><b>22</b> tool categories</div>
+        <div><b>196</b> RouterOS tools</div>
         <div><b>3</b> transports (stdio · SSE · HTTP)</div>
         <div><b>MIT</b> licensed</div>
       </div>
@@ -469,7 +469,7 @@
     <div class="band-head">
       <div>
         <div class="eyebrow">02 — Capabilities</div>
-        <h2>21 categories. Roughly everything you'd touch in Winbox.</h2>
+        <h2>22 categories. Roughly everything you'd touch in Winbox.</h2>
       </div>
       <p>Each category exposes typed tools — create, list, get, update, remove, plus category-specific
         verbs like <span style="color:var(--amber);font-family:var(--mono);font-size:13px">move_filter_rule</span>
@@ -496,6 +496,12 @@
         <h4>IPv6 Firewall</h4>
         <p>Filter rules under <code>/ipv6 firewall</code> — icmpv6, hop-limit, extension headers, address types.</p>
       </a>
+      <a class="cap" href="docs/reference.html#neighbors">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2.4"/><circle cx="5" cy="6" r="1.8"/><circle cx="19" cy="6" r="1.8"/><circle cx="5" cy="18" r="1.8"/><circle cx="19" cy="18" r="1.8"/><path d="M6.4 7.2l4 3.4M17.6 7.2l-4 3.4M6.4 16.8l4-3.4M17.6 16.8l-4-3.4"/></svg>
+        <span class="count">2 tools</span>
+        <h4>Neighbors</h4>
+        <p>ARP and IPv6 Neighbor Discovery tables — see what's on the segment and which port it's on.</p>
+      </a>
       <a class="cap" href="docs/reference.html#address-list">
         <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8.5h10M7 12h10M7 15.5h6"/></svg>
         <span class="count">7 tools</span>
@@ -510,9 +516,9 @@
       </a>
       <a class="cap" href="docs/reference.html#dhcp">
         <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M7 10v4M17 10v4"/></svg>
-        <span class="count">6 tools</span>
+        <span class="count">10 tools</span>
         <h4>DHCP</h4>
-        <p>Servers, networks, pools. Gateway + DNS push, lease configuration.</p>
+        <p>Servers, networks, pools, plus live lease and DHCPv6 binding views.</p>
       </a>
       <a class="cap" href="docs/reference.html#dns">
         <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 3 2.5 13 0 16M12 4c-2.5 3-2.5 13 0 16"/></svg>

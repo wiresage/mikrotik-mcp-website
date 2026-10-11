@@ -239,6 +239,17 @@
 <span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_server</span> \
     <span class="k">--tool-args</span> <span class="s">'{"name": "dhcp-vlan100", "interface": "vlan100", "address_pool": "pool-vlan100"}'</span></pre>
 
+    <div class="ex-sub">DHCP leases &amp; neighbors</div>
+    <div class="code-header"><span># who holds an address, and what's on the segment</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Active IPv4 leases seen in the last 24 hours</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_dhcp_leases</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"status_filter": "bound", "last_seen_within": "24h"}'</span>
+
+<span class="c"># DHCPv6 bindings, then the ARP and IPv6 ND tables for one interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_dhcpv6_bindings</span> <span class="k">--tool-args</span> <span class="s">'{"status_filter": "bound"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_arp_entries</span> <span class="k">--tool-args</span> <span class="s">'{"interface_filter": "bridge", "status_filter": "reachable"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_ipv6_neighbors</span> <span class="k">--tool-args</span> <span class="s">'{"address_filter": "fe80", "interface_filter": "bridge"}'</span></pre>
+
     <div class="ex-sub">NAT rules</div>
     <div class="code-header"><span># masquerade out, port-forward in</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="c"># Masquerade (outbound internet)</span>
