@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
 <title>API Reference — MikroTik MCP docs</title>
+<meta name="description" content="Complete API reference for the MikroTik MCP server — 190+ tools across 22 categories: a multi-device inventory, interfaces, PoE, VLAN, IPv4 and IPv6 addressing, IPv4 and IPv6 firewalls, address lists, DHCP, ARP and IPv6 neighbors, DNS, routes, firewall, NAT, WireGuard, wireless, queues, users, backup, logs, and safe mode." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -44,6 +51,7 @@
     padding: 16px 20px;
     border-bottom: 1px solid var(--line);
     background: linear-gradient(to bottom, rgba(255,138,61,0.03), transparent);
+    flex-wrap: wrap;
   }
   .tool-head .tname {
     font-family: var(--mono); font-size: 14px; color: var(--amber);
@@ -61,6 +69,7 @@
   .tool-head .verb.read { color: var(--azure); border-color: rgba(111,182,255,0.2); }
   .tool-body { padding: 18px 20px; }
   .tool-body p { margin: 0 0 14px; font-size: 14px; }
+  .tool-body p:last-child { margin-bottom: 0; }
 
   .params {
     font-family: var(--mono); font-size: 12.5px;
@@ -69,7 +78,7 @@
     display: grid; gap: 8px;
   }
   .params .row {
-    display: grid; grid-template-columns: 180px 70px 1fr;
+    display: grid; grid-template-columns: 200px 70px 1fr;
     gap: 12px; align-items: baseline;
     padding: 4px 0;
   }
@@ -88,7 +97,7 @@
     border-radius: var(--rad);
     padding: 12px 14px;
     color: var(--ink);
-    white-space: pre-wrap; word-break: break-all;
+    white-space: pre-wrap; word-break: break-word;
   }
   .ex .lbl {
     font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -99,20 +108,30 @@
   .ex .key { color: #ffd47a; }
   .ex .str { color: var(--lime); }
   .ex .num { color: var(--azure); }
+  .ex .c { color: var(--ink-mute); }
 
   .section-hd {
     display: flex; align-items: end; justify-content: space-between;
     margin-top: 72px; margin-bottom: 18px; gap: 24px;
     padding-bottom: 14px; border-bottom: 1px solid var(--line);
   }
-  .section-hd h2 { margin: 0; }
+  .section-hd h2 { margin: 0; scroll-margin-top: 90px; }
   .section-hd .meta {
     font-family: var(--mono); font-size: 11px; color: var(--ink-mute);
     letter-spacing: 0.08em; text-transform: uppercase;
-    text-align: right;
+    text-align: right; white-space: nowrap;
   }
   .section-hd .meta b { color: var(--amber); font-weight: 500; }
   .section-intro { color: var(--ink-dim); font-size: 14.5px; margin: 6px 0 16px; }
+
+  .prefix-note {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--lime); border: 1px solid rgba(182,242,92,0.2);
+    background: rgba(182,242,92,0.05);
+    border-radius: 3px; padding: 2px 8px; display: inline-block;
+    margin-top: 8px;
+  }
+  .prefix-note.none { color: #f5cd72; border-color: rgba(245,205,114,0.2); background: rgba(245,205,114,0.05); }
 </style>
 </head>
 <body>
@@ -140,16 +159,18 @@
   <div class="nav-links">
     <a href="../index.html#what">Overview</a>
     <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html">Language server</a>
     <a href="index.html">Docs</a>
     <a href="reference.html" class="active">Reference</a>
+    <a href="examples.html">Examples</a>
   </div>
   <div class="nav-right">
-    <span class="pill"><span class="dot"></span> v1.0</span>
-    <a class="btn" href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </nav>
 
-<div class="docs" data-screen-label="04 Docs — API Reference">
+<div class="docs">
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <h6>Getting started</h6>
@@ -164,22 +185,36 @@
       <li><a href="configure.html#inspector">MCP Inspector</a></li>
       <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
     </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
     <h6>API reference</h6>
     <ul>
-      <li><a href="#vlan" class="active">VLAN</a></li>
+      <li><a href="#vlan">VLAN</a></li>
       <li><a href="#firewall">Firewall</a></li>
       <li><a href="#nat">NAT</a></li>
       <li><a href="#dhcp">DHCP</a></li>
       <li><a href="#dns">DNS</a></li>
-      <li><a href="#ip-address">IP Address</a></li>
-      <li><a href="#ip-pool">IP Pool</a></li>
-      <li><a href="#routes">Routes</a></li>
       <li><a href="#wireguard">WireGuard</a></li>
-      <li><a href="#users">Users</a></li>
-      <li><a href="#backup">Backup &amp; Export</a></li>
-      <li><a href="#logs">Logs</a></li>
-      <li><a href="#queue">Queues</a></li>
-      <li><a href="#safe-mode">Safe Mode</a></li>
+      <li><a href="#wireless">Wireless</a></li>
+      <li><a href="#" class="active">All categories ↓</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
+    </ul>
+    <h6>Project</h6>
+    <ul>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
     </ul>
   </aside>
 
@@ -192,38 +227,304 @@
     </div>
     <h1 class="doc-title">API reference</h1>
     <p class="doc-lede">
-      Every tool the server exposes. Each entry shows the name, what it does, its parameters
-      (required vs optional), and a canonical example. Naming convention: every tool starts
-      with <code>mikrotik_</code> followed by a verb (<code>create</code>, <code>list</code>,
-      <code>get</code>, <code>update</code>, <code>remove</code>, plus category-specific verbs).
+      Every tool the server exposes, grouped into <strong>22 categories</strong> (196 tools total). Each
+      entry shows the name, what it does, its parameters (required vs optional), and a canonical example.
+    </p>
+    <p class="doc-lede" style="font-size:15px;">
+      <strong>Naming convention.</strong> Most tools are prefixed with <code>mikrotik_</code> followed by a
+      verb — <code>create</code>, <code>list</code>, <code>get</code>, <code>update</code>,
+      <code>remove</code>, plus category-specific verbs. Eight categories are exceptions:
+      <strong>Inventory</strong>, <strong>Interfaces</strong>, <strong>PoE</strong>, <strong>IPv6&nbsp;Address</strong>, <strong>IPv6&nbsp;Firewall</strong>, <strong>Address&nbsp;Lists</strong>, <strong>Queues</strong>, and <strong>Safe Mode</strong> tools are called
+      <em>without</em> the prefix (e.g. <code>list_interfaces</code>, <code>create_simple_queue</code>,
+      <code>enable_safe_mode</code>). The category headers below flag which convention applies. With a multi-device
+      <a href="#inventory">inventory</a> configured, every device-scoped tool also accepts an optional
+      <code>device</code> argument naming the inventory title to target.
     </p>
 
     <h2 style="margin-top:0">Categories</h2>
     <div class="cat-index">
-      <a href="#vlan"><span class="ci-num">01</span><span class="ci-name">VLAN</span><span class="ci-count">5 tools</span></a>
-      <a href="#firewall"><span class="ci-num">02</span><span class="ci-name">Firewall</span><span class="ci-count">9 tools</span></a>
-      <a href="#nat"><span class="ci-num">03</span><span class="ci-name">NAT</span><span class="ci-count">8 tools</span></a>
-      <a href="#dhcp"><span class="ci-num">04</span><span class="ci-name">DHCP</span><span class="ci-count">7 tools</span></a>
-      <a href="#dns"><span class="ci-num">05</span><span class="ci-name">DNS</span><span class="ci-count">9 tools</span></a>
-      <a href="#ip-address"><span class="ci-num">06</span><span class="ci-name">IP Address</span><span class="ci-count">4 tools</span></a>
-      <a href="#ip-pool"><span class="ci-num">07</span><span class="ci-name">IP Pool</span><span class="ci-count">6 tools</span></a>
-      <a href="#routes"><span class="ci-num">08</span><span class="ci-name">Routes</span><span class="ci-count">10 tools</span></a>
-      <a href="#wireguard"><span class="ci-num">09</span><span class="ci-name">WireGuard</span><span class="ci-count">8 tools</span></a>
-      <a href="#users"><span class="ci-num">10</span><span class="ci-name">Users</span><span class="ci-count">9 tools</span></a>
-      <a href="#backup"><span class="ci-num">11</span><span class="ci-name">Backup &amp; Export</span><span class="ci-count">9 tools</span></a>
-      <a href="#logs"><span class="ci-num">12</span><span class="ci-name">Logs</span><span class="ci-count">8 tools</span></a>
-      <a href="#queue"><span class="ci-num">13</span><span class="ci-name">Queues</span><span class="ci-count">7 tools</span></a>
-      <a href="#safe-mode"><span class="ci-num">14</span><span class="ci-name">Safe Mode</span><span class="ci-count">5 tools</span></a>
+      <a href="#inventory"><span class="ci-num">01</span><span class="ci-name">Inventory</span><span class="ci-count">1 tool</span></a>
+      <a href="#interfaces"><span class="ci-num">02</span><span class="ci-name">Interfaces</span><span class="ci-count">4 tools</span></a>
+      <a href="#poe"><span class="ci-num">03</span><span class="ci-name">PoE</span><span class="ci-count">3 tools</span></a>
+      <a href="#vlan"><span class="ci-num">04</span><span class="ci-name">VLAN</span><span class="ci-count">5 tools</span></a>
+      <a href="#ip-address"><span class="ci-num">05</span><span class="ci-name">IP Address</span><span class="ci-count">4 tools</span></a>
+      <a href="#ipv6-address"><span class="ci-num">06</span><span class="ci-name">IPv6 Address</span><span class="ci-count">4 tools</span></a>
+      <a href="#ip-pool"><span class="ci-num">07</span><span class="ci-name">IP Pool</span><span class="ci-count">7 tools</span></a>
+      <a href="#dhcp"><span class="ci-num">08</span><span class="ci-name">DHCP</span><span class="ci-count">10 tools</span></a>
+      <a href="#neighbors"><span class="ci-num">09</span><span class="ci-name">Neighbors</span><span class="ci-count">2 tools</span></a>
+      <a href="#dns"><span class="ci-num">10</span><span class="ci-name">DNS</span><span class="ci-count">15 tools</span></a>
+      <a href="#routes"><span class="ci-num">11</span><span class="ci-name">Routes</span><span class="ci-count">14 tools</span></a>
+      <a href="#firewall"><span class="ci-num">12</span><span class="ci-name">Firewall</span><span class="ci-count">9 tools</span></a>
+      <a href="#ipv6-firewall"><span class="ci-num">13</span><span class="ci-name">IPv6 Firewall</span><span class="ci-count">8 tools</span></a>
+      <a href="#address-list"><span class="ci-num">14</span><span class="ci-name">Address Lists</span><span class="ci-count">7 tools</span></a>
+      <a href="#nat"><span class="ci-num">15</span><span class="ci-name">NAT</span><span class="ci-count">8 tools</span></a>
+      <a href="#wireguard"><span class="ci-num">16</span><span class="ci-name">WireGuard</span><span class="ci-count">15 tools</span></a>
+      <a href="#wireless"><span class="ci-num">17</span><span class="ci-name">Wireless</span><span class="ci-count">19 tools</span></a>
+      <a href="#queue"><span class="ci-num">18</span><span class="ci-name">Queues</span><span class="ci-count">19 tools</span></a>
+      <a href="#users"><span class="ci-num">19</span><span class="ci-name">Users</span><span class="ci-count">18 tools</span></a>
+      <a href="#backup"><span class="ci-num">20</span><span class="ci-name">Backup &amp; Export</span><span class="ci-count">10 tools</span></a>
+      <a href="#logs"><span class="ci-num">21</span><span class="ci-name">Logs</span><span class="ci-count">10 tools</span></a>
+      <a href="#safe-mode"><span class="ci-num">22</span><span class="ci-name">Safe Mode</span><span class="ci-count">4 tools</span></a>
     </div>
-
-    <!-- ============ VLAN ============ -->
+    <!-- ============ 01 INVENTORY ============ -->
     <div class="section-hd">
       <div>
-        <h2 id="vlan">VLAN — Interface Management</h2>
+        <h2 id="inventory">Inventory — Multiple Devices</h2>
+        <p class="section-intro">Manage a whole fleet from one server. Devices are declared in a
+          <strong>YAML inventory</strong>; each entry has a unique <code>title</code>, and every
+          device-scoped tool accepts an optional <code>device</code> argument naming the title to
+          target. With no inventory configured the server behaves exactly as before — a single device
+          built from <code>MIKROTIK_HOST</code> / <code>MIKROTIK_USERNAME</code> / …, and
+          <code>device</code> can be omitted everywhere.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category · read-only</span>
+      </div>
+      <div class="meta"><b>1</b> tool<br>category 01</div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">list_devices</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists the devices this server manages — title, host, port, username, tags, and region.
+          <strong>Credentials are never returned.</strong> Use it to discover the fleet before
+          targeting a device.</p>
+        <div class="params"><div class="row"><span class="pname">—</span><span class="pkind">no params</span><span class="pdesc">Takes no arguments</span></div></div>
+        <div class="ex">
+<span class="lbl">Fleet pattern</span><span class="fn">list_devices</span>()                                  <span class="c"># discover the fleet</span>
+<span class="fn">list_interfaces</span>(<span class="key">device</span>=<span class="str">"office-core"</span>)      <span class="c"># target one device</span>
+<span class="fn">create_vlan_interface</span>(<span class="key">device</span>=<span class="str">"branch-berlin"</span>, <span class="key">name</span>=<span class="str">"vlan100"</span>, <span class="key">vlan_id</span>=<span class="num">100</span>, <span class="key">interface</span>=<span class="str">"ether1"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb update">configure</span>
+        <span class="tname">Configuring the inventory</span>
+      </div>
+      <div class="tool-body">
+        <p>The inventory is YAML, from one of two sources —
+          <code>MIKROTIK_INVENTORY_FILE</code> (path to a YAML file, recommended) or
+          <code>MIKROTIK_INVENTORY</code> (the inventory written inline; YAML flow syntax needs no
+          escaped quotes, and plain JSON works too since it's a YAML subset). When both are set,
+          <strong>the inline value wins</strong>. A broken inventory (missing file, bad YAML, invalid
+          entry) stops the server at startup with one clear message. A ready-to-copy template ships at
+          the repository root as <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/inventory.example.yml" target="_blank" rel="noopener"><code>inventory.example.yml</code></a>.</p>
+        <div class="ex">
+<span class="lbl">inventory.yaml</span><span class="c">- title: office-core</span>
+<span class="c">  host: 192.168.88.1</span>
+<span class="c">  port: 22</span>
+<span class="c">  username: admin</span>
+<span class="c">  password: change-me</span>
+<span class="c">  tags: [office, core]</span>
+<span class="c">  region: NL</span>
+<span class="c">- title: branch-berlin</span>
+<span class="c">  host: 10.20.0.1</span>
+<span class="c">  username: admin</span>
+<span class="c">  key_filename: /config/keys/id_ed25519</span>
+<span class="c">  tags: [branch]</span>
+<span class="c">  region: DE</span>
+        </div>
+        <div class="params">
+          <div class="row"><span class="pname">title</span><span class="pkind req">required</span><span class="pdesc">Unique identifier passed as <code>device</code> — matching is case-insensitive</span></div>
+          <div class="row"><span class="pname">host</span><span class="pkind req">required</span><span class="pdesc">IP or hostname</span></div>
+          <div class="row"><span class="pname">port · username</span><span class="pkind">optional</span><span class="pdesc">Defaults: <code>22</code>, <code>admin</code></span></div>
+          <div class="row"><span class="pname">password · key_filename</span><span class="pkind">optional</span><span class="pdesc">Prefer an SSH key over a password; omit <code>password</code> when using a key</span></div>
+          <div class="row"><span class="pname">tags · region</span><span class="pkind">optional</span><span class="pdesc">Free-form labels — <code>[branch, eu]</code>, <code>NL</code> — great targets for "every device tagged office" prompts</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">select</span>
+        <span class="tname">Selecting a device</span>
+      </div>
+      <div class="tool-body">
+        <p>Every device-scoped tool takes an optional <code>device</code> argument.
+          <strong>One device configured</strong> — omit it; that device is used automatically.
+          <strong>More than one</strong> — pass the <code>title</code>. Omitting it, or passing an
+          unknown title, returns an error that lists the valid titles, so an AI caller corrects
+          itself on the next call instead of quietly running the command on the wrong router.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">DOCKER</span>
+      <div>
+        In the container, the inventory file <strong>must be mounted as a volume</strong> — the image
+        ships <code>/config</code> as the mount point:
+        <code>-v "$PWD/inventory.yaml:/config/inventory.yaml:ro" -e MIKROTIK_INVENTORY_FILE=/config/inventory.yaml</code>.
+        Two traps the entrypoint catches with an explicit error: the container runs as
+        <strong>uid&nbsp;1000</strong>, so the file must be readable by that uid
+        (<code>chmod 644</code> is usually enough); and if the host file doesn't exist at start,
+        Docker silently creates a <em>directory</em> in its place — create the YAML first. The
+        entrypoint also accepts <code>--inventory '&lt;yaml&gt;'</code> / <code>--inventory-file &lt;path&gt;</code>.
+        When an inventory is configured it wins, and <code>MIKROTIK_HOST</code> /
+        <code>MIKROTIK_USERNAME</code> / <code>MIKROTIK_PASSWORD</code> / <code>MIKROTIK_PORT</code>
+        are ignored. See <a href="index.html#inventory-docker">Installation</a>.
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="icon">BEHAVIOR</span>
+      <div>
+        <strong>Connections are per command</strong> — every command opens its own SSH connection and
+        closes it when done, so parallel client sessions can't disturb each other; the trade-off is
+        one SSH handshake per command. <strong>Safe mode is per device</strong> — each device holds
+        its own persistent session, so <code>enable_safe_mode(device="office-core")</code> leaves
+        every other device untouched. <strong>The inventory is a secret</strong> — it holds fleet
+        credentials, so prefer <code>key_filename</code>, restrict file permissions, and remember
+        env values show in <code>docker inspect</code>. Validation errors never echo inventory
+        contents, so a typo can't leak a password into a log. For a local two-device lab,
+        <code>routeros-docker/docker-compose.yml</code> starts <code>routeros-a</code> (SSH
+        <code>127.0.0.1:2222</code>) and <code>routeros-b</code> (<code>:2223</code>).
+      </div>
+    </div>
+
+    <!-- ============ 02 INTERFACES ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="interfaces">Interfaces — All Interface Types</h2>
+        <p class="section-intro">List and manage <em>every</em> interface on the device — ethernet, bridge,
+          WireGuard, PPPoE, VLAN, WiFi, SFP, LTE, loopback. The equivalent of
+          <code>/interface print</code> in RouterOS. For type-specific create/remove, use the dedicated
+          categories (VLAN, WireGuard, Wireless).</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
+      </div>
+      <div class="meta"><b>4</b> tools<br>category 02</div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">list_interfaces</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists all interfaces, with optional filtering by type, name, or running/disabled state.</p>
+        <div class="params">
+          <div class="row"><span class="pname">type_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by type — <code>ether</code>, <code>bridge</code>, <code>vlan</code>, <code>wg</code>, <code>pppoe-out</code>, <code>wifi</code>, <code>lte</code>, <code>loopback</code>, …</span></div>
+          <div class="row"><span class="pname">name_filter</span><span class="pkind">optional</span><span class="pdesc">Partial name match — <code>"ether"</code> matches <code>ether1</code>, <code>ether2</code> …</span></div>
+          <div class="row"><span class="pname">running_only</span><span class="pkind">optional</span><span class="pdesc">Only currently-running interfaces</span></div>
+          <div class="row"><span class="pname">disabled_only</span><span class="pkind">optional</span><span class="pdesc">Only disabled interfaces</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">list_interfaces</span>()
+<span class="fn">list_interfaces</span>(<span class="key">type_filter</span>=<span class="str">"ether"</span>)
+<span class="fn">list_interfaces</span>(<span class="key">running_only</span>=<span class="num">true</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">get</span>
+        <span class="tname">get_interface</span>
+      </div>
+      <div class="tool-body">
+        <p>Returns detailed information about a single interface by exact name.</p>
+        <div class="params">
+          <div class="row"><span class="pname">name</span><span class="pkind req">required</span><span class="pdesc">Exact interface name — <code>"ether1"</code>, <code>"bridge"</code>, <code>"pppoe-out1"</code>, <code>"wg0"</code></span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">get_interface</span>(<span class="key">name</span>=<span class="str">"ether1-wan"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb update">enable · disable</span>
+        <span class="tname">enable_interface · disable_interface</span>
+      </div>
+      <div class="tool-body">
+        <p>Bring an interface up or take it down without removing it.</p>
+        <div class="params">
+          <div class="row"><span class="pname">name</span><span class="pkind req">required</span><span class="pdesc">Exact interface name</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">disable_interface</span>(<span class="key">name</span>=<span class="str">"ether4"</span>)
+<span class="fn">enable_interface</span>(<span class="key">name</span>=<span class="str">"ether4"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 03 POE ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="poe">PoE — Power over Ethernet</h2>
+        <p class="section-intro">Read-only monitoring of Power-over-Ethernet status and per-port
+          configuration on PoE-capable devices, under <code>/interface ethernet poe</code>. On hardware
+          without PoE-out ports (e.g. CHR / virtual routers) these tools report that no PoE data is
+          available.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category · read-only</span>
+      </div>
+      <div class="meta"><b>3</b> tools<br>category 03</div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">monitor</span>
+        <span class="tname">get_poe_monitor</span>
+      </div>
+      <div class="tool-body">
+        <p>Reads <strong>real-time</strong> PoE-out telemetry — status, voltage, current, and power — for
+          one or more ethernet interfaces. Runs <code>/interface ethernet poe monitor … once</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">interfaces</span><span class="pkind req">required</span><span class="pdesc">Comma-separated ethernet interface name(s)</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">get_poe_monitor</span>(<span class="key">interfaces</span>=<span class="str">"ether1"</span>)
+<span class="fn">get_poe_monitor</span>(<span class="key">interfaces</span>=<span class="str">"ether9-ap,ether10-ap,ether11-ap"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">list_poe</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists the PoE-out configuration (PoE-out mode, priority) of PoE-capable ethernet interfaces.
+          Runs <code>/interface ethernet poe print</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Partial name match — <code>"ether"</code> matches <code>ether1</code>, <code>ether2</code> …</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">list_poe</span>()
+<span class="fn">list_poe</span>(<span class="key">interface_filter</span>=<span class="str">"ether"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">get</span>
+        <span class="tname">get_poe_settings</span>
+      </div>
+      <div class="tool-body">
+        <p>Gets the detailed PoE-out settings of a specific ethernet interface — mode, priority, voltage,
+          and low/high thresholds. Runs <code>/interface ethernet poe print detail where name=…</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">name</span><span class="pkind req">required</span><span class="pdesc">Exact ethernet interface name — <code>"ether1"</code></span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">get_poe_settings</span>(<span class="key">name</span>=<span class="str">"ether1"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 04 VLAN ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="vlan">VLAN — Tagged Interfaces</h2>
         <p class="section-intro">Create, list, inspect, update, and remove tagged 802.1Q interfaces. Parent
           interfaces can be any physical port or bridge.</p>
       </div>
-      <div class="meta"><b>5</b> tools<br>category 01</div>
+      <div class="meta"><b>5</b> tools<br>category 04</div>
     </div>
 
     <div class="tool">
@@ -301,6 +602,8 @@
           <div class="row"><span class="pname">disabled</span><span class="pkind">optional</span><span class="pdesc">Enable / disable</span></div>
           <div class="row"><span class="pname">mtu</span><span class="pkind">optional</span><span class="pdesc">New MTU</span></div>
           <div class="row"><span class="pname">arp</span><span class="pkind">optional</span><span class="pdesc">ARP mode</span></div>
+          <div class="row"><span class="pname">use_service_tag</span><span class="pkind">optional</span><span class="pdesc">802.1ad service tag</span></div>
+          <div class="row"><span class="pname">arp_timeout</span><span class="pkind">optional</span><span class="pdesc">ARP timeout</span></div>
         </div>
         <div class="ex">
 <span class="lbl">Example</span><span class="fn">mikrotik_update_vlan_interface</span>(<span class="key">name</span>=<span class="str">"vlan100"</span>, <span class="key">comment</span>=<span class="str">"Production VLAN"</span>)
@@ -325,15 +628,345 @@
       </div>
     </div>
 
-    <!-- ============ FIREWALL ============ -->
+    <!-- ============ 05 IP ADDRESS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="ip-address">IP Address — IPv4 Interface Bindings</h2>
+        <p class="section-intro">Assign and remove IPv4 addresses on physical, bridge, or VLAN interfaces.
+          For IPv6, see <a href="#ipv6-address">IPv6 Address</a>.</p>
+      </div>
+      <div class="meta"><b>4</b> tools<br>category 05</div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">add</span><span class="tname">mikrotik_add_ip_address</span></div>
+      <div class="tool-body"><p>Bind an address to an interface.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address</span><span class="pkind req">required</span><span class="pdesc">CIDR, e.g. <code>192.168.100.1/24</code></span></div>
+          <div class="row"><span class="pname">interface</span><span class="pkind req">required</span><span class="pdesc">Interface name</span></div>
+          <div class="row"><span class="pname">comment</span><span class="pkind">optional</span><span class="pdesc">Description</span></div>
+          <div class="row"><span class="pname">network · broadcast</span><span class="pkind">optional</span><span class="pdesc">Manual network / broadcast overrides</span></div>
+          <div class="row"><span class="pname">disabled</span><span class="pkind">optional</span><span class="pdesc">Add in a disabled state</span></div>
+        </div>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_add_ip_address</span>(<span class="key">address</span>=<span class="str">"192.168.100.1/24"</span>, <span class="key">interface</span>=<span class="str">"vlan100"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">list · get</span><span class="tname">mikrotik_list_ip_addresses · mikrotik_get_ip_address</span></div>
+      <div class="tool-body"><p>Inspect bindings — <code>list</code> takes optional filters (by interface, address, network, dynamic flag, or disabled-only); <code>get</code> returns one address record by ID.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_ip_address</span></div>
+      <div class="tool-body"><div class="params"><div class="row"><span class="pname">address_id</span><span class="pkind req">required</span><span class="pdesc">RouterOS address record ID</span></div></div></div>
+    </div>
+
+    <!-- ============ 06 IPV6 ADDRESS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="ipv6-address">IPv6 Address — Interface Bindings</h2>
+        <p class="section-intro">Assign and inspect IPv6 addresses on interfaces, under the RouterOS
+          <code>/ipv6 address</code> tree. IPv6 lives in a separate command tree from IPv4
+          (<code>/ipv6 …</code> vs <code>/ip …</code>) — this is the IPv6 counterpart of the
+          <a href="#ip-address">IP Address</a> category. These tools cover IPv6 <em>addressing</em>;
+          IPv6 routing, firewall, DHCPv6/ND, and pools are separate areas.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
+      </div>
+      <div class="meta"><b>4</b> tools<br>category 06</div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb create">add</span>
+        <span class="tname">add_ipv6_address</span>
+      </div>
+      <div class="tool-body">
+        <p>Adds an IPv6 address to an interface. Runs <code>/ipv6 address add …</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address</span><span class="pkind req">required</span><span class="pdesc">IPv6 address with prefix length — <code>2001:db8::1/64</code>, <code>fe80::1/64</code>. With <code>from_pool</code>, supply the host part only (e.g. <code>::1/64</code>).</span></div>
+          <div class="row"><span class="pname">interface</span><span class="pkind req">required</span><span class="pdesc">Interface name — <code>ether1</code>, <code>bridge</code></span></div>
+          <div class="row"><span class="pname">advertise</span><span class="pkind">optional</span><span class="pdesc">Include this prefix in Router Advertisements</span></div>
+          <div class="row"><span class="pname">eui_64</span><span class="pkind">optional</span><span class="pdesc">Derive the host part from the interface MAC</span></div>
+          <div class="row"><span class="pname">from_pool</span><span class="pkind">optional</span><span class="pdesc">Name of an IPv6 pool to take the prefix from</span></div>
+          <div class="row"><span class="pname">no_dad</span><span class="pkind">optional</span><span class="pdesc">Skip Duplicate Address Detection</span></div>
+          <div class="row"><span class="pname">comment · disabled</span><span class="pkind">optional</span><span class="pdesc">Description; add in a disabled state</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">add_ipv6_address</span>(<span class="key">address</span>=<span class="str">"2001:db8:1::1/64"</span>, <span class="key">interface</span>=<span class="str">"bridge"</span>)
+<span class="fn">add_ipv6_address</span>(<span class="key">address</span>=<span class="str">"2001:db8:1::1/64"</span>, <span class="key">interface</span>=<span class="str">"bridge"</span>, <span class="key">advertise</span>=<span class="num">true</span>)
+<span class="fn">add_ipv6_address</span>(<span class="key">address</span>=<span class="str">"::1/64"</span>, <span class="key">interface</span>=<span class="str">"bridge"</span>, <span class="key">from_pool</span>=<span class="str">"isp-pd"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">list_ipv6_addresses</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists IPv6 addresses, with optional filtering. Runs <code>/ipv6 address print</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by interface</span></div>
+          <div class="row"><span class="pname">address_filter</span><span class="pkind">optional</span><span class="pdesc">Partial match on the address — <code>"2001:db8"</code>, <code>"fe80"</code></span></div>
+          <div class="row"><span class="pname">disabled_only · dynamic_only</span><span class="pkind">optional</span><span class="pdesc">Only disabled / only dynamically-assigned addresses</span></div>
+          <div class="row"><span class="pname">global_only · link_local_only</span><span class="pkind">optional</span><span class="pdesc">Only routable addresses / only <code>fe80::/10</code></span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">list_ipv6_addresses</span>()
+<span class="fn">list_ipv6_addresses</span>(<span class="key">interface_filter</span>=<span class="str">"bridge"</span>)
+<span class="fn">list_ipv6_addresses</span>(<span class="key">global_only</span>=<span class="num">true</span>)      <span class="c"># routable addresses only</span>
+<span class="fn">list_ipv6_addresses</span>(<span class="key">link_local_only</span>=<span class="num">true</span>)  <span class="c"># fe80::/10 only</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">get</span>
+        <span class="tname">get_ipv6_address</span>
+      </div>
+      <div class="tool-body">
+        <p>Gets details for a single IPv6 address, by RouterOS id <em>or</em> by address value.
+          Runs <code>/ipv6 address print detail where …</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_id</span><span class="pkind req">required</span><span class="pdesc">Internal id (e.g. <code>*1</code>) or the address value (e.g. <code>2001:db8::1/64</code>)</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">get_ipv6_address</span>(<span class="key">address_id</span>=<span class="str">"2001:db8:1::1/64"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb delete">remove</span>
+        <span class="tname">remove_ipv6_address</span>
+      </div>
+      <div class="tool-body">
+        <p>Removes an IPv6 address by id or address value. Runs <code>/ipv6 address remove [find …]</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_id</span><span class="pkind req">required</span><span class="pdesc">Internal id (e.g. <code>*1</code>) or the address value</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">remove_ipv6_address</span>(<span class="key">address_id</span>=<span class="str">"2001:db8:1::1/64"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 07 IP POOL ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="ip-pool">IP Pool — Named Address Pools</h2>
+        <p class="section-intro">Named ranges used by DHCP, hotspot, PPP, and VPN servers.
+          Pools can be inspected, updated, and expanded without disruption.</p>
+      </div>
+      <div class="meta"><b>7</b> tools<br>category 07</div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_ip_pool</span></div>
+      <div class="tool-body"><div class="params">
+        <div class="row"><span class="pname">name</span><span class="pkind req">required</span><span class="pdesc">Pool name</span></div>
+        <div class="row"><span class="pname">ranges</span><span class="pkind req">required</span><span class="pdesc">e.g. <code>"192.168.1.100-192.168.1.200"</code></span></div>
+        <div class="row"><span class="pname">next_pool</span><span class="pkind">optional</span><span class="pdesc">Chain to another pool when exhausted</span></div>
+        <div class="row"><span class="pname">comment</span><span class="pkind">optional</span><span class="pdesc">Description</span></div>
+      </div>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_ip_pool</span>(<span class="key">name</span>=<span class="str">"dhcp-pool"</span>, <span class="key">ranges</span>=<span class="str">"192.168.1.100-192.168.1.200"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">list · get · used</span><span class="tname">mikrotik_list_ip_pools · mikrotik_get_ip_pool · mikrotik_list_ip_pool_used</span></div>
+      <div class="tool-body"><p>Inspect pool definitions, fetch a single pool by name, plus the live used-address table (which addresses are currently leased from a pool). <code>list_ip_pools</code> accepts <code>name_filter</code> / <code>ranges_filter</code> / <code>include_used</code>; <code>list_ip_pool_used</code> filters by <code>pool_name</code>, <code>address_filter</code>, <code>mac_filter</code>, and <code>info_filter</code>.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">update · expand</span><span class="tname">mikrotik_update_ip_pool · mikrotik_expand_ip_pool</span></div>
+      <div class="tool-body"><p><code>update</code> edits a pool's <code>name</code> (rename via <code>new_name</code>), ranges, or next-pool chain; <code>expand</code> appends additional ranges without disrupting existing leases.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_expand_ip_pool</span>(<span class="key">name</span>=<span class="str">"dhcp-pool"</span>, <span class="key">additional_ranges</span>=<span class="str">"192.168.1.201-192.168.1.250"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_ip_pool</span></div>
+      <div class="tool-body"><p>Remove a pool. Servers using it will refuse new leases.</p></div>
+    </div>
+
+    <!-- ============ 08 DHCP ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="dhcp">DHCP — Pools, Networks, Servers</h2>
+        <p class="section-intro">Three-piece model: a <em>pool</em> defines the address range,
+          a <em>network</em> defines gateway and DNS, and a <em>server</em> binds them to an interface.</p>
+      </div>
+      <div class="meta"><b>10</b> tools<br>category 08</div>
+    </div>
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb create">create</span>
+        <span class="tname">mikrotik_create_dhcp_pool · mikrotik_create_dhcp_network · mikrotik_create_dhcp_server</span>
+      </div>
+      <div class="tool-body">
+        <p>Build a DHCP service for a subnet in three steps. <code>create_dhcp_server</code> takes
+          <code>name</code> + <code>interface</code> (plus optional <code>lease_time</code> defaulting to
+          <code>"1d"</code>, <code>address_pool</code>, <code>authoritative</code>, …).</p>
+        <div class="ex">
+<span class="lbl">Example — Guest VLAN DHCP</span><span class="fn">mikrotik_create_dhcp_pool</span>(<span class="key">name</span>=<span class="str">"pool-vlan100"</span>, <span class="key">ranges</span>=<span class="str">"192.168.100.10-192.168.100.200"</span>)
+<span class="fn">mikrotik_create_dhcp_network</span>(<span class="key">network</span>=<span class="str">"192.168.100.0/24"</span>, <span class="key">gateway</span>=<span class="str">"192.168.100.1"</span>, <span class="key">dns_servers</span>=[<span class="str">"8.8.8.8"</span>, <span class="str">"8.8.4.4"</span>])
+<span class="fn">mikrotik_create_dhcp_server</span>(<span class="key">name</span>=<span class="str">"dhcp-vlan100"</span>, <span class="key">interface</span>=<span class="str">"vlan100"</span>, <span class="key">address_pool</span>=<span class="str">"pool-vlan100"</span>)
+        </div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">list · get</span><span class="tname">mikrotik_list_dhcp_servers · mikrotik_get_dhcp_server</span></div>
+      <div class="tool-body"><p>List all DHCP servers or fetch one by name.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">leases · bindings</span><span class="tname">mikrotik_list_dhcp_leases · mikrotik_list_dhcpv6_bindings</span></div>
+      <div class="tool-body"><p>Raw, detailed views of who actually holds an address — IPv4 DHCP <em>leases</em> and DHCPv6
+        <em>bindings</em>. Identity filters match the <strong>active</strong> lease fields. Address and identity filters use
+        substring matching; server, status, and lease time use exact matching.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_filter · mac_filter</span><span class="pkind">optional</span><span class="pdesc">Active address / MAC (leases); assigned address or prefix (bindings)</span></div>
+          <div class="row"><span class="pname">client_id_filter · hostname_filter · class_id_filter</span><span class="pkind">optional</span><span class="pdesc">Leases only — active client ID, hostname, class ID</span></div>
+          <div class="row"><span class="pname">duid_filter · iaid_filter</span><span class="pkind">optional</span><span class="pdesc">Bindings only — DUID (substring) and IAID (exact)</span></div>
+          <div class="row"><span class="pname">server_filter · status_filter</span><span class="pkind">optional</span><span class="pdesc">Exact match on DHCP server / lease or binding status</span></div>
+          <div class="row"><span class="pname">lease_time_filter</span><span class="pkind">optional</span><span class="pdesc">Configured time — the RouterOS <code>lease-time</code> field for leases, <code>life-time</code> for bindings</span></div>
+          <div class="row"><span class="pname">last_seen_within</span><span class="pkind">optional</span><span class="pdesc">Only entries seen within a duration such as <code>1h</code> or <code>24h</code></span></div>
+        </div>
+        <div class="ex"><span class="lbl">Examples</span><span class="fn">mikrotik_list_dhcp_leases</span>(<span class="key">status_filter</span>=<span class="str">"bound"</span>, <span class="key">last_seen_within</span>=<span class="str">"24h"</span>)
+<span class="fn">mikrotik_list_dhcpv6_bindings</span>(<span class="key">status_filter</span>=<span class="str">"bound"</span>, <span class="key">last_seen_within</span>=<span class="str">"1h"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">network update · remove</span><span class="tname">mikrotik_update_dhcp_network · mikrotik_remove_dhcp_network</span></div>
+      <div class="tool-body"><p>Edit or delete a DHCP <em>network</em> record (the gateway/DNS half of the
+        three-piece model), keyed by its <code>network</code> CIDR. <code>update</code> takes any of
+        <code>gateway</code>, <code>netmask</code>, <code>dns_servers</code>, <code>domain</code>,
+        <code>wins_servers</code>, <code>ntp_servers</code>, <code>dhcp_option</code>, and
+        <code>comment</code>.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_update_dhcp_network</span>(<span class="key">network</span>=<span class="str">"192.168.100.0/24"</span>, <span class="key">dns_servers</span>=[<span class="str">"1.1.1.1"</span>])
+<span class="fn">mikrotik_remove_dhcp_network</span>(<span class="key">network</span>=<span class="str">"192.168.100.0/24"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_dhcp_server</span></div>
+      <div class="tool-body"><p>Removes a DHCP server. The underlying pool and network records survive.</p></div>
+    </div>
+    <!-- ============ 09 NEIGHBORS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="neighbors">Neighbors — ARP &amp; IPv6 ND</h2>
+        <p class="section-intro">Read-only views of the neighbour tables: raw, detailed <strong>IPv4 ARP</strong>
+          entries and <strong>IPv6 Neighbor Discovery</strong> entries. Useful for answering "what is on this
+          segment, and on which port?" Address and MAC filters use substring matching; interface and status
+          filters use exact matching.</p>
+      </div>
+      <div class="meta"><b>2</b> tools<br>category 09</div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">mikrotik_list_arp_entries</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists raw detailed IPv4 ARP entries.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_filter</span><span class="pkind">optional</span><span class="pdesc">IP address (substring)</span></div>
+          <div class="row"><span class="pname">mac_filter</span><span class="pkind">optional</span><span class="pdesc">MAC address (substring)</span></div>
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Interface (exact)</span></div>
+          <div class="row"><span class="pname">status_filter</span><span class="pkind">optional</span><span class="pdesc">Neighbor status (exact)</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">mikrotik_list_arp_entries</span>(<span class="key">interface_filter</span>=<span class="str">"bridge"</span>, <span class="key">status_filter</span>=<span class="str">"reachable"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list</span>
+        <span class="tname">mikrotik_list_ipv6_neighbors</span>
+      </div>
+      <div class="tool-body">
+        <p>Lists raw detailed IPv6 Neighbor Discovery entries.</p>
+        <div class="params">
+          <div class="row"><span class="pname">address_filter</span><span class="pkind">optional</span><span class="pdesc">IPv6 address (substring) — <code>"fe80"</code> finds link-local neighbors</span></div>
+          <div class="row"><span class="pname">mac_filter</span><span class="pkind">optional</span><span class="pdesc">MAC address (substring)</span></div>
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Interface (exact)</span></div>
+          <div class="row"><span class="pname">status_filter</span><span class="pkind">optional</span><span class="pdesc">Neighbor status (exact)</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">mikrotik_list_ipv6_neighbors</span>(<span class="key">address_filter</span>=<span class="str">"fe80"</span>, <span class="key">interface_filter</span>=<span class="str">"bridge"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 10 DNS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="dns">DNS — Resolution &amp; Static Records</h2>
+        <p class="section-intro">Set upstream servers (with optional DNS-over-HTTPS), manage static
+          A/CNAME/MX/SRV/TXT records, regex blocklists, and inspect or flush the cache.
+          Run live test queries with <code>mikrotik_test_dns_query</code>.</p>
+      </div>
+      <div class="meta"><b>15</b> tools<br>category 10</div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_set_dns_servers · mikrotik_add_dns_static · mikrotik_add_dns_regexp</span></div>
+      <div class="tool-body"><p>Configure upstream resolvers, add static records, and define regex-based blocklists.
+        <code>set_dns_servers</code> also accepts <code>allow_remote_requests</code>, cache tuning
+        (<code>cache_size</code>, <code>cache_max_ttl</code>, <code>max_udp_packet_size</code>,
+        <code>max_concurrent_queries</code>), and DoH options (<code>use_doh</code>, <code>doh_server</code>,
+        <code>verify_doh_cert</code>). <code>add_dns_static</code> takes the record-type fields
+        <code>cname</code>, <code>mx_preference</code>/<code>mx_exchange</code>, <code>text</code>,
+        <code>srv_priority</code>/<code>weight</code>/<code>port</code>/<code>target</code>, plus
+        <code>ttl</code> and <code>regexp</code>.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_set_dns_servers</span>(<span class="key">servers</span>=[<span class="str">"8.8.8.8"</span>, <span class="str">"1.1.1.1"</span>], <span class="key">allow_remote_requests</span>=<span class="num">true</span>)
+<span class="fn">mikrotik_add_dns_static</span>(<span class="key">name</span>=<span class="str">"router.local"</span>, <span class="key">address</span>=<span class="str">"192.168.1.1"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">read · test</span><span class="tname">mikrotik_get_dns_settings · mikrotik_list_dns_static · mikrotik_get_dns_static · mikrotik_get_dns_cache · mikrotik_get_dns_cache_statistics · mikrotik_test_dns_query</span></div>
+      <div class="tool-body"><p>Inspect resolver settings, list or fetch static records, dump the cache and its statistics, and run a live test query.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_test_dns_query</span>(<span class="key">name</span>=<span class="str">"example.com"</span>, <span class="key">server</span>=<span class="str">"8.8.8.8"</span>, <span class="key">type</span>=<span class="str">"A"</span>)</div>
+        <p style="font-size:13px;color:var(--ink-mute);margin-top:10px">Test queries run through RouterOS
+          <code>:resolve</code>, so <code>type</code> accepts <code>A</code>/<code>ipv4</code> (default),
+          <code>AAAA</code>/<code>ipv6</code>, <code>any</code>, and <code>any6</code> only — record-type
+          lookups such as MX or TXT aren't supported by <code>:resolve</code>.</p>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">update · toggle · flush · export</span><span class="tname">mikrotik_update_dns_static · mikrotik_enable_dns_static · mikrotik_disable_dns_static · mikrotik_flush_dns_cache · mikrotik_export_dns_config</span></div>
+      <div class="tool-body"><p>Edit a static record, enable/disable it without deleting, clear the resolver cache, or dump the full DNS configuration to a file.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_dns_static</span></div>
+      <div class="tool-body"><div class="params"><div class="row"><span class="pname">entry_id</span><span class="pkind req">required</span><span class="pdesc">Static record ID</span></div></div></div>
+    </div>
+
+    <!-- ============ 11 ROUTES ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="routes">Routes — Routing Table</h2>
+        <p class="section-intro">Add static, default, and blackhole routes. Inspect active routes,
+          check the path to a destination, dump routing tables, and read the route cache and statistics.</p>
+      </div>
+      <div class="meta"><b>14</b> tools<br>category 11</div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_route · mikrotik_add_default_route · mikrotik_add_blackhole_route</span></div>
+      <div class="tool-body"><p>Three flavors of route creation. <code>add_route</code> takes <code>dst_address</code> +
+        <code>gateway</code> (plus optional <code>distance</code>, <code>scope</code>,
+        <code>routing_table</code>, <code>pref_src</code>, <code>check_gateway</code>, …). On RouterOS 7
+        the routing table is named via <code>routing_table</code> (a name from <code>/routing table</code>);
+        RouterOS 6 called this the routing mark. Listing and path checks use
+        <code>routing_table_filter</code> / <code>routing_table</code> to match.</p>
+        <div class="ex"><span class="lbl">Examples</span><span class="fn">mikrotik_add_default_route</span>(<span class="key">gateway</span>=<span class="str">"192.168.1.1"</span>, <span class="key">distance</span>=<span class="num">1</span>)
+<span class="fn">mikrotik_add_route</span>(<span class="key">dst_address</span>=<span class="str">"10.0.0.0/8"</span>, <span class="key">gateway</span>=<span class="str">"192.168.1.254"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_routes · mikrotik_get_route · mikrotik_check_route_path · mikrotik_get_routing_table · mikrotik_get_route_cache · mikrotik_get_route_statistics</span></div>
+      <div class="tool-body"><p>Inspect the routing table from several angles: list all, single route, traceroute-style path check, full table dump (<code>table_name</code> defaults to <code>"main"</code>), the kernel route cache, and aggregate statistics.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_check_route_path</span>(<span class="key">destination</span>=<span class="str">"8.8.8.8"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">update · toggle · flush</span><span class="tname">mikrotik_update_route · mikrotik_enable_route · mikrotik_disable_route · mikrotik_flush_route_cache</span></div>
+      <div class="tool-body"><p>Edit a route in place, toggle individual routes by ID, or flush the route cache.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_route</span></div>
+      <div class="tool-body"><div class="params"><div class="row"><span class="pname">route_id</span><span class="pkind req">required</span><span class="pdesc">RouterOS route ID</span></div></div></div>
+    </div>
+
+    <!-- ============ 12 FIREWALL ============ -->
     <div class="section-hd">
       <div>
         <h2 id="firewall">Firewall — Filter Rules</h2>
-        <p class="section-intro">Manage filter rules across the <code>input</code>, <code>forward</code>,
-          and <code>output</code> chains. Includes rule ordering, enable/disable, basic
-          firewall scaffolding.</p>
+        <p class="section-intro">Manage IPv4 filter rules across the <code>input</code>, <code>forward</code>,
+          and <code>output</code> chains. Includes rule ordering, enable/disable, and basic
+          firewall scaffolding. For IPv6, see <a href="#ipv6-firewall">IPv6 Firewall</a>.</p>
       </div>
-      <div class="meta"><b>9</b> tools<br>category 02</div>
+      <div class="meta"><b>9</b> tools<br>category 12</div>
     </div>
 
     <div class="tool">
@@ -346,22 +979,19 @@
           combine them to build whatever predicate you need.</p>
         <div class="params">
           <div class="row"><span class="pname">chain</span><span class="pkind req">required</span><span class="pdesc">Chain — <code>input</code>, <code>forward</code>, or <code>output</code></span></div>
-          <div class="row"><span class="pname">action</span><span class="pkind req">required</span><span class="pdesc">Action — accept, drop, reject, log, jump, …</span></div>
+          <div class="row"><span class="pname">action</span><span class="pkind req">required</span><span class="pdesc">accept, drop, reject, log, jump, …</span></div>
           <div class="row"><span class="pname">src_address</span><span class="pkind">optional</span><span class="pdesc">Source address / CIDR</span></div>
           <div class="row"><span class="pname">dst_address</span><span class="pkind">optional</span><span class="pdesc">Destination address / CIDR</span></div>
-          <div class="row"><span class="pname">src_port</span><span class="pkind">optional</span><span class="pdesc">Source port</span></div>
-          <div class="row"><span class="pname">dst_port</span><span class="pkind">optional</span><span class="pdesc">Destination port</span></div>
+          <div class="row"><span class="pname">src_port · dst_port</span><span class="pkind">optional</span><span class="pdesc">Source / destination port</span></div>
           <div class="row"><span class="pname">protocol</span><span class="pkind">optional</span><span class="pdesc">tcp, udp, icmp, …</span></div>
-          <div class="row"><span class="pname">in_interface</span><span class="pkind">optional</span><span class="pdesc">Input interface</span></div>
-          <div class="row"><span class="pname">out_interface</span><span class="pkind">optional</span><span class="pdesc">Output interface</span></div>
+          <div class="row"><span class="pname">in_interface · out_interface</span><span class="pkind">optional</span><span class="pdesc">Match by interface</span></div>
+          <div class="row"><span class="pname">in_interface_list · out_interface_list</span><span class="pkind">optional</span><span class="pdesc">Match an <code>/interface list</code> (e.g. <code>"LAN"</code>, <code>"WAN"</code>) rather than a single interface</span></div>
           <div class="row"><span class="pname">connection_state</span><span class="pkind">optional</span><span class="pdesc">e.g. <code>"established,related"</code></span></div>
-          <div class="row"><span class="pname">src_address_list</span><span class="pkind">optional</span><span class="pdesc">Named address list</span></div>
-          <div class="row"><span class="pname">tcp_flags</span><span class="pkind">optional</span><span class="pdesc">TCP flag matches</span></div>
-          <div class="row"><span class="pname">limit</span><span class="pkind">optional</span><span class="pdesc">Rate limit</span></div>
-          <div class="row"><span class="pname">comment</span><span class="pkind">optional</span><span class="pdesc">Description</span></div>
-          <div class="row"><span class="pname">disabled</span><span class="pkind">optional</span><span class="pdesc">Create disabled</span></div>
-          <div class="row"><span class="pname">log</span><span class="pkind">optional</span><span class="pdesc">Enable logging</span></div>
-          <div class="row"><span class="pname">log_prefix</span><span class="pkind">optional</span><span class="pdesc">Log prefix string</span></div>
+          <div class="row"><span class="pname">src_address_list · dst_address_list</span><span class="pkind">optional</span><span class="pdesc">Named source / destination <a href="#address-list">address lists</a></span></div>
+          <div class="row"><span class="pname">connection_nat_state</span><span class="pkind">optional</span><span class="pdesc">Connection NAT state match</span></div>
+          <div class="row"><span class="pname">tcp_flags · limit</span><span class="pkind">optional</span><span class="pdesc">TCP flag matches; rate limit</span></div>
+          <div class="row"><span class="pname">comment · disabled</span><span class="pkind">optional</span><span class="pdesc">Description; create disabled</span></div>
+          <div class="row"><span class="pname">log · log_prefix</span><span class="pkind">optional</span><span class="pdesc">Enable logging; log prefix string</span></div>
           <div class="row"><span class="pname">place_before</span><span class="pkind">optional</span><span class="pdesc">Insert before this rule ID</span></div>
         </div>
         <div class="ex">
@@ -376,94 +1006,113 @@
       </div>
     </div>
 
+    <div class="tool"><div class="tool-head"><span class="verb read">list · get</span><span class="tname">mikrotik_list_filter_rules · mikrotik_get_filter_rule</span></div>
+      <div class="tool-body"><p>List rules with optional filters (chain, action, addresses, protocol, interface, disabled/invalid/dynamic), or fetch a single rule by ID.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_list_filter_rules</span>(<span class="key">chain_filter</span>=<span class="str">"input"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">update · move · toggle</span><span class="tname">mikrotik_update_filter_rule · mikrotik_move_filter_rule · mikrotik_enable_filter_rule · mikrotik_disable_filter_rule</span></div>
+      <div class="tool-body"><p>Edit a rule in place, reorder it within its chain (critical for ordered evaluation), or toggle it on/off without removing it.</p>
+        <div class="ex"><span class="lbl">Example — move rule to top</span><span class="fn">mikrotik_move_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>, <span class="key">destination</span>=<span class="num">0</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_filter_rule</span></div>
+      <div class="tool-body"><div class="params"><div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div></div></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">scaffold</span><span class="tname">mikrotik_create_basic_firewall_setup</span></div>
+      <div class="tool-body"><p>Creates a sensible baseline: accept established/related, drop invalid, accept ICMP,
+        drop everything else on <code>input</code>. Useful for fresh routers.</p>
+        <div class="params"><div class="row"><span class="pname">—</span><span class="pkind">no params</span><span class="pdesc">Takes no arguments</span></div></div>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_basic_firewall_setup</span>()</div>
+      </div>
+    </div>
+
+    <!-- ============ 13 IPV6 FIREWALL ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="ipv6-firewall">IPv6 Firewall — Filter Rules</h2>
+        <p class="section-intro">Filter rules under the RouterOS <code>/ipv6 firewall filter</code>
+          tree — the IPv6 counterpart of the <a href="#firewall">Firewall</a> (IPv4) category. IPv6
+          lives in a separate command tree, so the IPv4 tools neither see nor touch these rules. Two
+          differences bite most often: ICMP is spelled <code>icmpv6</code>, and addresses are IPv6
+          prefixes such as <code>2001:db8::/64</code>.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
+      </div>
+      <div class="meta"><b>8</b> tools<br>category 13</div>
+    </div>
+
     <div class="tool">
       <div class="tool-head">
-        <span class="verb read">list</span>
-        <span class="tname">mikrotik_list_filter_rules</span>
+        <span class="verb create">create</span>
+        <span class="tname">create_ipv6_filter_rule</span>
       </div>
       <div class="tool-body">
-        <p>Lists filter rules with optional filters by chain, action, addresses, protocol, or state.</p>
+        <p>Creates an IPv6 filter rule. Runs <code>/ipv6 firewall filter add …</code>. Most match
+          parameters are optional — combine them to build whatever predicate you need.</p>
         <div class="params">
-          <div class="row"><span class="pname">chain_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by chain</span></div>
-          <div class="row"><span class="pname">action_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by action</span></div>
-          <div class="row"><span class="pname">src_address_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by source address</span></div>
-          <div class="row"><span class="pname">dst_address_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by destination address</span></div>
-          <div class="row"><span class="pname">protocol_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by protocol</span></div>
-          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Filter by interface</span></div>
-          <div class="row"><span class="pname">disabled_only</span><span class="pkind">optional</span><span class="pdesc">Only disabled rules</span></div>
-          <div class="row"><span class="pname">invalid_only</span><span class="pkind">optional</span><span class="pdesc">Only invalid rules</span></div>
-          <div class="row"><span class="pname">dynamic_only</span><span class="pkind">optional</span><span class="pdesc">Only dynamic rules</span></div>
+          <div class="row"><span class="pname">chain</span><span class="pkind req">required</span><span class="pdesc"><code>input</code>, <code>forward</code>, or <code>output</code></span></div>
+          <div class="row"><span class="pname">action</span><span class="pkind req">required</span><span class="pdesc">accept, drop, reject, jump, log, passthrough, return, tarpit</span></div>
+          <div class="row"><span class="pname">jump_target</span><span class="pkind">optional</span><span class="pdesc">Chain to jump to — only used with <code>action="jump"</code></span></div>
+          <div class="row"><span class="pname">src_address · dst_address</span><span class="pkind">optional</span><span class="pdesc">IPv6 address or prefix</span></div>
+          <div class="row"><span class="pname">src_port · dst_port</span><span class="pkind">optional</span><span class="pdesc">Port, list, or range</span></div>
+          <div class="row"><span class="pname">protocol</span><span class="pkind">optional</span><span class="pdesc">e.g. <code>tcp</code>, <code>udp</code>, <code>icmpv6</code></span></div>
+          <div class="row"><span class="pname">in_interface · out_interface</span><span class="pkind">optional</span><span class="pdesc">Match by interface</span></div>
+          <div class="row"><span class="pname">connection_state</span><span class="pkind">optional</span><span class="pdesc">Comma-separated, e.g. <code>"established,related"</code></span></div>
+          <div class="row"><span class="pname">src_address_list · dst_address_list</span><span class="pkind">optional</span><span class="pdesc">Named address lists</span></div>
+          <div class="row"><span class="pname">src_address_type · dst_address_type</span><span class="pkind">optional</span><span class="pdesc">e.g. <code>unicast</code>, <code>multicast</code>, <code>local</code></span></div>
+          <div class="row"><span class="pname">icmp_options</span><span class="pkind">optional</span><span class="pdesc">ICMPv6 <code>type:code</code> — <code>128:0</code> is echo request</span></div>
+          <div class="row"><span class="pname">hop_limit</span><span class="pkind">optional</span><span class="pdesc">Hop-limit expression, e.g. <code>equal:255</code></span></div>
+          <div class="row"><span class="pname">headers</span><span class="pkind">optional</span><span class="pdesc">Extension-header match, e.g. <code>hop</code> or <code>!hop</code></span></div>
+          <div class="row"><span class="pname">limit · tcp_flags</span><span class="pkind">optional</span><span class="pdesc">Rate/burst (<code>10,5:packet</code>); TCP flag expression (<code>syn,!ack</code>)</span></div>
+          <div class="row"><span class="pname">comment · disabled · log · log_prefix</span><span class="pkind">optional</span><span class="pdesc">Description; create disabled; enable logging; log prefix</span></div>
+          <div class="row"><span class="pname">place_before</span><span class="pkind">optional</span><span class="pdesc">Rule number or ID to insert before</span></div>
         </div>
         <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_list_filter_rules</span>(<span class="key">chain_filter</span>=<span class="str">"input"</span>)
+<span class="lbl">Examples</span><span class="fn">create_ipv6_filter_rule</span>(<span class="key">chain</span>=<span class="str">"input"</span>, <span class="key">action</span>=<span class="str">"accept"</span>, <span class="key">protocol</span>=<span class="str">"icmpv6"</span>)
+<span class="fn">create_ipv6_filter_rule</span>(<span class="key">chain</span>=<span class="str">"input"</span>, <span class="key">action</span>=<span class="str">"accept"</span>, <span class="key">protocol</span>=<span class="str">"tcp"</span>, <span class="key">dst_port</span>=<span class="str">"22"</span>, <span class="key">src_address</span>=<span class="str">"2001:db8::/64"</span>)
+<span class="c"># NDP: router solicitation, hop-limit 255</span>
+<span class="fn">create_ipv6_filter_rule</span>(<span class="key">chain</span>=<span class="str">"input"</span>, <span class="key">action</span>=<span class="str">"accept"</span>, <span class="key">protocol</span>=<span class="str">"icmpv6"</span>, <span class="key">icmp_options</span>=<span class="str">"133:0"</span>, <span class="key">hop_limit</span>=<span class="str">"equal:255"</span>)
         </div>
       </div>
     </div>
 
     <div class="tool">
       <div class="tool-head">
-        <span class="verb read">get</span>
-        <span class="tname">mikrotik_get_filter_rule</span>
+        <span class="verb read">list · get</span>
+        <span class="tname">list_ipv6_filter_rules · get_ipv6_filter_rule</span>
       </div>
       <div class="tool-body">
-        <p>Returns the full record for a single rule.</p>
+        <p>List rules with optional filters, or fetch one in detail.</p>
         <div class="params">
-          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">RouterOS rule ID (e.g. <code>*1</code>)</span></div>
+          <div class="row"><span class="pname">chain_filter · action_filter</span><span class="pkind">optional</span><span class="pdesc">Exact match on chain / action</span></div>
+          <div class="row"><span class="pname">src_address_filter · dst_address_filter</span><span class="pkind">optional</span><span class="pdesc"><strong>Partial</strong> match — <code>"2001:db8"</code> matches every rule whose address begins with it</span></div>
+          <div class="row"><span class="pname">protocol_filter</span><span class="pkind">optional</span><span class="pdesc">Exact protocol — use <code>icmpv6</code>, not <code>icmp</code></span></div>
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Matches either <code>in-interface</code> or <code>out-interface</code></span></div>
+          <div class="row"><span class="pname">disabled_only · invalid_only · dynamic_only</span><span class="pkind">optional</span><span class="pdesc">Narrow by rule state</span></div>
+          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required for get</span><span class="pdesc">A RouterOS internal id, e.g. <code>*1</code> — the positional numbers shown by <code>print</code> are per-session and do not resolve here</span></div>
         </div>
         <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_get_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>)
+<span class="lbl">Examples</span><span class="fn">list_ipv6_filter_rules</span>(<span class="key">chain_filter</span>=<span class="str">"forward"</span>)
+<span class="fn">list_ipv6_filter_rules</span>(<span class="key">protocol_filter</span>=<span class="str">"icmpv6"</span>)
+<span class="fn">get_ipv6_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*3"</span>)
         </div>
       </div>
     </div>
 
     <div class="tool">
       <div class="tool-head">
-        <span class="verb update">update</span>
-        <span class="tname">mikrotik_update_filter_rule</span>
+        <span class="verb update">update · move · toggle</span>
+        <span class="tname">update_ipv6_filter_rule · move_ipv6_filter_rule · enable_ipv6_filter_rule · disable_ipv6_filter_rule</span>
       </div>
       <div class="tool-body">
-        <p>Updates a rule in place. Accepts every parameter from <code>create_filter_rule</code> as optional.</p>
-        <div class="params">
-          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">RouterOS rule ID</span></div>
-          <div class="row"><span class="pname">…</span><span class="pkind">optional</span><span class="pdesc">All <code>create_filter_rule</code> parameters</span></div>
-        </div>
+        <p>Edit a rule in place, reorder it within its chain (critical for ordered evaluation), or
+          toggle it without removing it. <code>update</code> takes <code>rule_id</code> plus any
+          <code>create</code> field — pass an empty string to clear an optional field. <code>move</code>
+          takes a 0-based <code>destination</code>.</p>
         <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_update_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>, <span class="key">comment</span>=<span class="str">"Updated rule"</span>)
-        </div>
-      </div>
-    </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb update">move</span>
-        <span class="tname">mikrotik_move_filter_rule</span>
-      </div>
-      <div class="tool-body">
-        <p>Moves a rule to a different position in its chain. Critical for ordered-evaluation correctness —
-          e.g. putting a deny rule above an allow rule.</p>
-        <div class="params">
-          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div>
-          <div class="row"><span class="pname">destination</span><span class="pkind req">required</span><span class="pdesc">New position (0 = top)</span></div>
-        </div>
-        <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_move_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>, <span class="key">destination</span>=<span class="num">0</span>)
-        </div>
-      </div>
-    </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb update">toggle</span>
-        <span class="tname">mikrotik_enable_filter_rule · mikrotik_disable_filter_rule</span>
-      </div>
-      <div class="tool-body">
-        <p>Toggle a rule on or off without removing it. Useful for emergency disables during troubleshooting.</p>
-        <div class="params">
-          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div>
-        </div>
-        <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_disable_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>)
-<span class="fn">mikrotik_enable_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>)
+<span class="lbl">Examples</span><span class="fn">update_ipv6_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*3"</span>, <span class="key">comment</span>=<span class="str">"tightened"</span>, <span class="key">src_address</span>=<span class="str">""</span>)
+<span class="fn">move_ipv6_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*3"</span>, <span class="key">destination</span>=<span class="num">0</span>)
+<span class="fn">disable_ipv6_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*3"</span>)
         </div>
       </div>
     </div>
@@ -471,44 +1120,130 @@
     <div class="tool">
       <div class="tool-head">
         <span class="verb delete">remove</span>
-        <span class="tname">mikrotik_remove_filter_rule</span>
+        <span class="tname">remove_ipv6_filter_rule</span>
       </div>
       <div class="tool-body">
-        <p>Permanently removes a rule.</p>
+        <div class="params"><div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Internal rule ID, e.g. <code>*3</code></span></div></div>
+      </div>
+    </div>
+
+    <!-- ============ 14 ADDRESS LISTS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="address-list">Address Lists — Named IP Sets</h2>
+        <p class="section-intro">Named address sets under <code>/ip firewall address-list</code> and
+          <code>/ipv6 firewall address-list</code>, referenced from filter rules via
+          <code>src_address_list</code> / <code>dst_address_list</code>. Unlike the filter scopes,
+          <strong>IPv4 and IPv6 share one set of tools</strong> — the entry schema is identical across
+          families, so each tool takes a required <code>family</code> of <code>"ipv4"</code> or
+          <code>"ipv6"</code> rather than duplicating seven tools per family.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
+      </div>
+      <div class="meta"><b>7</b> tools<br>category 14</div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">BEHAVIOR</span>
+      <div>
+        Three things worth knowing before you use these.
+        <strong>IPv6 stores host entries with an explicit <code>/128</code></strong> — adding
+        <code>2001:db8::5</code> stores <code>2001:db8::5/128</code>, so a bare lookup wouldn't match;
+        these tools canonicalise the address for you, so either form works.
+        <strong>List names match exactly, including spaces</strong> — <code>"internal NS "</code> with a
+        trailing space is a different list from <code>"internal NS"</code>; nothing is trimmed.
+        <strong>A hostname entry creates dynamic children</strong> — <code>address=example.com</code> adds
+        one static entry plus one dynamic entry per resolved address (use <code>static_only</code> to
+        exclude them), and an entry with a <code>timeout</code> is likewise dynamic and does not survive
+        a reboot.
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb create">create</span>
+        <span class="tname">create_address_list_entry</span>
+      </div>
+      <div class="tool-body">
+        <p>Adds an entry. Runs <code>/ip</code> or <code>/ipv6 firewall address-list add</code>.</p>
         <div class="params">
-          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div>
+          <div class="row"><span class="pname">family</span><span class="pkind req">required</span><span class="pdesc"><code>"ipv4"</code> or <code>"ipv6"</code></span></div>
+          <div class="row"><span class="pname">list_name</span><span class="pkind req">required</span><span class="pdesc">List to add to — created implicitly if new</span></div>
+          <div class="row"><span class="pname">address</span><span class="pkind req">required</span><span class="pdesc">Address, prefix, or hostname</span></div>
+          <div class="row"><span class="pname">comment · timeout · disabled</span><span class="pkind">optional</span><span class="pdesc">Description; expiry such as <code>1h</code> (makes the entry dynamic); create disabled</span></div>
         </div>
         <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_remove_filter_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>)
+<span class="lbl">Examples</span><span class="fn">create_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv4"</span>, <span class="key">list_name</span>=<span class="str">"trusted"</span>, <span class="key">address</span>=<span class="str">"203.0.113.0/24"</span>)
+<span class="fn">create_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv6"</span>, <span class="key">list_name</span>=<span class="str">"trusted"</span>, <span class="key">address</span>=<span class="str">"2001:db8::5"</span>)
+<span class="fn">create_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv4"</span>, <span class="key">list_name</span>=<span class="str">"temp"</span>, <span class="key">address</span>=<span class="str">"203.0.113.9"</span>, <span class="key">timeout</span>=<span class="str">"1h"</span>)
         </div>
       </div>
     </div>
 
     <div class="tool">
       <div class="tool-head">
-        <span class="verb create">scaffold</span>
-        <span class="tname">mikrotik_create_basic_firewall_setup</span>
+        <span class="verb read">list · get</span>
+        <span class="tname">list_address_list_entries · get_address_list_entry</span>
       </div>
       <div class="tool-body">
-        <p>Creates a sensible baseline: accept established/related, drop invalid, accept ICMP,
-          drop everything else on <code>input</code>. Useful for fresh routers.</p>
-        <div class="params"><div class="row"><span class="pname">—</span><span class="pkind">no params</span><span class="pdesc">Idempotent on repeated calls</span></div></div>
+        <p>List entries with optional filters, or fetch one by list name and address.</p>
+        <div class="params">
+          <div class="row"><span class="pname">family</span><span class="pkind req">required</span><span class="pdesc"><code>"ipv4"</code> or <code>"ipv6"</code></span></div>
+          <div class="row"><span class="pname">list_filter</span><span class="pkind">optional</span><span class="pdesc">Exact list name — trailing spaces included</span></div>
+          <div class="row"><span class="pname">address_filter · comment_filter</span><span class="pkind">optional</span><span class="pdesc">Partial match</span></div>
+          <div class="row"><span class="pname">disabled_only · dynamic_only · static_only</span><span class="pkind">optional</span><span class="pdesc">Narrow by entry state — <code>static_only</code> excludes hostname/timeout children</span></div>
+          <div class="row"><span class="pname">list_name · address</span><span class="pkind req">required for get</span><span class="pdesc">Locate the single entry</span></div>
+        </div>
         <div class="ex">
-<span class="lbl">Example</span><span class="fn">mikrotik_create_basic_firewall_setup</span>()
+<span class="lbl">Examples</span><span class="fn">list_address_list_entries</span>(<span class="key">family</span>=<span class="str">"ipv4"</span>, <span class="key">list_filter</span>=<span class="str">"trusted"</span>, <span class="key">static_only</span>=<span class="num">true</span>)
+<span class="fn">list_address_list_entries</span>(<span class="key">family</span>=<span class="str">"ipv6"</span>, <span class="key">address_filter</span>=<span class="str">"2001:db8"</span>)
+<span class="fn">get_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv6"</span>, <span class="key">list_name</span>=<span class="str">"trusted"</span>, <span class="key">address</span>=<span class="str">"2001:db8::5"</span>)
         </div>
       </div>
     </div>
 
-    <!-- ============ NAT (compact) ============ -->
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb update">update · toggle</span>
+        <span class="tname">update_address_list_entry · enable_address_list_entry · disable_address_list_entry</span>
+      </div>
+      <div class="tool-body">
+        <p>Edit an entry located by its current <code>list_name</code> + <code>address</code>, or toggle it
+          without removing it. <code>update</code> takes <code>new_list_name</code>, <code>comment</code>,
+          <code>timeout</code>, and <code>disabled</code> — pass <code>""</code> to clear
+          <code>comment</code> or <code>timeout</code>. The change is <strong>confirmed on the device</strong>
+          before success is reported: a refusal RouterOS phrases without the words "failure" or "error" —
+          a read-only account answers <code>not enough permissions (9)</code> — is reported as a failure
+          rather than a successful update.</p>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">update_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv4"</span>, <span class="key">list_name</span>=<span class="str">"temp"</span>, <span class="key">address</span>=<span class="str">"203.0.113.9"</span>, <span class="key">new_list_name</span>=<span class="str">"trusted"</span>)
+<span class="fn">disable_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv4"</span>, <span class="key">list_name</span>=<span class="str">"trusted"</span>, <span class="key">address</span>=<span class="str">"203.0.113.0/24"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb delete">remove</span>
+        <span class="tname">remove_address_list_entry</span>
+      </div>
+      <div class="tool-body">
+        <p>Removes the matching entry. Removing a <em>hostname</em> entry also clears the dynamic entries
+          RouterOS derived from it.</p>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">remove_address_list_entry</span>(<span class="key">family</span>=<span class="str">"ipv4"</span>, <span class="key">list_name</span>=<span class="str">"trusted"</span>, <span class="key">address</span>=<span class="str">"203.0.113.0/24"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 15 NAT ============ -->
     <div class="section-hd">
       <div>
         <h2 id="nat">NAT — Translation Rules</h2>
         <p class="section-intro">Source-NAT (masquerade) for outbound, destination-NAT (port forwarding)
           for inbound, plus rule ordering and toggle.</p>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 03</div>
+      <div class="meta"><b>8</b> tools<br>category 15</div>
     </div>
-
     <div class="tool">
       <div class="tool-head">
         <span class="verb create">create</span>
@@ -536,314 +1271,320 @@
         </div>
       </div>
     </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb read">list · get</span>
-        <span class="tname">mikrotik_list_nat_rules · mikrotik_get_nat_rule</span>
-      </div>
-      <div class="tool-body">
-        <p>Inspect NAT rules — optionally filtered by chain. <code>get</code> returns one rule's full record.</p>
-        <div class="ex">
-<span class="lbl">Examples</span><span class="fn">mikrotik_list_nat_rules</span>(<span class="key">chain_filter</span>=<span class="str">"srcnat"</span>)
-<span class="fn">mikrotik_get_nat_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>)
-        </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">list · get</span><span class="tname">mikrotik_list_nat_rules · mikrotik_get_nat_rule</span></div>
+      <div class="tool-body"><p>Inspect NAT rules — optionally filtered by chain. <code>get</code> returns one rule's full record.</p>
+        <div class="ex"><span class="lbl">Examples</span><span class="fn">mikrotik_list_nat_rules</span>(<span class="key">chain_filter</span>=<span class="str">"srcnat"</span>)
+<span class="fn">mikrotik_get_nat_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1"</span>)</div>
       </div>
     </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb update">update · move · toggle</span>
-        <span class="tname">mikrotik_update_nat_rule · mikrotik_move_nat_rule · mikrotik_enable_nat_rule · mikrotik_disable_nat_rule</span>
-      </div>
-      <div class="tool-body">
-        <p>Same edit/order/toggle surface as the firewall counterparts.</p>
-      </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">update · move · toggle</span><span class="tname">mikrotik_update_nat_rule · mikrotik_move_nat_rule · mikrotik_enable_nat_rule · mikrotik_disable_nat_rule</span></div>
+      <div class="tool-body"><p>Same edit / reorder / toggle surface as the firewall counterparts.</p></div>
     </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb delete">remove</span>
-        <span class="tname">mikrotik_remove_nat_rule</span>
-      </div>
-      <div class="tool-body">
-        <div class="params"><div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div></div>
-      </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_nat_rule</span></div>
+      <div class="tool-body"><div class="params"><div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div></div></div>
     </div>
-
-    <!-- ============ DHCP (compact) ============ -->
-    <div class="section-hd">
-      <div>
-        <h2 id="dhcp">DHCP — Pools, Networks, Servers</h2>
-        <p class="section-intro">Three-piece model: a <em>pool</em> defines the address range,
-          a <em>network</em> defines gateway and DNS, and a <em>server</em> binds them to an interface.</p>
-      </div>
-      <div class="meta"><b>7</b> tools<br>category 04</div>
-    </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb create">create</span>
-        <span class="tname">mikrotik_create_dhcp_pool · mikrotik_create_dhcp_network · mikrotik_create_dhcp_server</span>
-      </div>
-      <div class="tool-body">
-        <p>Build a DHCP service for a subnet in three steps.</p>
-        <div class="ex">
-<span class="lbl">Example — Guest VLAN DHCP</span><span class="fn">mikrotik_create_dhcp_pool</span>(<span class="key">name</span>=<span class="str">"pool-vlan100"</span>, <span class="key">ranges</span>=<span class="str">"192.168.100.10-192.168.100.200"</span>)
-<span class="fn">mikrotik_create_dhcp_network</span>(<span class="key">network</span>=<span class="str">"192.168.100.0/24"</span>, <span class="key">gateway</span>=<span class="str">"192.168.100.1"</span>, <span class="key">dns_servers</span>=[<span class="str">"8.8.8.8"</span>, <span class="str">"8.8.4.4"</span>])
-<span class="fn">mikrotik_create_dhcp_server</span>(<span class="key">name</span>=<span class="str">"dhcp-vlan100"</span>, <span class="key">interface</span>=<span class="str">"vlan100"</span>, <span class="key">address_pool</span>=<span class="str">"pool-vlan100"</span>)
-        </div>
-      </div>
-    </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb read">list · get</span>
-        <span class="tname">mikrotik_list_dhcp_servers · mikrotik_get_dhcp_server</span>
-      </div>
-      <div class="tool-body">
-        <p>List all DHCP servers or fetch one. Use the matching tools for pools and networks if needed.</p>
-      </div>
-    </div>
-
-    <div class="tool">
-      <div class="tool-head">
-        <span class="verb delete">remove</span>
-        <span class="tname">mikrotik_remove_dhcp_server</span>
-      </div>
-      <div class="tool-body">
-        <p>Removes a DHCP server. The underlying pool and network records survive.</p>
-      </div>
-    </div>
-
-    <!-- ============ Remaining categories — summary entries ============ -->
-    <div class="section-hd">
-      <div>
-        <h2 id="dns">DNS — Resolution &amp; Static Records</h2>
-        <p class="section-intro">Set upstream servers, manage static A/CNAME records, regex blocklists,
-          and inspect the cache. Test queries with <code>mikrotik_test_dns_query</code>.</p>
-      </div>
-      <div class="meta"><b>9</b> tools<br>category 05</div>
-    </div>
-
-    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_set_dns_servers · mikrotik_add_dns_static · mikrotik_add_dns_regexp</span></div>
-      <div class="tool-body"><p>Configure upstream resolvers, add static records (A or CNAME), and define regex-based blocklists.</p>
-        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_set_dns_servers</span>(<span class="key">servers</span>=[<span class="str">"8.8.8.8"</span>, <span class="str">"1.1.1.1"</span>], <span class="key">allow_remote_requests</span>=<span class="num">true</span>)
-<span class="fn">mikrotik_add_dns_static</span>(<span class="key">name</span>=<span class="str">"router.local"</span>, <span class="key">address</span>=<span class="str">"192.168.1.1"</span>)</div>
-      </div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read · test</span><span class="tname">mikrotik_get_dns_settings · mikrotik_list_dns_static · mikrotik_get_dns_cache · mikrotik_test_dns_query</span></div>
-      <div class="tool-body"><p>Inspect resolver settings, list static records, dump cache, run a live test query.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">update · flush</span><span class="tname">mikrotik_update_dns_static · mikrotik_flush_dns_cache · mikrotik_export_dns_config</span></div>
-      <div class="tool-body"><p>Edit a static record, clear the resolver cache, or dump DNS configuration to file.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_dns_static</span></div>
-      <div class="tool-body"><div class="params"><div class="row"><span class="pname">entry_id</span><span class="pkind req">required</span><span class="pdesc">Static record ID</span></div></div></div>
-    </div>
-
-    <!-- IP Address -->
-    <div class="section-hd">
-      <div>
-        <h2 id="ip-address">IP Address — Interface Bindings</h2>
-        <p class="section-intro">Assign and remove IPv4 addresses on physical, bridge, or VLAN interfaces.</p>
-      </div>
-      <div class="meta"><b>4</b> tools<br>category 06</div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">add</span><span class="tname">mikrotik_add_ip_address</span></div>
-      <div class="tool-body"><p>Bind an address to an interface.</p>
-        <div class="params">
-          <div class="row"><span class="pname">address</span><span class="pkind req">required</span><span class="pdesc">CIDR, e.g. <code>192.168.100.1/24</code></span></div>
-          <div class="row"><span class="pname">interface</span><span class="pkind req">required</span><span class="pdesc">Interface name</span></div>
-          <div class="row"><span class="pname">comment</span><span class="pkind">optional</span><span class="pdesc">Description</span></div>
-        </div>
-        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_add_ip_address</span>(<span class="key">address</span>=<span class="str">"192.168.100.1/24"</span>, <span class="key">interface</span>=<span class="str">"vlan100"</span>)</div>
-      </div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">list · get</span><span class="tname">mikrotik_list_ip_addresses · mikrotik_get_ip_address</span></div>
-      <div class="tool-body"><p>Inspect bindings — filter by interface or dynamic flag.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_ip_address</span></div>
-      <div class="tool-body"><div class="params"><div class="row"><span class="pname">address_id</span><span class="pkind req">required</span><span class="pdesc">RouterOS address record ID</span></div></div></div>
-    </div>
-
-    <!-- IP Pool -->
-    <div class="section-hd">
-      <div>
-        <h2 id="ip-pool">IP Pool — Named Address Pools</h2>
-        <p class="section-intro">Named ranges used by DHCP, hotspot, PPP, and VPN servers.
-          Pools can be inspected and expanded without disruption.</p>
-      </div>
-      <div class="meta"><b>6</b> tools<br>category 07</div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_ip_pool</span></div>
-      <div class="tool-body"><div class="params">
-        <div class="row"><span class="pname">name</span><span class="pkind req">required</span><span class="pdesc">Pool name</span></div>
-        <div class="row"><span class="pname">ranges</span><span class="pkind req">required</span><span class="pdesc">e.g. <code>"192.168.1.100-192.168.1.200"</code></span></div>
-      </div></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">list · get · used</span><span class="tname">mikrotik_list_ip_pools · mikrotik_get_ip_pool · mikrotik_list_ip_pool_used</span></div>
-      <div class="tool-body"><p>Inspect pool definitions, plus the live used-address table.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">expand</span><span class="tname">mikrotik_expand_ip_pool</span></div>
-      <div class="tool-body"><p>Adds additional ranges to a pool without disrupting existing leases.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_ip_pool</span></div>
-      <div class="tool-body"><p>Remove a pool. Servers using it will refuse new leases.</p></div>
-    </div>
-
-    <!-- Routes -->
-    <div class="section-hd">
-      <div>
-        <h2 id="routes">Routes — Routing Table</h2>
-        <p class="section-intro">Add static, default, and blackhole routes. Inspect active routes,
-          check the path to a destination, and dump routing tables.</p>
-      </div>
-      <div class="meta"><b>10</b> tools<br>category 08</div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_route · mikrotik_add_default_route · mikrotik_add_blackhole_route</span></div>
-      <div class="tool-body"><p>Three flavors of route creation.</p>
-        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_add_default_route</span>(<span class="key">gateway</span>=<span class="str">"192.168.1.1"</span>, <span class="key">distance</span>=<span class="num">1</span>)</div>
-      </div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_routes · mikrotik_get_route · mikrotik_check_route_path · mikrotik_get_routing_table · mikrotik_get_route_statistics</span></div>
-      <div class="tool-body"><p>Inspect the routing table from five angles: list, single, traceroute-style path check, full table dump, aggregate stats.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">toggle · remove</span><span class="tname">mikrotik_enable_route · mikrotik_disable_route · mikrotik_remove_route</span></div>
-      <div class="tool-body"><p>Toggle or remove individual routes by ID.</p></div>
-    </div>
-
-    <!-- WireGuard -->
+    <!-- ============ 16 WIREGUARD ============ -->
     <div class="section-hd">
       <div>
         <h2 id="wireguard">WireGuard — Tunnels &amp; Peers</h2>
         <p class="section-intro">Create WireGuard interfaces, add peers with allowed-IPs and endpoints,
-          extract public keys, and inspect handshake state.</p>
+          and generate ready-to-paste client configs. The interface's public key is returned by
+          <code>get_wireguard_interface</code> — hand it to clients. WireGuard requires RouterOS v7+.</p>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 09</div>
+      <div class="meta"><b>15</b> tools<br>category 16</div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_wireguard_interface · mikrotik_add_wireguard_peer</span></div>
-      <div class="tool-body"><p>Stand up an interface (private key auto-generated) and attach peers.</p></div>
+    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_wireguard_interface</span></div>
+      <div class="tool-body"><p>Stands up a WireGuard interface. If no private key is supplied, one is generated; read the
+        matching public key back via <code>get_wireguard_interface</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">name</span><span class="pkind req">required</span><span class="pdesc">Interface name, e.g. <code>"wg0"</code></span></div>
+          <div class="row"><span class="pname">listen_port</span><span class="pkind">optional</span><span class="pdesc">UDP listen port (default <code>13231</code>)</span></div>
+          <div class="row"><span class="pname">private_key</span><span class="pkind">optional</span><span class="pdesc">Auto-generated if omitted</span></div>
+          <div class="row"><span class="pname">mtu</span><span class="pkind">optional</span><span class="pdesc">MTU (default <code>1420</code>)</span></div>
+          <div class="row"><span class="pname">comment · disabled</span><span class="pkind">optional</span><span class="pdesc">Description; create disabled</span></div>
+        </div>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_wireguard_interface</span>(<span class="key">name</span>=<span class="str">"wg0"</span>, <span class="key">listen_port</span>=<span class="num">13231</span>)</div>
+      </div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_wireguard_interfaces · mikrotik_get_wireguard_interface · mikrotik_list_wireguard_peers · mikrotik_get_wireguard_public_key</span></div>
-      <div class="tool-body"><p>Inspect interfaces, peers, and extract the device's public key for clients to use.</p></div>
+    <div class="tool"><div class="tool-head"><span class="verb read">interface read</span><span class="tname">mikrotik_list_wireguard_interfaces · mikrotik_get_wireguard_interface</span></div>
+      <div class="tool-body"><p>List all WireGuard interfaces or fetch one — the latter includes the device's public key for clients to use.</p></div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">update · remove</span><span class="tname">mikrotik_update_wireguard_peer · mikrotik_remove_wireguard_peer</span></div>
-      <div class="tool-body"><p>Edit or remove peers. Identifiers are RouterOS peer IDs.</p></div>
+    <div class="tool"><div class="tool-head"><span class="verb update">interface update · toggle · remove</span><span class="tname">mikrotik_update_wireguard_interface · mikrotik_enable_wireguard_interface · mikrotik_disable_wireguard_interface · mikrotik_remove_wireguard_interface</span></div>
+      <div class="tool-body"><p>Edit, toggle, or remove an interface. Removing an interface also deletes all of its peers.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">peer add</span><span class="tname">mikrotik_add_wireguard_peer</span></div>
+      <div class="tool-body"><p>Attaches a peer to an interface.</p>
+        <div class="params">
+          <div class="row"><span class="pname">interface</span><span class="pkind req">required</span><span class="pdesc">WireGuard interface name</span></div>
+          <div class="row"><span class="pname">public_key</span><span class="pkind req">required</span><span class="pdesc">Peer's public key</span></div>
+          <div class="row"><span class="pname">allowed_address</span><span class="pkind req">required</span><span class="pdesc">Allowed IPs for this peer</span></div>
+          <div class="row"><span class="pname">endpoint_address · endpoint_port</span><span class="pkind">optional</span><span class="pdesc">Remote endpoint</span></div>
+          <div class="row"><span class="pname">preshared_key · persistent_keepalive</span><span class="pkind">optional</span><span class="pdesc">Extra security; keepalive interval</span></div>
+        </div>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_add_wireguard_peer</span>(<span class="key">interface</span>=<span class="str">"wg0"</span>, <span class="key">public_key</span>=<span class="str">"&lt;peer-pubkey&gt;"</span>, <span class="key">allowed_address</span>=<span class="str">"10.0.0.2/32"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">peer read</span><span class="tname">mikrotik_list_wireguard_peers · mikrotik_get_wireguard_peer</span></div>
+      <div class="tool-body"><p>Inspect peers and their handshake state.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">peer update · toggle · remove</span><span class="tname">mikrotik_update_wireguard_peer · mikrotik_enable_wireguard_peer · mikrotik_disable_wireguard_peer · mikrotik_remove_wireguard_peer</span></div>
+      <div class="tool-body"><p>Edit, toggle, or remove peers. Identifiers are RouterOS peer IDs.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">generate</span><span class="tname">mikrotik_generate_wireguard_client_config</span></div>
+      <div class="tool-body"><p>Produces a complete client <code>.conf</code> (the <code>[Interface]</code> / <code>[Peer]</code> blocks) ready to paste into a WireGuard client. This tool only formats text locally — it does <strong>not</strong> contact the router, so first use <code>get_wireguard_interface</code> for the server's public key and <code>add_wireguard_peer</code> to register the client.</p>
+        <div class="params">
+          <div class="row"><span class="pname">client_private_key</span><span class="pkind req">required</span><span class="pdesc">Client's private key</span></div>
+          <div class="row"><span class="pname">client_address</span><span class="pkind req">required</span><span class="pdesc">Client tunnel address</span></div>
+          <div class="row"><span class="pname">server_public_key</span><span class="pkind req">required</span><span class="pdesc">Server's public key</span></div>
+          <div class="row"><span class="pname">server_endpoint</span><span class="pkind req">required</span><span class="pdesc">Server host / IP</span></div>
+          <div class="row"><span class="pname">server_port · allowed_ips · dns · persistent_keepalive</span><span class="pkind">optional</span><span class="pdesc">Defaults: <code>51820</code>, <code>0.0.0.0/0</code>, keepalive <code>25</code>. Use <code>allowed_ips="0.0.0.0/0, ::/0"</code> for a full tunnel, or a specific subnet for split-tunnel.</span></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Users -->
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb create">walkthrough</span>
+        <span class="tname">Setting up a WireGuard server</span>
+      </div>
+      <div class="tool-body">
+        <p>The single-purpose tools above compose into a full VPN server. Run them in order — steps 2–4 reach
+          into other categories (IP address, firewall, NAT):</p>
+        <div class="ex">
+<span class="lbl">Ordered sequence</span><span class="c"># 1. Create the interface</span>
+<span class="fn">mikrotik_create_wireguard_interface</span>(<span class="key">name</span>=<span class="str">"wg0"</span>, <span class="key">listen_port</span>=<span class="num">51820</span>)
+<span class="c"># 2. Give it a tunnel address</span>
+<span class="fn">mikrotik_add_ip_address</span>(<span class="key">address</span>=<span class="str">"10.0.0.1/24"</span>, <span class="key">interface</span>=<span class="str">"wg0"</span>)
+<span class="c"># 3. Allow inbound WireGuard UDP</span>
+<span class="fn">mikrotik_create_filter_rule</span>(<span class="key">chain</span>=<span class="str">"input"</span>, <span class="key">action</span>=<span class="str">"accept"</span>, <span class="key">protocol</span>=<span class="str">"udp"</span>, <span class="key">dst_port</span>=<span class="str">"51820"</span>)
+<span class="c"># 4. (optional) Masquerade clients out to the internet</span>
+<span class="fn">mikrotik_create_nat_rule</span>(<span class="key">chain</span>=<span class="str">"srcnat"</span>, <span class="key">action</span>=<span class="str">"masquerade"</span>, <span class="key">out_interface</span>=<span class="str">"ether1"</span>)
+<span class="c"># 5. Read the server public key for clients</span>
+<span class="fn">mikrotik_get_wireguard_interface</span>(<span class="key">name</span>=<span class="str">"wg0"</span>)
+<span class="c"># 6. Register each client as a peer</span>
+<span class="fn">mikrotik_add_wireguard_peer</span>(<span class="key">interface</span>=<span class="str">"wg0"</span>, <span class="key">public_key</span>=<span class="str">"&lt;client-pubkey&gt;"</span>, <span class="key">allowed_address</span>=<span class="str">"10.0.0.2/32"</span>)
+<span class="c"># 7. Generate the client .conf</span>
+<span class="fn">mikrotik_generate_wireguard_client_config</span>(<span class="key">client_private_key</span>=<span class="str">"&lt;client-privkey&gt;"</span>, <span class="key">client_address</span>=<span class="str">"10.0.0.2/24"</span>, <span class="key">server_public_key</span>=<span class="str">"&lt;server-pubkey&gt;"</span>, <span class="key">server_endpoint</span>=<span class="str">"203.0.113.1"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 17 WIRELESS ============ -->
     <div class="section-hd">
       <div>
-        <h2 id="users">Users — Accounts &amp; Groups</h2>
-        <p class="section-intro">Local users, groups, policies, and active sessions. Used to provision
-          scoped accounts for tooling.</p>
+        <h2 id="wireless">Wireless — WiFi Interfaces &amp; Security</h2>
+        <p class="section-intro">Manage wireless interfaces, security profiles, access lists, and scanning.
+          Call <code>check_wireless_support</code> first — wireless tooling depends on the device's
+          RouterOS wireless package.</p>
       </div>
-      <div class="meta"><b>9</b> tools<br>category 10</div>
+      <div class="meta"><b>19</b> tools<br>category 17</div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_user · mikrotik_add_user_group</span></div>
-      <div class="tool-body"><div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_add_user</span>(<span class="key">name</span>=<span class="str">"newuser"</span>, <span class="key">password</span>=<span class="str">"SecurePass123"</span>, <span class="key">group</span>=<span class="str">"write"</span>)</div></div>
+    <div class="tool"><div class="tool-head"><span class="verb create">interface create</span><span class="tname">mikrotik_create_wireless_interface</span></div>
+      <div class="tool-body"><p>Creates / configures a wireless interface (SSID, band, channel, mode, and an attached security profile).</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_wireless_interface</span>(<span class="key">name</span>=<span class="str">"wlan1"</span>, <span class="key">ssid</span>=<span class="str">"HomeNet"</span>, <span class="key">band</span>=<span class="str">"2ghz-b/g/n"</span>)</div>
+      </div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_users · mikrotik_get_user · mikrotik_list_user_groups · mikrotik_get_active_users</span></div>
-      <div class="tool-body"><p>Inspect users, groups, and active sessions.</p></div>
+    <div class="tool"><div class="tool-head"><span class="verb read">interface read</span><span class="tname">mikrotik_list_wireless_interfaces · mikrotik_get_wireless_interface</span></div>
+      <div class="tool-body"><p>List wireless interfaces or fetch one's full configuration.</p></div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">update · toggle · export · remove</span><span class="tname">mikrotik_update_user · mikrotik_enable_user · mikrotik_disable_user · mikrotik_export_user_config · mikrotik_remove_user</span></div>
-      <div class="tool-body"><p>Standard CRUD + a session-friendly enable/disable + config export.</p></div>
+    <div class="tool"><div class="tool-head"><span class="verb update">interface update · toggle · remove</span><span class="tname">mikrotik_update_wireless_interface · mikrotik_enable_wireless_interface · mikrotik_disable_wireless_interface · mikrotik_remove_wireless_interface</span></div>
+      <div class="tool-body"><p>Edit, toggle, or remove a wireless interface.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">security profiles</span><span class="tname">mikrotik_create_wireless_security_profile · mikrotik_list_wireless_security_profiles · mikrotik_get_wireless_security_profile · mikrotik_set_wireless_security_profile · mikrotik_remove_wireless_security_profile</span></div>
+      <div class="tool-body"><p>Full lifecycle for security profiles — WPA/WPA2/WPA3 modes, passphrases, encryption. <code>set</code> attaches a profile to an interface. On <strong>RouterOS v7</strong> (<code>/interface wifi</code> or <code>wifiwave2</code>), where profiles work differently, set the key directly on the interface with <code>mikrotik_set_wireless_passphrase(name, passphrase, authentication_types="wpa2-psk,wpa3-psk")</code> — it reports an error rather than a false success if the device refuses the write.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_wireless_security_profile</span>(<span class="key">name</span>=<span class="str">"wpa2-home"</span>, <span class="key">mode</span>=<span class="str">"dynamic-keys"</span>, <span class="key">authentication_types</span>=<span class="str">"wpa2-psk"</span>, <span class="key">wpa2_pre_shared_key</span>=<span class="str">"SecurePass123"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">scan · registration</span><span class="tname">mikrotik_scan_wireless_networks · mikrotik_get_wireless_registration_table</span></div>
+      <div class="tool-body"><p>Scan for nearby networks (optional <code>duration</code>) and list currently-associated clients with signal data.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">access list</span><span class="tname">mikrotik_create_wireless_access_list · mikrotik_list_wireless_access_list · mikrotik_remove_wireless_access_list_entry</span></div>
+      <div class="tool-body"><p>MAC-based allow/deny entries with optional signal-range and time constraints.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_wireless_access_list</span>(<span class="key">interface</span>=<span class="str">"wlan1"</span>, <span class="key">mac_address</span>=<span class="str">"AA:BB:CC:DD:EE:FF"</span>, <span class="key">action</span>=<span class="str">"accept"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">support</span><span class="tname">mikrotik_check_wireless_support</span></div>
+      <div class="tool-body"><p>Reports whether the device's RouterOS build supports the wireless tooling. Call this first.</p>
+        <div class="params"><div class="row"><span class="pname">—</span><span class="pkind">no params</span><span class="pdesc">Takes no arguments</span></div></div>
+      </div>
     </div>
 
-    <!-- Backup -->
+    <!-- ============ 18 QUEUES ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="queue">Queues — Traffic Shaping</h2>
+        <p class="section-intro">Simple queues for per-target rate limits, queue trees for hierarchical
+          policies, and queue types for the underlying discipline (CAKE, fq-codel, SFQ, RED, PCQ, …).</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
+      </div>
+      <div class="meta"><b>19</b> tools<br>category 18</div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">simple queue</span><span class="tname">create_simple_queue · list_simple_queues · get_simple_queue · update_simple_queue · remove_simple_queue · enable_simple_queue · disable_simple_queue</span></div>
+      <div class="tool-body"><p>Per-target rate limits — the simplest way to throttle a host or subnet. <code>max_limit</code> takes
+        an upload/download pair like <code>"10M/20M"</code>.</p>
+        <div class="ex"><span class="lbl">Example — limit a host to 10M/20M</span><span class="fn">create_simple_queue</span>(<span class="key">name</span>=<span class="str">"limit-guest"</span>, <span class="key">target</span>=<span class="str">"192.168.100.0/24"</span>, <span class="key">max_limit</span>=<span class="str">"10M/20M"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">queue tree</span><span class="tname">create_queue_tree · list_queue_trees · get_queue_tree · update_queue_tree · remove_queue_tree · enable_queue_tree · disable_queue_tree</span></div>
+      <div class="tool-body"><p>Hierarchical HTB shaping. Attach to a <code>parent</code>, match traffic by <code>packet_mark</code>,
+        set <code>max_limit</code> / <code>limit_at</code> / burst, and <code>priority</code> (1–8).</p>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">queue type</span><span class="tname">create_queue_type · list_queue_types · get_queue_type · update_queue_type · remove_queue_type</span></div>
+      <div class="tool-body"><p>Define reusable queue disciplines. <code>kind</code> (default <code>cake</code>) is one of <code>cake</code>,
+        <code>fq-codel</code>, <code>sfq</code>, <code>red</code>, <code>pcq</code>, <code>pfifo</code>,
+        <code>bfifo</code>, … each with its own tuning parameters (e.g. <code>cake_flowmode</code>/<code>cake_nat</code>/<code>cake_overhead</code>
+        for CAKE, <code>pcq_rate</code>/<code>pcq_classifier</code> for PCQ, <code>sfq_perturb</code> for SFQ,
+        <code>red_*</code> thresholds for RED). Built-in types (<code>default</code>, <code>default-small</code>, …)
+        can't be modified or removed.</p>
+      </div>
+    </div>
+    <!-- ============ 19 USERS ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="users">Users — Accounts, Groups &amp; SSH Keys</h2>
+        <p class="section-intro">Local users, groups, policies, active sessions, and SSH key management.
+          Used to provision scoped accounts for tooling rather than sharing <code>admin</code>.</p>
+      </div>
+      <div class="meta"><b>18</b> tools<br>category 19</div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_user · mikrotik_add_user_group</span></div>
+      <div class="tool-body"><p>Create users and permission groups. Groups take a <code>policy</code> list (e.g. <code>read,write,ssh</code>).</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_add_user</span>(<span class="key">name</span>=<span class="str">"automation"</span>, <span class="key">password</span>=<span class="str">"SecurePass123"</span>, <span class="key">group</span>=<span class="str">"write"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_users · mikrotik_get_user · mikrotik_list_user_groups · mikrotik_get_user_group · mikrotik_get_active_users</span></div>
+      <div class="tool-body"><p>Inspect users, groups, and currently-connected sessions.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">update · toggle</span><span class="tname">mikrotik_update_user · mikrotik_enable_user · mikrotik_disable_user · mikrotik_update_user_group · mikrotik_disconnect_user</span></div>
+      <div class="tool-body"><p>Edit users / groups, toggle accounts, or forcibly disconnect an active session.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb update">ssh keys</span><span class="tname">mikrotik_set_user_ssh_keys · mikrotik_list_user_ssh_keys · mikrotik_remove_user_ssh_key</span></div>
+      <div class="tool-body"><p>Import a user's SSH public key (key-based auth), list installed keys, or remove one by ID.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_set_user_ssh_keys</span>(<span class="key">username</span>=<span class="str">"automation"</span>, <span class="key">key_file</span>=<span class="str">"id_ed25519.pub"</span>)</div>
+      </div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">export</span><span class="tname">mikrotik_export_user_config</span></div>
+      <div class="tool-body"><p>Dumps the full user / group configuration to a file.</p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_user · mikrotik_remove_user_group</span></div>
+      <div class="tool-body"><p>Remove a user or a group.</p></div>
+    </div>
+
+    <!-- ============ 20 BACKUP ============ -->
     <div class="section-hd">
       <div>
         <h2 id="backup">Backup &amp; Export — Configuration State</h2>
         <p class="section-intro">Binary backups, RouterOS <code>.rsc</code> exports, section dumps,
-          file transfer, and restore.</p>
+          file transfer, restore, and import.</p>
       </div>
-      <div class="meta"><b>9</b> tools<br>category 11</div>
+      <div class="meta"><b>10</b> tools<br>category 20</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_backup · mikrotik_create_export · mikrotik_export_section</span></div>
-      <div class="tool-body"><p>Three formats: binary <code>.backup</code> (full snapshot), <code>.rsc</code> (declarative), or a single section dump.</p></div>
+      <div class="tool-body"><p>Three formats: a binary <code>.backup</code> (full snapshot), a <code>.rsc</code> export (declarative,
+        choose <code>rsc</code>/<code>json</code>/<code>xml</code> and full/compact/verbose), or a single-section dump.
+        <code>export_section</code> is a <strong>genuine read</strong> — it returns the section as an export
+        script straight from the device without writing anything to storage, so it works on read-only
+        accounts (<code>policy=ssh,read</code>). Its <code>section</code> is a menu path <em>without</em> the
+        leading slash, and <code>hide_sensitive</code> defaults to true. To produce an export <em>file</em> on
+        the device, use <code>create_export</code> instead.</p>
+        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_create_backup</span>(<span class="key">name</span>=<span class="str">"pre-change"</span>)
+<span class="fn">mikrotik_export_section</span>(<span class="key">section</span>=<span class="str">"ip firewall filter"</span>)</div>
+      </div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_backups · mikrotik_download_file</span></div>
-      <div class="tool-body"><p>List and download backup files from the device.</p></div>
+    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_backups · mikrotik_backup_info · mikrotik_download_file</span></div>
+      <div class="tool-body"><p>List backup files, inspect a backup's metadata, and download files off the device.
+        <code>download_file</code> pulls the raw bytes over <strong>SFTP</strong> and returns them base64-encoded,
+        so binary <code>.backup</code> files survive the round-trip intact alongside text <code>.rsc</code> exports.</p></div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb update">restore · import · upload</span><span class="tname">mikrotik_restore_backup · mikrotik_import_configuration · mikrotik_upload_file</span></div>
-      <div class="tool-body"><p>Restore a binary backup, import a <code>.rsc</code> config, or upload arbitrary files.</p></div>
+      <div class="tool-body"><p>Restore a binary backup (pass <code>password</code> for an encrypted backup), import a <code>.rsc</code> config, or upload an arbitrary file to the device — <code>upload_file</code> takes base64 content and writes the decoded bytes over <strong>SFTP</strong>.</p></div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_file</span></div>
       <div class="tool-body"><p>Removes any file from the device's filesystem.</p></div>
     </div>
 
-    <!-- Logs -->
+    <!-- ============ 21 LOGS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="logs">Logs — System Events</h2>
         <p class="section-intro">Stream and analyze RouterOS logs by topic, severity, or free-text search.
-          Bulk export to CSV. Useful for diagnosing firewall misfires and login attempts.</p>
+          Pull system events and security logs, aggregate statistics, live-tail, and export to CSV.</p>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 12</div>
+      <div class="meta"><b>10</b> tools<br>category 21</div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_get_logs · mikrotik_get_logs_by_severity · mikrotik_search_logs · mikrotik_get_security_logs · mikrotik_get_log_statistics</span></div>
-      <div class="tool-body"><p>Five lenses on the log buffer. Filter by topic and limit, or by severity, or by free-text, or just the security topic, or aggregate stats.</p>
-        <div class="ex"><span class="lbl">Example</span><span class="fn">mikrotik_get_logs</span>(<span class="key">topics</span>=<span class="str">"firewall"</span>, <span class="key">limit</span>=<span class="num">100</span>)
-<span class="fn">mikrotik_search_logs</span>(<span class="key">search_term</span>=<span class="str">"login failed"</span>, <span class="key">case_sensitive</span>=<span class="num">false</span>)</div>
+    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_get_logs · mikrotik_get_logs_by_severity · mikrotik_get_logs_by_topic · mikrotik_search_logs · mikrotik_get_system_events · mikrotik_get_security_logs · mikrotik_get_log_statistics</span></div>
+      <div class="tool-body"><p>Seven lenses on the log buffer — by topic, by severity
+        (<code>debug</code>/<code>info</code>/<code>warning</code>/<code>error</code>/<code>critical</code>),
+        free-text search, system events, the security topic, or aggregate stats.
+        <code>get_logs</code> also narrows by <code>time_filter</code>, <code>message_filter</code>, and
+        <code>prefix_filter</code>, and renders as <code>plain</code> / <code>detail</code> /
+        <code>terse</code> via <code>print_as</code>.</p>
+        <div class="ex"><span class="lbl">Examples</span><span class="fn">mikrotik_get_logs</span>(<span class="key">topics</span>=<span class="str">"firewall"</span>, <span class="key">limit</span>=<span class="num">100</span>)
+<span class="fn">mikrotik_search_logs</span>(<span class="key">search_term</span>=<span class="str">"login failure"</span>, <span class="key">case_sensitive</span>=<span class="num">false</span>)</div>
       </div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">stream · export</span><span class="tname">mikrotik_monitor_logs · mikrotik_export_logs</span></div>
-      <div class="tool-body"><p>Live tail for a duration, or dump to CSV.</p></div>
+      <div class="tool-body"><p>Live-tail logs for a duration, or dump them to <code>plain</code> / <code>csv</code>.</p></div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb delete">clear</span><span class="tname">mikrotik_clear_logs</span></div>
       <div class="tool-body"><p>Clears the in-memory log buffer. Doesn't affect file-backed logs.</p></div>
     </div>
 
-    <!-- Queues -->
-    <div class="section-hd">
-      <div>
-        <h2 id="queue">Queues — Traffic Shaping</h2>
-        <p class="section-intro">Simple queues for per-target rate limits, queue trees for hierarchical
-          policies, queue types for HTB/SFQ/PFIFO parameter sets.</p>
-      </div>
-      <div class="meta"><b>7</b> tools<br>category 13</div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_simple_queue · mikrotik_create_queue_tree · mikrotik_create_queue_type</span></div>
-      <div class="tool-body"><p>Three levels of granularity from "throttle this IP" to "shape this whole VLAN tree".</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_list_simple_queues · mikrotik_get_simple_queue</span></div>
-      <div class="tool-body"><p>Inspect existing simple queues with traffic counters.</p></div>
-    </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">update · remove</span><span class="tname">mikrotik_update_simple_queue · mikrotik_remove_simple_queue</span></div>
-      <div class="tool-body"><p>Adjust burst/limit values or remove queues entirely.</p></div>
-    </div>
-
-    <!-- Safe Mode -->
+    <!-- ============ 22 SAFE MODE ============ -->
     <div class="section-hd">
       <div>
         <h2 id="safe-mode">Safe Mode — Atomic Sessions</h2>
         <p class="section-intro">RouterOS safe-mode wraps a sequence of changes; if the management
-          session drops, changes auto-revert. Highly recommended for destructive operations.</p>
+          session drops before you commit, every change auto-reverts. Highly recommended when editing
+          firewall or connectivity rules remotely.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category · no parameters</span>
       </div>
-      <div class="meta"><b>5</b> tools<br>category 14</div>
+      <div class="meta"><b>4</b> tools<br>category 22</div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb create">begin</span><span class="tname">mikrotik_begin_safe_mode</span></div>
-      <div class="tool-body"><p>Starts a new safe-mode session on the device. Subsequent destructive
-        changes are journaled and will be rolled back unless committed.</p></div>
+    <div class="callout">
+      <span class="icon">HOW IT WORKS</span>
+      <div>
+        <code>enable_safe_mode</code> opens a <strong>persistent SSH shell</strong> and sends a
+        <code>Ctrl+X</code> to the router. While active, <strong>every</strong> subsequent MCP tool call is
+        routed through that same session automatically (the connector detects it — no per-command
+        connections). <code>commit_safe_mode</code> sends a <strong>second</strong> <code>Ctrl+X</code>,
+        writing the pending changes to flash/NVRAM and closing the session; <code>rollback_safe_mode</code>
+        simply <strong>drops the session</strong> (no Ctrl+X), so RouterOS reverts everything. Pending
+        changes live in memory only — a <strong>router reboot</strong>, not just a dropped connection, also
+        reverts them. Concurrent calls are serialised through an internal lock, so parallel requests are safe. With an <a href="#inventory">inventory</a>, safe mode is tracked <strong>per device</strong> — enabling it on one router leaves the others untouched.
+      </div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb update">commit · rollback</span><span class="tname">mikrotik_commit_safe_mode · mikrotik_rollback_safe_mode</span></div>
-      <div class="tool-body"><p>Persist or revert the current safe-mode session.</p></div>
+
+    <div class="tool"><div class="tool-head"><span class="verb create">enable</span><span class="tname">enable_safe_mode</span></div>
+      <div class="tool-body"><p>Starts a safe-mode session; afterwards every tool call runs inside the one persistent
+        shell until you commit or roll back. Returns an <code>Error: …</code> string if the SSH connection
+        fails or the router doesn't confirm the <code>&lt;SAFE&gt;</code> prompt.</p>
+        <div class="params"><div class="row"><span class="pname">—</span><span class="pkind">no params</span><span class="pdesc">Takes no arguments</span></div></div>
+      </div>
     </div>
-    <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_get_safe_mode_status · mikrotik_list_safe_mode_changes</span></div>
-      <div class="tool-body"><p>Inspect current session state and queued changes.</p>
-        <div class="ex"><span class="lbl">Pattern — risky firewall edit under safe mode</span><span class="fn">mikrotik_begin_safe_mode</span>()
+    <div class="tool"><div class="tool-head"><span class="verb update">commit · rollback</span><span class="tname">commit_safe_mode · rollback_safe_mode</span></div>
+      <div class="tool-body"><p>Persist the journaled changes, or revert them immediately. Both are no-ops when safe mode
+        isn't active — they return <code>"Safe mode is not active. Nothing to commit / roll back."</code></p></div>
+    </div>
+    <div class="tool"><div class="tool-head"><span class="verb read">status</span><span class="tname">safe_mode_status</span></div>
+      <div class="tool-body"><p>Reports whether a safe-mode session is currently active — e.g.
+        <code>"Safe mode is ACTIVE. Changes are pending — NOT yet persisted…"</code> versus
+        <code>"Safe mode is NOT active…"</code>.</p>
+        <div class="ex"><span class="lbl">Pattern — risky firewall edit under safe mode</span><span class="fn">enable_safe_mode</span>()
 <span class="fn">mikrotik_create_filter_rule</span>(<span class="key">chain</span>=<span class="str">"input"</span>, <span class="key">action</span>=<span class="str">"drop"</span>, <span class="key">src_address</span>=<span class="str">"0.0.0.0/0"</span>)
-<span class="c"># test from another window; if still reachable…</span>
-<span class="fn">mikrotik_commit_safe_mode</span>()</div>
+<span class="c"># test reachability from another window; if you're locked out, just</span>
+<span class="c"># disconnect and the rule auto-reverts. If still reachable:</span>
+<span class="fn">commit_safe_mode</span>()</div>
       </div>
     </div>
 
     <div class="callout tip">
       <span class="icon">REMEMBER</span>
       <div>
-        Each tool returns structured JSON. Models that don't natively support function calling can still
+        Every tool returns structured JSON. Models that don't natively support function calling can still
         invoke them via JSON-mode prompts — the schemas are introspectable through the MCP handshake.
+        See the <a href="examples.html">Examples</a> page for end-to-end workflows.
       </div>
     </div>
 
@@ -852,9 +1593,9 @@
         <span class="label">← previous</span>
         <span class="target">Integrations</span>
       </a>
-      <a href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener" class="next">
-        <span class="label">contribute →</span>
-        <span class="target">Source on GitHub ↗</span>
+      <a href="examples.html" class="next">
+        <span class="label">next →</span>
+        <span class="target">Examples</span>
       </a>
     </div>
   </main>
@@ -863,20 +1604,28 @@
   <aside class="toc">
     <h6>Categories</h6>
     <ul>
-      <li><a href="#vlan">01 — VLAN</a></li>
-      <li><a href="#firewall">02 — Firewall</a></li>
-      <li><a href="#nat">03 — NAT</a></li>
-      <li><a href="#dhcp">04 — DHCP</a></li>
-      <li><a href="#dns">05 — DNS</a></li>
-      <li><a href="#ip-address">06 — IP Address</a></li>
+      <li><a href="#inventory">01 — Inventory</a></li>
+      <li><a href="#interfaces">02 — Interfaces</a></li>
+      <li><a href="#poe">03 — PoE</a></li>
+      <li><a href="#vlan">04 — VLAN</a></li>
+      <li><a href="#ip-address">05 — IP Address</a></li>
+      <li><a href="#ipv6-address">06 — IPv6 Address</a></li>
       <li><a href="#ip-pool">07 — IP Pool</a></li>
-      <li><a href="#routes">08 — Routes</a></li>
-      <li><a href="#wireguard">09 — WireGuard</a></li>
-      <li><a href="#users">10 — Users</a></li>
-      <li><a href="#backup">11 — Backup</a></li>
-      <li><a href="#logs">12 — Logs</a></li>
-      <li><a href="#queue">13 — Queues</a></li>
-      <li><a href="#safe-mode">14 — Safe Mode</a></li>
+      <li><a href="#dhcp">08 — DHCP</a></li>
+      <li><a href="#neighbors">09 — Neighbors</a></li>
+      <li><a href="#dns">10 — DNS</a></li>
+      <li><a href="#routes">11 — Routes</a></li>
+      <li><a href="#firewall">12 — Firewall</a></li>
+      <li><a href="#ipv6-firewall">13 — IPv6 Firewall</a></li>
+      <li><a href="#address-list">14 — Address Lists</a></li>
+      <li><a href="#nat">15 — NAT</a></li>
+      <li><a href="#wireguard">16 — WireGuard</a></li>
+      <li><a href="#wireless">17 — Wireless</a></li>
+      <li><a href="#queue">18 — Queues</a></li>
+      <li><a href="#users">19 — Users</a></li>
+      <li><a href="#backup">20 — Backup</a></li>
+      <li><a href="#logs">21 — Logs</a></li>
+      <li><a href="#safe-mode">22 — Safe Mode</a></li>
     </ul>
   </aside>
 </div>
@@ -896,7 +1645,7 @@
         </span>
         MikroTik MCP
       </div>
-      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices. Not affiliated with MikroTik.</p>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
       <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
     </div>
     <div>
@@ -904,23 +1653,29 @@
       <ul>
         <li><a href="index.html">Installation</a></li>
         <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
         <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
       </ul>
     </div>
     <div>
       <h5>Source</h5>
       <ul>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
       </ul>
     </div>
     <div>
       <h5>Related</h5>
       <ul>
         <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
-        <li><a href="https://wiki.mikrotik.com" target="_blank" rel="noopener">RouterOS wiki</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
         <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
       </ul>
     </div>
   </div>

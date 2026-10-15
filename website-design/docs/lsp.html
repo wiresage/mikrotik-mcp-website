@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
+<title>Language server — MikroTik MCP docs</title>
+<meta name="description" content="routeros-lsp is a language server for MikroTik RouterOS scripts (.rsc): syntax, variable and command diagnostics, completion and hover for editors, Claude Code and CI." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  .code .e { color: var(--rose); }
+  .code .w { color: var(--amber); }
+  .code .r { color: var(--ink-mute); }
+  .pipe { background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--rad-lg); padding: 24px 24px 18px; margin: 20px 0 8px; }
+  .pipe svg { display: block; width: 100%; height: auto; }
+  .pipe figcaption { margin-top: 14px; font: 12px/1.6 var(--mono); color: var(--ink-mute); }
+  .doc-main td:first-child { white-space: nowrap; }
+  .doc-main td.wrap-ok { white-space: normal; }
+  .doc-main p a.ln-link, .doc-main li a.ln-link, .callout a.ln-link, .doc-main td a.ln-link { color: var(--amber); }
+  .doc-main .flow { margin: 20px 0; }
+  .st-badge { font: 11px var(--mono); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+        <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+        <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+        <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+        <line x1="7" y1="9" x2="5" y2="4" stroke="var(--amber)"/>
+        <line x1="12" y1="9" x2="12" y2="3" stroke="var(--amber)"/>
+        <line x1="17" y1="9" x2="19" y2="4" stroke="var(--amber)"/>
+        <circle cx="5" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="12" cy="3" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="19" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+      </svg>
+    </span>
+    MikroTik MCP <span class="brand-tag">docs</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#what">Overview</a>
+    <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html" class="active">Language server</a>
+    <a href="index.html">Docs</a>
+    <a href="reference.html">Reference</a>
+    <a href="examples.html">Examples</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">routeros-lsp ↗</a>
+  </div>
+</nav>
+
+<!-- DOCS LAYOUT -->
+<div class="docs">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h6>Getting started</h6>
+    <ul>
+      <li><a href="index.html">Installation</a></li>
+      <li><a href="index.html#testing">Testing</a></li>
+      <li><a href="index.html#context">Context optimization</a></li>
+    </ul>
+    <h6>Integrations</h6>
+    <ul>
+      <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#inspector">MCP Inspector</a></li>
+      <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
+    </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html" class="active">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
+    <h6>API reference</h6>
+    <ul>
+      <li><a href="reference.html#vlan">VLAN</a></li>
+      <li><a href="reference.html#firewall">Firewall</a></li>
+      <li><a href="reference.html#nat">NAT</a></li>
+      <li><a href="reference.html#dhcp">DHCP</a></li>
+      <li><a href="reference.html#dns">DNS</a></li>
+      <li><a href="reference.html#wireguard">WireGuard</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
+      <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
+    </ul>
+    <h6>Project</h6>
+    <ul>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="doc-main">
+    <div class="crumbs">
+      <a href="../index.html">MikroTik MCP</a> <span>/</span>
+      <a href="index.html">Docs</a> <span>/</span>
+      <span style="color:var(--ink);opacity:1">Language server</span>
+    </div>
+    <h1 class="doc-title">Language server</h1>
+    <p class="doc-lede">
+      routeros-lsp checks RouterOS scripts (<code>.rsc</code>) while you write them — in an editor, in Claude Code,
+      or from the command line — and tells you what the router would reject: syntax errors, unknown menus, commands
+      and parameters, and variable-scope mistakes, with completion and hover from the RouterOS command list.
+    </p>
+
+    <div class="callout">
+      <span class="icon">SEPARATE</span>
+      <div>
+        routeros-lsp is a sibling of MikroTik MCP, not part of the MCP server. It checks script text offline and
+        does not need a router, so you can use either one without the other.
+        Source: <a class="ln-link" href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">wiresage/routeros-lsp</a> · MIT.
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <h2 id="reports">What it reports</h2>
+    <p>Diagnostics are pushed when a document opens or changes. Each one carries its rule id as <code>code</code>
+      and <code>routeros-lsp</code> as <code>source</code>.</p>
+    <table class="table">
+      <thead><tr><th>Area</th><th>Reports</th></tr></thead>
+      <tbody>
+        <tr><td>Syntax</td><td class="wrap-ok">Unterminated strings, invalid escapes, unbalanced <code>( ) [ ] { }</code>, two values with no space between them, whitespace before <code>=</code>, a <code>#</code> that is not a comment, two commands on a line without <code>;</code>, characters RouterOS rejects, line breaks inside <code>( )</code>, a byte order mark.</td></tr>
+        <tr><td>Variables</td><td class="wrap-ok"><code>:set</code> of a name that is not declared in scope, reads of variables that are declared nowhere or whose scope has ended (including a local used on a later line of an imported file), invalid variable names, keywords used as names.</td></tr>
+        <tr><td>Menus and commands</td><td class="wrap-ok">An unknown menu, command or parameter with a “did you mean”, ambiguous abbreviations, repeated parameters, too many unnamed arguments, missing required parameters. The menu path is tracked the way RouterOS does it, so relative commands after <code>/ip address</code> are checked in that menu.</td></tr>
+      </tbody>
+    </table>
+    <p>The complete list, with default severities and sources, is on <a class="ln-link" href="lsp-rules.html">Diagnostic rules</a>.</p>
+
+    <div class="callout tip">
+      <span class="icon">LABELLED</span>
+      <div>
+        Where the scripting documentation is silent, or a real router behaves differently, the behaviour was measured on a
+        router and written down in <a class="ln-link" href="https://github.com/wiresage/routeros-lsp/blob/master/docs/ambiguities.md" target="_blank" rel="noopener">ambiguities.md</a>
+        rather than guessed. A finding that rests on it says so in its message, so a quirk of one RouterOS version is never
+        presented as the language specification.
+      </div>
+    </div>
+
+    <!-- INSTALL -->
+    <h2 id="install">Install</h2>
+    <p>Python 3.10 or newer, and nothing else — the server has no runtime dependencies.</p>
+
+    <div class="code-header"><span># Install the command</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> pipx install routeros-lsp      <span class="c"># or: uv tool install routeros-lsp</span>
+<span class="p">$</span> routeros-lsp --version</pre>
+
+    <div class="code-header"><span># Or run it without installing</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uvx routeros-lsp --stdio</pre>
+
+    <div class="code-header"><span># Try the unreleased master</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> pipx install git+https://github.com/wiresage/routeros-lsp.git</pre>
+
+    <p>The server speaks LSP over stdio: <code>routeros-lsp --stdio</code>.</p>
+
+    <!-- EDITORS -->
+    <h2 id="editors">Editors and Claude Code</h2>
+
+    <h3 id="claude-code">Claude Code</h3>
+    <p>The <a class="ln-link" href="https://github.com/wiresage/routeros-lsp/tree/master/plugin" target="_blank" rel="noopener"><code>plugin/</code></a> directory of the repository is a Claude Code plugin.
+      It starts the server for <code>.rsc</code> files (language id <code>routeros</code>) and expects the <code>routeros-lsp</code>
+      command on your <code>PATH</code>. Its <code>.lsp.json</code> tells Claude Code how to start the server:</p>
+
+    <div class="code-header"><span>plugin/.lsp.json</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">{
+  <span class="k">"routeros"</span>: {
+    <span class="k">"command"</span>: <span class="s">"routeros-lsp"</span>,
+    <span class="k">"args"</span>: [<span class="s">"--stdio"</span>],
+    <span class="k">"extensionToLanguage"</span>: { <span class="k">".rsc"</span>: <span class="s">"routeros"</span> },
+    <span class="k">"startupTimeout"</span>: <span class="n">15000</span>
+  }
+}</pre>
+
+    <p>Settings go into the same file, under <code>initializationOptions</code> (see <a class="ln-link" href="#configuration">Configuration</a>):</p>
+    <div class="code-header"><span># e.g. treat files as one script, silence one rule</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">{
+  <span class="k">"routeros"</span>: {
+    <span class="k">"command"</span>: <span class="s">"routeros-lsp"</span>,
+    <span class="k">"args"</span>: [<span class="s">"--stdio"</span>],
+    <span class="k">"extensionToLanguage"</span>: { <span class="k">".rsc"</span>: <span class="s">"routeros"</span> },
+    <span class="k">"initializationOptions"</span>: {
+      <span class="k">"scope"</span>: <span class="s">"script"</span>,
+      <span class="k">"severities"</span>: { <span class="k">"vars/undeclared-read"</span>: <span class="s">"off"</span> }
+    }
+  }
+}</pre>
+
+    <h3 id="any-client">Any LSP client</h3>
+    <p>Start the command below for the language id <code>routeros</code> from any LSP client.</p>
+    <table class="table">
+      <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Command</td><td><code>routeros-lsp</code></td></tr>
+        <tr><td>Arguments</td><td><code>--stdio</code></td></tr>
+        <tr><td>Transport</td><td class="wrap-ok">stdio, JSON-RPC with <code>Content-Length</code> framing</td></tr>
+        <tr><td>Language id</td><td><code>routeros</code></td></tr>
+        <tr><td>File extension</td><td><code>.rsc</code></td></tr>
+      </tbody>
+    </table>
+    <p>The server writes nothing but protocol messages to stdout; log output goes to the client through <code>window/logMessage</code>.</p>
+
+    <h3 id="features">What the editor gets</h3>
+    <table class="table">
+      <thead><tr><th>Request</th><th>Provides</th></tr></thead>
+      <tbody>
+        <tr><td><code>textDocument/completion</code></td><td class="wrap-ok">Menus and commands at the start of a line (global commands after <code>:</code>), parameters of the command being written (required ones first, flags without <code>=</code>), known values after <code>name=</code>, variables in scope after <code>$</code>, also inside strings.</td></tr>
+        <tr><td><code>textDocument/hover</code></td><td class="wrap-ok">Description of a menu, command or parameter from the command database, with type, values and required parameters; where a variable was declared.</td></tr>
+        <tr><td><code>textDocument/documentSymbol</code></td><td class="wrap-ok">Functions (<code>:global name do={ }</code>), variables declared with <code>:global</code> and <code>:local</code>, and the menu path headers that divide an export into sections.</td></tr>
+        <tr><td><code>textDocument/foldingRange</code></td><td class="wrap-ok">Blocks, commands continued with a backslash, multi-line strings, runs of comment lines.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- CLI -->
+    <h2 id="cli">Check from the command line</h2>
+    <p>The same analysis runs without an editor — for a pre-commit hook, a CI job, or a script an AI agent just wrote.
+      A directory means every <code>.rsc</code> file below it, and <code>-</code> means standard input.</p>
+
+    <div class="code-header"><span># Three ways to call it</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> routeros-lsp check backup.rsc scripts/        <span class="c"># files and directories</span>
+<span class="p">$</span> routeros-lsp check <span class="k">--strict --format</span> json export.rsc
+<span class="p">$</span> cat export.rsc | routeros-lsp check -         <span class="c"># standard input</span></pre>
+
+    <p>Take this script:</p>
+    <div class="code-header"><span>guest-vlan.rsc</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Guest VLAN</span>
+<span class="p">:local</span> vlanId 200
+<span class="n">/interface vlan</span> <span class="p">add</span> <span class="k">name</span>=vlan200 <span class="k">vlan-id</span>=<span class="v">$vlanId</span> <span class="k">interface</span>=ether1
+<span class="n">/ip</span> adress <span class="p">add</span> <span class="k">address</span>=192.168.200.1/24 <span class="k">interface</span>=vlan200
+<span class="n">/ip pool</span> <span class="p">add</span> <span class="k">name</span>=pool-200 <span class="k">ranges</span>=192.168.200.10-192.168.200.100
+<span class="n">/ip firewall nat</span> <span class="p">add</span> <span class="k">chain</span>=srcnat <span class="k">action</span>=masquerade # WAN
+<span class="p">:set</span> vlanId 201</pre>
+
+    <p>Findings are printed as <code>path:line:column: severity: message [rule]</code>, in file order. The summary goes to
+      stderr, so stdout can be piped. Columns count characters, from 1.</p>
+    <div class="code-header"><span># Messages shortened here</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> routeros-lsp check guest-vlan.rsc
+guest-vlan.rsc:3:42: <span class="w">warning</span>: $vlanId is a local variable of an earlier line … <span class="r">[vars/local-out-of-scope]</span>
+guest-vlan.rsc:4:5: <span class="w">warning</span>: 'adress' is not a menu or command in /ip of the RouterOS 7.21.4 command database. Did you mean 'address'? … <span class="r">[schema/unknown-command]</span>
+guest-vlan.rsc:6:53: <span class="e">error</span>: This command takes no unnamed arguments, and a '#' only starts a comment … <span class="r">[schema/unexpected-argument]</span>
+guest-vlan.rsc:7:6: <span class="e">error</span>: ':set vlanId' needs 'vlanId' to be declared first … <span class="r">[vars/set-undeclared]</span>
+<span class="c">Checked 1 file: 2 errors, 2 warnings.</span>
+<span class="p">$</span> echo $?
+1</pre>
+
+    <p>With <code>--format json</code> the output is an array with one object per finding, carrying
+      <code>path</code>, <code>line</code>, <code>column</code>, <code>endLine</code>, <code>endColumn</code>,
+      <code>severity</code>, <code>rule</code>, <code>source</code> and <code>message</code>.</p>
+
+    <h3 id="exit">Exit status</h3>
+    <table class="table">
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag" style="color:var(--lime);border-color:rgba(182,242,92,.3)">0</span></td><td>Nothing to fix.</td></tr>
+        <tr><td><span class="tag" style="color:var(--rose);border-color:rgba(255,93,108,.3)">1</span></td><td>Errors were found. With <code>--strict</code>, warnings count too.</td></tr>
+        <tr><td><span class="tag" style="color:var(--amber);border-color:rgba(255,138,61,.3)">2</span></td><td>A file cannot be read, or an option is wrong. The other files are still checked.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="options">Options</h3>
+    <p>The settings of the editor integration are command-line options, and go through the same validation. A wrong value
+      is an error with exit status 2 instead of a line in a log.</p>
+    <table class="table">
+      <thead><tr><th>Option</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>--strict</code></td><td class="wrap-ok">Warnings fail the run too (exit status 1).</td></tr>
+        <tr><td><code>--format json</code></td><td class="wrap-ok">JSON array instead of text lines.</td></tr>
+        <tr><td><code>--scope import|script</code></td><td class="wrap-ok">How variable scope is judged. <a class="ln-link" href="#scope">See below</a>.</td></tr>
+        <tr><td><code>--schema bundled|off|FILE</code></td><td class="wrap-ok">The command database; <code>off</code> turns the command checks off.</td></tr>
+        <tr><td><code>--severity RULE=LEVEL</code></td><td class="wrap-ok">Change or silence one rule. Repeatable.</td></tr>
+        <tr><td><code>--context-variable NAME</code></td><td class="wrap-ok">A variable RouterOS provides to the script. Repeatable.</td></tr>
+      </tbody>
+    </table>
+    <p><code>routeros-lsp check --help</code> lists them all. In CI, add <code>--strict</code> so warnings fail the job too.</p>
+
+    <!-- CONFIG -->
+    <h2 id="configuration">Configuration</h2>
+    <p>The server reads its settings from <code>initializationOptions</code> in the <code>initialize</code> request and from
+      <code>settings</code> in <code>workspace/didChangeConfiguration</code>. The object can be given bare or nested under a
+      <code>routeros</code> key. A change takes effect at once and every open document is checked again; anything the server
+      does not recognise is reported on the client's log and ignored.</p>
+    <table class="table">
+      <thead><tr><th>Setting</th><th>Values</th><th>Default</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>severities</code></td><td class="wrap-ok">object of rule id to <code>error</code>, <code>warning</code>, <code>information</code>, <code>hint</code> or <code>off</code></td><td><code>{}</code></td><td class="wrap-ok">Changes the severity of a rule or turns it off. See <a class="ln-link" href="lsp-rules.html">Diagnostic rules</a>.</td></tr>
+        <tr><td><code>scope</code></td><td><code>import</code> or <code>script</code></td><td><code>import</code></td><td class="wrap-ok">How variable scope is judged. See below.</td></tr>
+        <tr><td><code>contextVariables</code></td><td class="wrap-ok">array of names</td><td><code>[]</code></td><td class="wrap-ok">Variables RouterOS provides to the script, so they are not reported as undeclared. The DHCP lease script variables <code>leaseBound</code>, <code>leaseServerName</code>, <code>leaseActMAC</code> and <code>leaseActIP</code> are always included.</td></tr>
+        <tr><td><code>schema</code></td><td class="wrap-ok"><code>bundled</code>, <code>off</code> or the path of a file</td><td><code>bundled</code></td><td class="wrap-ok">The command database used to check and complete menus, commands and parameters.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="scope">Scope: import or script</h3>
+    <table class="table">
+      <thead><tr><th>Scope</th><th>Use it for</th></tr></thead>
+      <tbody>
+        <tr><td><code>import</code> <span class="tag" style="margin-left:6px">default</span></td><td class="wrap-ok">A file that is imported with <code>/import</code>, or pasted into the terminal. Every <strong>line</strong> is a scope of its own: commands separated by <code>;</code> on the same line share it, and a block or a backslash join keeps its commands on one line. A <code>:local</code> on one line is gone on the next, and <code>:set</code> of it is a syntax error.</td></tr>
+        <tr><td><code>script</code></td><td class="wrap-ok">The source of a <code>/system script</code>, a scheduler or a netwatch: one scope for the whole text.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="severities">Severities</h3>
+    <p><code>schema/unknown-command</code> and <code>schema/unknown-parameter</code> are warnings by default, because the bundled
+      database comes from a RouterOS CHR and some menus and parameters exist only on real hardware. Once you have a database
+      generated from your own router (below), you can make them errors:</p>
+    <div class="code-header"><span># settings</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">{ <span class="k">"severities"</span>: { <span class="k">"schema/unknown-command"</span>: <span class="s">"error"</span>, <span class="k">"schema/unknown-parameter"</span>: <span class="s">"error"</span> } }</pre>
+
+    <!-- DATABASE -->
+    <h2 id="database">The command database</h2>
+    <p>Menus, commands and parameters come from a database generated from a RouterOS 7.21.4 CHR with <code>/console/inspect</code>.
+      A CHR has no wireless, LTE or switch-chip packages. To cover your own hardware, generate the database from your router —
+      nothing is executed or changed on it; the tool reads <code>/console/inspect</code> and compiles probe lines with
+      <code>/import … dry-run</code>. It takes a few minutes.</p>
+    <div class="code-header"><span># From a clone of the repository</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> pip install paramiko
+<span class="p">$</span> ROUTEROS_PASSWORD=... python tools/gen_schema.py <span class="k">--host</span> 192.0.2.1 <span class="k">--user</span> admin <span class="k">--out</span> my-router.json.gz</pre>
+    <p>Then point the <code>schema</code> setting at the file:</p>
+    <div class="code-header"><span># settings</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">{ <span class="k">"schema"</span>: <span class="s">"/path/to/my-router.json.gz"</span> }</pre>
+
+    <!-- HOW -->
+    <h2 id="how">How it works</h2>
+    <figure class="pipe" style="margin-left:0;margin-right:0">
+      <svg viewBox="0 0 760 232" role="img" aria-label="Pipeline: text, parser, binder, checker, findings, editor diagnostics; the command database feeds the checker and the editor features" font-family="JetBrains Mono" font-size="11.5">
+        <defs><marker id="lspArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--amber)"/></marker></defs>
+        <g stroke="var(--line-strong)" fill="var(--bg-2)">
+          <rect x="0" y="30" width="84" height="56" rx="4"/>
+          <rect x="116" y="30" width="104" height="56" rx="4"/>
+          <rect x="252" y="30" width="104" height="56" rx="4"/>
+          <rect x="388" y="30" width="116" height="56" rx="4" fill="rgba(255,138,61,0.08)" stroke="var(--amber)"/>
+          <rect x="536" y="30" width="96" height="56" rx="4"/>
+          <rect x="664" y="30" width="96" height="56" rx="4"/>
+          <rect x="96" y="150" width="220" height="56" rx="4" stroke-dasharray="3 3" fill="var(--bg-1)"/>
+          <rect x="360" y="150" width="172" height="56" rx="4" fill="var(--bg-1)"/>
+        </g>
+        <g stroke="var(--amber)" stroke-width="1.5" fill="none">
+          <path d="M 84 58 L 114 58" marker-end="url(#lspArr)"/>
+          <path d="M 220 58 L 250 58" marker-end="url(#lspArr)"/>
+          <path d="M 356 58 L 386 58" marker-end="url(#lspArr)"/>
+          <path d="M 504 58 L 534 58" marker-end="url(#lspArr)"/>
+          <path d="M 632 58 L 662 58" marker-end="url(#lspArr)"/>
+          <path d="M 446 150 L 446 88" marker-end="url(#lspArr)"/>
+          <path d="M 168 88 L 168 148" stroke-dasharray="4 3" marker-end="url(#lspArr)"/>
+          <path d="M 360 178 L 318 178" stroke-dasharray="4 3" marker-end="url(#lspArr)"/>
+        </g>
+        <g text-anchor="middle" fill="var(--ink)">
+          <text x="42" y="54">Text</text><text x="168" y="54">Parser</text><text x="304" y="54">Binder</text>
+          <text x="446" y="54" fill="var(--amber)">Checker</text><text x="584" y="54">Findings</text><text x="712" y="54">Editor</text>
+          <text x="206" y="174">Completion · hover</text><text x="446" y="174">Command database</text>
+        </g>
+        <g text-anchor="middle" fill="var(--ink-mute)" font-size="10.5">
+          <text x="42" y="72">.rsc</text><text x="168" y="72">syntax tree</text><text x="304" y="72">scopes</text>
+          <text x="446" y="72">vars · commands</text><text x="584" y="72">rule · severity</text><text x="712" y="72">diagnostics</text>
+          <text x="206" y="192">symbols · folding</text><text x="446" y="192">RouterOS 7.21.4</text>
+        </g>
+      </svg>
+      <figcaption>Python 3.10+, no runtime dependencies. The JSON-RPC framing and the LSP handling are written by hand.</figcaption>
+    </figure>
+    <table class="table">
+      <thead><tr><th>Stage</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>Parser</td><td class="wrap-ok">Hand-written, scannerless recursive descent, because RouterOS lexes by context: <code>#</code> is a comment only where a command starts, and <code>{ }</code> is a block or an array depending on where it stands. It recovers from errors, so the rest of the file is still analysed.</td></tr>
+        <tr><td>Binder</td><td class="wrap-ok">Scopes, declarations and variable references, with the scope rules RouterOS applies: a scope per line in an imported file, and function bodies that see nothing of the code around them.</td></tr>
+        <tr><td>Checkers</td><td class="wrap-ok">Variable rules, and command rules that track the menu path through the file as RouterOS does and resolve every word of a command line against the command database.</td></tr>
+        <tr><td>Server</td><td class="wrap-ok">LSP over stdio. A burst of edits is analysed once, for the newest text, and a document's analysis is cached by its revision and the settings.</td></tr>
+      </tbody>
+    </table>
+    <p>Analysing a file takes about 0.3 s per 5,000 lines and 1.5 s per 20,000 lines on a laptop. The
+      <a class="ln-link" href="https://github.com/wiresage/routeros-lsp/blob/master/docs/architecture.md" target="_blank" rel="noopener">architecture notes</a> have the rest.</p>
+
+    <!-- ACCURACY -->
+    <h2 id="accuracy">Accuracy and limits</h2>
+    <p>RouterOS can check a script without running it: <code>/import file.rsc verbose=yes dry-run</code> reports every error
+      with line and column and executes nothing. That is the test oracle for the project. More than 800 recorded router answers
+      are replayed by <code>tests/conformance/</code>, and the checker agreed with RouterOS 7.21.4 on 16,900 command lines
+      generated from the database without reporting a single one that the router accepts. It does miss about 780 that the router
+      rejects, almost all of the kinds below.</p>
+
+    <h3>What is not checked</h3>
+    <ul>
+      <li><strong>Parameter values.</strong> RouterOS rejects some when it compiles — a bad value for a yes/no or enumerated parameter, a malformed item number. The server accepts what the router rejects here; it does not report what the router accepts.</li>
+      <li><strong>Flags written with a value</strong> (<code>print detail=yes</code>) are reported only for commands that take no unnamed arguments, because the database cannot tell a flag from a parameter for the others.</li>
+      <li><strong>Properties in a <code>where</code> expression.</strong></li>
+      <li><strong>Hardware you don't have in the database.</strong> Menus of packages a CHR lacks, and parameters that exist only on some hardware, are missing from the bundled database.</li>
+    </ul>
+
+    <h3 id="not-yet">Not yet</h3>
+    <p>Go to definition, references, rename, signature help, semantic tokens, code actions, formatting, several RouterOS versions
+      at once, and following <code>/import</code> into other files. The plan is in
+      <a class="ln-link" href="https://github.com/wiresage/routeros-lsp/blob/master/docs/proposal.md" target="_blank" rel="noopener">proposal.md</a>.</p>
+
+    <!-- WITH MCP -->
+    <h2 id="with-mcp">With MikroTik MCP</h2>
+    <p>Typed tools cover the operations in the <a class="ln-link" href="reference.html">API reference</a>. When a change is better shipped as a
+      reviewable <code>.rsc</code> — a whole site config, an export you edited — check it first, then apply it through the same assistant.</p>
+    <div class="flow">
+      <div class="st"><span class="tg">Write</span><div>Your editor or AI agent drafts a <code>.rsc</code> script.</div></div>
+      <div class="st"><span class="tg l">Check</span><div><strong>routeros-lsp</strong> reports what the router would reject — in the editor, or with <code>routeros-lsp check</code>.</div></div>
+      <div class="st"><span class="tg m">Apply</span><div><strong>MikroTik MCP</strong> uploads and imports it: <code>mikrotik_upload_file</code>, then <code>mikrotik_import_configuration</code>.</div></div>
+    </div>
+    <p>In Claude Code you can have both: add the MCP server (<a class="ln-link" href="index.html#registry">Installation</a>) and the plugin above, then ask:</p>
+    <div class="code-header"><span># a prompt for a client that can run commands and use MCP tools</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="s">Write the guest VLAN as guest-vlan.rsc. Run routeros-lsp check on it and fix what it
+reports, then upload it to the router and import it.</span></pre>
+    <div class="callout">
+      <span class="icon">READ IT</span>
+      <div>A clean check means the script is well-formed, not that it does what you meant — and parameter values are not checked.
+        Read the script before it runs; the import executes whatever the file contains.</div>
+    </div>
+
+    <div class="pager">
+      <a href="configure.html">
+        <span class="label">← previous</span>
+        <span class="target">Integrations</span>
+      </a>
+      <a href="lsp-rules.html" class="next">
+        <span class="label">next →</span>
+        <span class="target">Diagnostic rules</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- TOC -->
+  <aside class="toc">
+    <h6>On this page</h6>
+    <ul>
+      <li><a href="#reports">What it reports</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="#claude-code">— Claude Code</a></li>
+      <li><a href="#any-client">— Any LSP client</a></li>
+      <li><a href="#features">— What the editor gets</a></li>
+      <li><a href="#cli">Command line</a></li>
+      <li><a href="#exit">— Exit status</a></li>
+      <li><a href="#options">— Options</a></li>
+      <li><a href="#configuration">Configuration</a></li>
+      <li><a href="#scope">— Scope</a></li>
+      <li><a href="#severities">— Severities</a></li>
+      <li><a href="#database">Command database</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#accuracy">Accuracy &amp; limits</a></li>
+      <li><a href="#not-yet">— Not yet</a></li>
+      <li><a href="#with-mcp">With MikroTik MCP</a></li>
+    </ul>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="brand" style="margin-bottom: 12px;">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+            <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+            <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+            <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+          </svg>
+        </span>
+        MikroTik MCP
+      </div>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
+      <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
+    </div>
+    <div>
+      <h5>Docs</h5>
+      <ul>
+        <li><a href="index.html">Installation</a></li>
+        <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+        <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Source</h5>
+      <ul>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
+        <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-header').nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => btn.textContent = orig, 1200);
+      });
+    });
+  });
+</script>
+</body>
+</html>

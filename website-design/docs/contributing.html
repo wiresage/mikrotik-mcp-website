@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
+<title>Contributing — MikroTik MCP docs</title>
+<meta name="description" content="How to contribute to MikroTik MCP: project structure, adding a new scope/tool, tool-annotation constants, writing tests with testcontainers, Conventional Commits, and the pull-request process." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+        <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+        <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+        <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+        <line x1="7" y1="9" x2="5" y2="4" stroke="var(--amber)"/>
+        <line x1="12" y1="9" x2="12" y2="3" stroke="var(--amber)"/>
+        <line x1="17" y1="9" x2="19" y2="4" stroke="var(--amber)"/>
+        <circle cx="5" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="12" cy="3" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="19" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+      </svg>
+    </span>
+    MikroTik MCP <span class="brand-tag">docs</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#what">Overview</a>
+    <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html">Language server</a>
+    <a href="index.html" class="active">Docs</a>
+    <a href="reference.html">Reference</a>
+    <a href="examples.html">Examples</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- DOCS LAYOUT -->
+<div class="docs">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h6>Getting started</h6>
+    <ul>
+      <li><a href="index.html">Installation</a></li>
+      <li><a href="index.html#testing">Testing</a></li>
+      <li><a href="index.html#context">Context optimization</a></li>
+    </ul>
+    <h6>Integrations</h6>
+    <ul>
+      <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#inspector">MCP Inspector</a></li>
+      <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
+    </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
+    <h6>API reference</h6>
+    <ul>
+      <li><a href="reference.html#vlan">VLAN</a></li>
+      <li><a href="reference.html#firewall">Firewall</a></li>
+      <li><a href="reference.html#nat">NAT</a></li>
+      <li><a href="reference.html#dhcp">DHCP</a></li>
+      <li><a href="reference.html#dns">DNS</a></li>
+      <li><a href="reference.html#wireguard">WireGuard</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
+      <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
+    </ul>
+    <h6>Project</h6>
+    <ul>
+      <li><a href="contributing.html" class="active">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="doc-main">
+    <div class="crumbs">
+      <a href="../index.html">MikroTik MCP</a> <span>/</span>
+      <a href="index.html">Docs</a> <span>/</span>
+      <span style="color:var(--ink);opacity:1">Contributing</span>
+    </div>
+    <h1 class="doc-title">Contributing</h1>
+    <p class="doc-lede">
+      Thank you for your interest in contributing to the MikroTik MCP server. This MCP
+      (Model Context Protocol) server provides tools for managing MikroTik RouterOS devices.
+      Contributors can extend functionality by adding new scopes (feature areas) and their
+      corresponding tools.
+    </p>
+
+    <!-- PROJECT STRUCTURE -->
+    <h2 id="structure">Project structure</h2>
+    <p>The codebase splits into a <code>src/mcp_mikrotik/</code> package (the server and its
+      feature scopes) and a <code>tests/</code> tree (unit + integration suites):</p>
+
+    <div class="code-header"><span>repository layout</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">src/mcp_mikrotik/
+├── scope/          <span class="c"># Feature modules — each file registers MCP tools via decorators</span>
+├── app.py          <span class="c"># MCPServer instance and ToolAnnotation constants</span>
+├── config.py       <span class="c"># Configuration (pydantic-settings, CLI args, env vars)</span>
+├── connector.py    <span class="c"># SSH connection handling</span>
+├── server.py       <span class="c"># Entry point — imports scopes, starts the server</span>
+└── mikrotik_ssh_client.py  <span class="c"># Low-level SSH client</span>
+
+tests/
+├── integration/    <span class="c"># Integration tests using testcontainers</span>
+└── unit/           <span class="c"># Unit tests</span></pre>
+
+    <!-- NEW FEATURES -->
+    <h2 id="features">Contributing new features</h2>
+    <p>To add a new MikroTik feature/scope to the project, follow these five steps.</p>
+
+    <h3 id="features-scope">1. Create the scope implementation</h3>
+    <p>Navigate to <code>src/mcp_mikrotik/scope/</code> and create a new Python file for your
+      feature (e.g. <code>my_feature.py</code>). Your scope file should:</p>
+    <ul>
+      <li>Import <code>mcp</code>, the appropriate <code>ToolAnnotations</code> constant,
+        <strong>and <code>annotate</code></strong> from <code>..app</code></li>
+      <li>Import <code>execute_mikrotik_command</code> from <code>..connector</code></li>
+      <li>Register tools using <code>@mcp.tool()</code> decorators —
+        <strong>always use <code>annotate(BASE, "Title")</code></strong> (never a bare constant)</li>
+      <li>Follow the existing naming convention: <code>mikrotik_&lt;action&gt;_&lt;resource&gt;</code></li>
+      <li>Use type hints for all parameters (including <code>Literal</code> for fixed-value params)</li>
+      <li>Keep docstrings <strong>concise</strong> — a single sentence is ideal; avoid
+        re-documenting every parameter</li>
+      <li>Handle errors gracefully and return meaningful messages</li>
+    </ul>
+
+    <div class="callout tip">
+      <span class="icon">TIP</span>
+      <div>
+        Always register tools with <code>annotate(BASE, "Title")</code> — passing a bare
+        annotation constant skips the human-readable title and is considered incorrect.
+      </div>
+    </div>
+
+    <div class="code-header"><span># Example structure — scope/my_feature.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">from</span> typing <span class="k">import</span> Optional
+<span class="k">from</span> mcp.server.mcpserver <span class="k">import</span> Context
+<span class="k">from</span> ..connector <span class="k">import</span> execute_mikrotik_command
+<span class="k">from</span> ..app <span class="k">import</span> mcp, READ, WRITE, annotate
+
+<span class="p">@mcp.tool(name=</span><span class="s">"create_my_resource"</span><span class="p">, annotations=annotate(WRITE, </span><span class="s">"Create My Resource"</span><span class="p">))</span>
+<span class="k">async def</span> mikrotik_create_my_resource(
+    ctx: Context,
+    name: str,
+    required_param: str,
+    optional_param: Optional[str] = None,
+    comment: Optional[str] = None
+) -&gt; str:
+    <span class="s">"""Creates a new resource on the MikroTik device."""</span>
+    <span class="k">await</span> ctx.info(f<span class="s">"Creating resource: name={name}"</span>)
+
+    cmd = f<span class="s">"/my/feature add name={name} param={required_param}"</span>
+
+    <span class="k">if</span> optional_param:
+        cmd += f<span class="s">" optional-param={optional_param}"</span>
+    <span class="k">if</span> comment:
+        cmd += f<span class="s">' comment="{comment}"'</span>
+
+    result = <span class="k">await</span> execute_mikrotik_command(cmd, ctx)
+
+    <span class="k">if</span> <span class="s">"failure:"</span> <span class="k">in</span> result.lower() <span class="k">or</span> <span class="s">"error"</span> <span class="k">in</span> result.lower():
+        <span class="k">return</span> f<span class="s">"Failed to create resource: {result}"</span>
+
+    <span class="k">return</span> f<span class="s">"Resource created successfully:\n\n{result}"</span></pre>
+
+    <h3 id="annotations">2. Choose the right tool annotation</h3>
+    <p>Import the appropriate annotation constant from <code>app.py</code> and pass it via
+      <code>@mcp.tool(annotations=...)</code>:</p>
+
+    <table class="table">
+      <thead>
+        <tr><th>Constant</th><th>Use for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>READ</code></td><td>Read-only queries (print, list, get, export)</td></tr>
+        <tr><td><code>WRITE</code></td><td>Non-idempotent writes (add, create)</td></tr>
+        <tr><td><code>WRITE_IDEMPOTENT</code></td><td>Idempotent writes (set, update, enable, disable)</td></tr>
+        <tr><td><code>DESTRUCTIVE</code></td><td>Idempotent destructive operations (remove, flush)</td></tr>
+        <tr><td><code>DANGEROUS</code></td><td>Non-idempotent destructive operations (reset, bulk create)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="features-register">3. Register your scope</h3>
+    <p>Update <code>src/mcp_mikrotik/app.py</code> to import your new scope module:</p>
+
+    <div class="code-header"><span># src/mcp_mikrotik/app.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">from</span> mcp_mikrotik.scope <span class="k">import</span> (  <span class="c"># noqa: F401</span>
+    backup, dhcp, dns, firewall_filter, firewall_nat,
+    ip_address, ip_pool, logs, my_feature, routes, users, vlan, wireless,
+)</pre>
+
+    <p>The import triggers the <code>@mcp.tool()</code> decorators, which automatically register
+      your tools with the MCP server. No manual registry is needed.</p>
+
+    <h3 id="testing">4. Write tests</h3>
+    <p>Create tests in <code>tests/</code> for unit tests or <code>tests/integration/</code> for
+      integration tests. Integration tests should:</p>
+    <ul>
+      <li>Use testcontainers to spin up a real MikroTik RouterOS container</li>
+      <li>Follow the existing test structure and naming conventions</li>
+      <li>Test complete workflows (create, read, update, delete operations)</li>
+      <li>Include proper cleanup to ensure tests are isolated</li>
+      <li>Use the <code>@pytest.mark.integration</code> decorator</li>
+    </ul>
+
+    <div class="code-header"><span># Example structure — based on test_mikrotik_user_integration.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="s">"""Integration tests for MikroTik my feature using testcontainers."""</span>
+
+<span class="k">import</span> pytest
+<span class="k">from</span> mcp_mikrotik.scope.my_feature <span class="k">import</span> (
+    mikrotik_create_my_resource,
+    mikrotik_list_my_resources
+)
+
+<span class="p">@pytest.mark.integration</span>
+<span class="k">class</span> TestMikroTikMyFeatureIntegration:
+    <span class="k">def</span> test_01_create_resource(self, mikrotik_container):
+        result = mikrotik_create_my_resource(
+            name=<span class="s">"test_resource"</span>,
+            required_param=<span class="s">"test_value"</span>
+        )
+        <span class="k">assert</span> <span class="s">"failed"</span> <span class="k">not in</span> result.lower()
+        <span class="k">assert</span> <span class="s">"test_resource"</span> <span class="k">in</span> result
+
+    <span class="k">def</span> test_02_list_resources(self, mikrotik_container):
+        result = mikrotik_list_my_resources()
+        <span class="k">assert</span> <span class="s">"test_resource"</span> <span class="k">in</span> result</pre>
+
+    <h3 id="features-test">5. Test your implementation</h3>
+    <p>Before submitting, ensure your implementation works:</p>
+    <ol>
+      <li><strong>Run integration tests</strong>:</li>
+    </ol>
+    <div class="code-header"><span># run the integration suite for your feature</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> pytest tests/integration/test_my_feature_integration.py <span class="k">-v</span></pre>
+
+    <ol start="2">
+      <li><strong>Use MCP Inspector</strong>: test your tools interactively using the
+        <a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a>.</li>
+    </ol>
+    <div class="code-header"><span># install and launch the inspector against your server</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Install MCP Inspector</span>
+<span class="p">$</span> npm install <span class="k">-g</span> @modelcontextprotocol/inspector
+
+<span class="c"># Test your MCP server (stdio transport)</span>
+<span class="p">$</span> mcp-inspector python <span class="k">-m</span> mcp_mikrotik.server</pre>
+
+    <ol start="3">
+      <li><strong>Manual testing</strong>: test with a real MikroTik device to ensure commands
+        work correctly.</li>
+    </ol>
+
+    <!-- TRANSPORT MODES -->
+    <h2 id="transport">Transport modes</h2>
+    <p>The server supports three transport modes:</p>
+    <ul>
+      <li><strong>stdio</strong> (default) — standard input/output, used by most MCP clients</li>
+      <li><strong>sse</strong> — Server-Sent Events over HTTP (exposes <code>/health</code> endpoint)</li>
+      <li><strong>streamable-http</strong> — HTTP with streaming support (exposes <code>/health</code> endpoint)</li>
+    </ul>
+    <p>Configure via CLI (<code>--mcp.transport</code>) or environment variable
+      (<code>MIKROTIK_MCP__TRANSPORT</code>).</p>
+
+    <!-- DEVELOPMENT GUIDELINES -->
+    <h2 id="guidelines">Development guidelines</h2>
+
+    <h3 id="guidelines-style">Code style</h3>
+    <ul>
+      <li>Follow existing code patterns and naming conventions</li>
+      <li>Use type hints for all function parameters and return values</li>
+      <li>Use <code>Literal</code> types for parameters with a fixed set of valid values</li>
+      <li>Use <code>Annotated[..., Field(...)]</code> for numeric constraints (e.g. VLAN IDs)</li>
+      <li>Handle errors gracefully with meaningful error messages</li>
+      <li>Log important operations using <code>ctx.info()</code> / <code>ctx.error()</code> for
+        client-visible logging</li>
+    </ul>
+
+    <h3 id="guidelines-commands">MikroTik command guidelines</h3>
+    <ul>
+      <li>Always validate command syntax against MikroTik documentation</li>
+      <li>Use proper escaping for string parameters (wrap in quotes when needed)</li>
+      <li>Implement both creation and listing/querying functionality</li>
+      <li>Consider implementing filtering options where appropriate</li>
+      <li>Test commands on actual RouterOS before implementation</li>
+    </ul>
+
+    <h3 id="guidelines-testing">Testing requirements</h3>
+    <ul>
+      <li>Write tests that cover the main functionality</li>
+      <li>Ensure tests are isolated and clean up after themselves</li>
+      <li>Use descriptive test names that explain what is being tested</li>
+      <li>Include edge cases and error conditions in your tests</li>
+    </ul>
+
+    <!-- COMMIT FORMAT -->
+    <h2 id="commits">Commit message format</h2>
+    <p>This project follows the
+      <a href="https://www.conventionalcommits.org/" target="_blank" rel="noopener">Conventional Commits</a>
+      specification.</p>
+
+    <h3 id="commits-format">Format</h3>
+    <div class="code-header"><span># commit anatomy</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">&lt;type&gt;[optional scope]: &lt;description&gt;
+
+[optional body]
+
+[optional footer(s)]</pre>
+
+    <h3 id="commits-types">Types</h3>
+    <ul>
+      <li><code>feat</code>: A new feature</li>
+      <li><code>fix</code>: A bug fix</li>
+      <li><code>docs</code>: Documentation only changes</li>
+      <li><code>style</code>: Changes that do not affect the meaning of the code</li>
+      <li><code>refactor</code>: A code change that neither fixes a bug nor adds a feature</li>
+      <li><code>test</code>: Adding missing tests or correcting existing tests</li>
+      <li><code>chore</code>: Changes to the build process or auxiliary tools</li>
+    </ul>
+
+    <h3 id="commits-examples">Examples</h3>
+    <div class="code-header"><span># feat — new DHCP tooling</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">feat(dhcp): add DHCP server creation and management tools
+
+Add comprehensive DHCP server management including:
+- Create DHCP servers with configurable options
+- List and filter DHCP servers
+- Create DHCP networks and pools
+- Remove DHCP servers
+
+Includes integration tests with RouterOS container</pre>
+
+    <div class="code-header"><span># fix — escaping in comments</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">fix(firewall): handle special characters in rule comments
+
+Escape special characters when creating firewall rules with comments
+to prevent command parsing errors on RouterOS devices</pre>
+
+    <div class="code-header"><span># test — expanded coverage</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">test(users): expand integration test coverage
+
+Add tests for user group management and permission validation</pre>
+
+    <!-- PULL REQUEST -->
+    <h2 id="branching">Branching strategy</h2>
+    <p>Branches for new pull requests carry the issue number they address:</p>
+    <div class="code-header"><span># branch name format</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">&lt;type&gt;/issue-&lt;number&gt;-&lt;short-description&gt;</pre>
+    <ul>
+      <li><code>&lt;type&gt;</code> is one of the conventional commit types above (<code>feat</code>, <code>fix</code>, <code>docs</code>, …)</li>
+      <li><code>&lt;number&gt;</code> is the GitHub issue number the branch addresses</li>
+      <li>when the change has <strong>no issue</strong>, put <code>#</code> in place of the number</li>
+      <li><code>&lt;short-description&gt;</code> is a few kebab-case words describing the change</li>
+    </ul>
+    <div class="code-header"><span># examples</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">feat/issue-123-branch-one
+fix/issue-#-branch-two</pre>
+    <p>This makes every branch self-documenting: the type tells reviewers what kind of change to
+      expect, and the issue number links the work back to its context (or <code>#</code> states
+      explicitly that no issue exists, rather than leaving reviewers to search for one).</p>
+
+    <h2 id="pull-request">Submitting a pull request</h2>
+    <ol>
+      <li><strong>Fork the repository</strong> and create your feature branch from <code>master</code>, named according to the <a href="#branching">branching strategy</a> above</li>
+      <li><strong>Implement your changes</strong> following the guidelines above</li>
+      <li><strong>Run all tests</strong> to ensure nothing is broken</li>
+      <li><strong>Test with MCP Inspector</strong> to verify tools work correctly</li>
+      <li><strong>Write descriptive commit messages</strong> following conventional commits</li>
+      <li><strong>Submit a pull request</strong> with:
+        <ul>
+          <li>Clear description of what you've added</li>
+          <li>Reference to any related issues</li>
+          <li>Screenshots or examples if applicable</li>
+          <li>Confirmation that tests pass</li>
+        </ul>
+      </li>
+    </ol>
+
+    <!-- GETTING HELP -->
+    <h2 id="help">Getting help</h2>
+    <ul>
+      <li>Check existing scope implementations for reference</li>
+      <li>Review the MikroTik RouterOS documentation for command syntax</li>
+      <li>Look at existing tests for testing patterns</li>
+      <li>Open an issue if you need clarification on implementation details</li>
+    </ul>
+
+    <!-- CODE REVIEW -->
+    <h2 id="code-review">Code review process</h2>
+    <p>All contributions go through code review to ensure:</p>
+    <ul>
+      <li>Code follows project conventions and patterns</li>
+      <li>MikroTik commands are correct and safe</li>
+      <li>Tests provide adequate coverage</li>
+      <li>Documentation is clear and complete</li>
+      <li>Integration with existing codebase is smooth</li>
+    </ul>
+    <p>Thank you for contributing to MikroTik MCP. Your additions help make RouterOS management
+      more accessible through the Model Context Protocol.</p>
+
+    <div class="pager">
+      <a href="articles.html">
+        <span class="label">← previous</span>
+        <span class="target">Articles</span>
+      </a>
+      <a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener" class="next">
+        <span class="label">next →</span>
+        <span class="target">GitHub repo</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- TOC -->
+  <aside class="toc">
+    <h6>On this page</h6>
+    <ul>
+      <li><a href="#structure">Project structure</a></li>
+      <li><a href="#features">New features</a></li>
+      <li><a href="#annotations">Annotations</a></li>
+      <li><a href="#testing">Testing</a></li>
+      <li><a href="#transport">Transport modes</a></li>
+      <li><a href="#guidelines">Dev guidelines</a></li>
+      <li><a href="#commits">Commit format</a></li>
+      <li><a href="#branching">Branching strategy</a></li>
+      <li><a href="#pull-request">Pull request</a></li>
+      <li><a href="#help">Getting help</a></li>
+      <li><a href="#code-review">Code review</a></li>
+    </ul>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="brand" style="margin-bottom: 12px;">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+            <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+            <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+            <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+          </svg>
+        </span>
+        MikroTik MCP
+      </div>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
+      <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
+    </div>
+    <div>
+      <h5>Docs</h5>
+      <ul>
+        <li><a href="index.html">Installation</a></li>
+        <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+        <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Source</h5>
+      <ul>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
+        <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-header').nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => btn.textContent = orig, 1200);
+      });
+    });
+  });
+</script>
+</body>
+</html>

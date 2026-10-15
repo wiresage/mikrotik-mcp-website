@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
+<title>Articles &amp; Tutorials — MikroTik MCP docs</title>
+<meta name="description" content="Real-world MikroTik MCP tutorials and 25 practical RouterOS scenarios — guest/IoT/management VLANs, port forwarding, firewall, DNS/DoH, routing, QoS, wireless, Layer 7, dual-WAN PCC, SNMP, scheduler backups, user management, and multi-device fleet workflows with the inventory — plus a Query Commands reference for verifying every configuration." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  /* Practical example card */
+  .ex-card {
+    border: 1px solid var(--line); border-radius: var(--rad-lg);
+    background: var(--bg-1); padding: 22px; margin: 18px 0;
+  }
+  .ex-card > h3 { scroll-margin-top: 90px; font-size: 16px; margin: 4px 0 12px; }
+  .ex-num {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-mute);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: block; margin-bottom: 2px;
+  }
+  .ex-card .label {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-mute); display: block; margin-bottom: 8px; font-family: var(--mono);
+  }
+  .ex-card .ask {
+    font-size: 14.5px; color: var(--ink); border-left: 2px solid var(--amber);
+    padding-left: 14px; margin: 0 0 16px; line-height: 1.55;
+  }
+  .ex-card .scenario {
+    font-size: 14px; color: var(--ink-dim); margin: 0 0 14px; line-height: 1.55;
+  }
+  .ex-card .willdo-label {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-mute); font-family: var(--mono); margin: 0 0 6px;
+  }
+  .ex-card ol { margin: 0 0 16px; padding-left: 18px; }
+  .ex-card ol li { font-size: 13px; color: var(--ink-dim); margin: 3px 0; }
+  /* Prominent learning-resource card */
+  .article-card {
+    border: 1px solid var(--line); border-left: 2px solid var(--lime);
+    border-radius: var(--rad-lg); background: var(--bg-1);
+    padding: 24px; margin: 20px 0;
+  }
+  .article-card .kicker {
+    font-family: var(--mono); font-size: 11px; color: var(--lime);
+    letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 8px;
+  }
+  .article-card h3 { font-size: 18px; margin: 0 0 6px; }
+  .article-card .by { font-size: 13px; color: var(--ink-mute); margin: 0 0 12px; }
+  .article-card .by a { color: var(--amber); }
+  .article-card p.desc { font-size: 14px; color: var(--ink-dim); line-height: 1.6; margin: 0 0 18px; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+        <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+        <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+        <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+        <line x1="7" y1="9" x2="5" y2="4" stroke="var(--amber)"/>
+        <line x1="12" y1="9" x2="12" y2="3" stroke="var(--amber)"/>
+        <line x1="17" y1="9" x2="19" y2="4" stroke="var(--amber)"/>
+        <circle cx="5" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="12" cy="3" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="19" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+      </svg>
+    </span>
+    MikroTik MCP <span class="brand-tag">docs</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#what">Overview</a>
+    <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html">Language server</a>
+    <a href="index.html">Docs</a>
+    <a href="reference.html">Reference</a>
+    <a href="examples.html" class="active">Examples</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="docs">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h6>Getting started</h6>
+    <ul>
+      <li><a href="index.html">Installation</a></li>
+      <li><a href="index.html#testing">Testing</a></li>
+      <li><a href="index.html#context">Context optimization</a></li>
+    </ul>
+    <h6>Integrations</h6>
+    <ul>
+      <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#inspector">MCP Inspector</a></li>
+      <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
+    </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
+    <h6>API reference</h6>
+    <ul>
+      <li><a href="reference.html#vlan">VLAN</a></li>
+      <li><a href="reference.html#firewall">Firewall</a></li>
+      <li><a href="reference.html#nat">NAT</a></li>
+      <li><a href="reference.html#dhcp">DHCP</a></li>
+      <li><a href="reference.html#dns">DNS</a></li>
+      <li><a href="reference.html#wireguard">WireGuard</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
+      <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html" class="active">Articles &amp; tutorials</a></li>
+    </ul>
+    <h6>Project</h6>
+    <ul>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="doc-main">
+    <div class="crumbs">
+      <a href="../index.html">MikroTik MCP</a> <span>/</span>
+      <a href="index.html">Docs</a> <span>/</span>
+      <span style="color:var(--ink);opacity:1">Articles</span>
+    </div>
+    <h1 class="doc-title">Articles &amp; tutorials</h1>
+    <p class="doc-lede">
+      MikroTik MCP lets you manage and configure RouterOS devices with natural language — describe
+      what you want, and the AI assistant runs the right tools for you. This is the learning hub:
+      real-world write-ups on AI-powered network management, plus 25 practical scenarios — including
+      five multi-device fleet workflows — that pair a plain-English prompt with the exact RouterOS
+      commands it produces.
+    </p>
+
+    <!-- ============ LEARNING RESOURCES ============ -->
+    <h2 id="learning" style="margin-top:0">Learning resources</h2>
+    <p>Two real-world write-ups: an introductory read on how AI reshapes traditional
+      network-management workflows, and a hands-on guide to running a whole MikroTik fleet from one
+      MCP server.</p>
+
+    <div class="article-card">
+      <p class="kicker">Medium · Article</p>
+      <h3>Bringing AI-Powered Network Management to Network Engineers</h3>
+      <p class="by">Author: <a href="https://medium.com/@sir.jeff.nasseri" target="_blank" rel="noopener">@jeff-nasseri</a></p>
+      <p class="desc">An introductory guide exploring how AI transforms traditional network management
+        workflows, with practical examples using MikroTik MCP.</p>
+      <a class="btn" href="https://medium.com/@sir.jeff.nasseri/bringing-ai-powered-network-management-to-network-engineers-06167aab409f" target="_blank" rel="noopener">Read on Medium ↗</a>
+    </div>
+
+    <div class="article-card">
+      <p class="kicker">Medium · Article</p>
+      <h3>Managing a Whole MikroTik Fleet from One MCP Server</h3>
+      <p class="by">Author: <a href="https://medium.com/@sir.jeff.nasseri" target="_blank" rel="noopener">@jeff-nasseri</a></p>
+      <p class="desc">How to manage multiple MikroTik devices from a single MCP server using the
+        <a href="reference.html#inventory">inventory</a>: configuring the YAML file, wiring it up
+        (including Docker), and prompt patterns for fleet work — discovery, tag-targeted rollouts,
+        cross-device comparison, and safe-mode-guarded changes.</p>
+      <a class="btn" href="https://medium.com/@sir.jeff.nasseri/managing-a-whole-mikrotik-fleet-from-one-mcp-server-60245de07073" target="_blank" rel="noopener">Read on Medium ↗</a>
+      <a class="btn" style="margin-left:8px" href="https://github.com/wiresage/mikrotik-mcp/blob/master/docs/articles/managing-a-mikrotik-fleet.md" target="_blank" rel="noopener">Read in the repo ↗</a>
+    </div>
+
+    <h3 id="diagrams" style="margin-top:34px">Diagrams</h3>
+    <p>The repository also documents itself visually: <a href="https://github.com/wiresage/mikrotik-mcp/tree/master/docs/diagrams" target="_blank" rel="noopener"><code>docs/diagrams</code></a>
+      holds <a href="https://www.drawio.com/" target="_blank" rel="noopener">draw.io</a> sources that live
+      next to the code they describe, so a pull request can change the drawing in the same commit.
+      <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/docs/diagrams/Inventory.drawio" target="_blank" rel="noopener"><code>Inventory.drawio</code></a>
+      maps the multi-device architecture: the LLM calls a tool, the tool passes a device
+      <code>title</code> to the connector, the inventory resolves that title to the device's SSH
+      client, and the command runs on the selected router. GitHub doesn't render <code>.drawio</code>
+      inline — open it with <a href="https://app.diagrams.net/" target="_blank" rel="noopener">app.diagrams.net</a>,
+      draw.io Desktop, or the VS Code Draw.io Integration extension.</p>
+
+    <!-- ============ 25 PRACTICAL EXAMPLES ============ -->
+    <h2 id="examples">25 practical examples</h2>
+    <p>Common network scenarios for developers learning to drive MikroTik devices through the MCP
+      tools. Each card shows the prompt you'd give the AI and the equivalent RouterOS CLI commands
+      it runs under the hood.</p>
+
+    <!-- Example 1 -->
+    <div class="ex-card" id="ex1">
+      <span class="ex-num">Example 01</span>
+      <h3>Create a Guest Network with VLAN</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Create a new VLAN 200 for the guest network on ether1, assign IP 192.168.200.1/24,
+        set up DHCP from .10 to .250, and add a masquerade NAT rule for internet access.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create VLAN 200 interface on ether1 with name "vlan200-guest"</li>
+        <li>Assign IP address 192.168.200.1/24 to the VLAN interface</li>
+        <li>Create an IP pool named "guest-pool" with range 192.168.200.10-250</li>
+        <li>Create DHCP network configuration with gateway and DNS servers</li>
+        <li>Create and enable DHCP server on the VLAN interface</li>
+        <li>Add masquerade NAT rule for internet access through ether1</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/interface vlan add name=vlan200-guest vlan-id=200 interface=ether1 comment="Guest Network"
+/ip address add address=192.168.200.1/24 interface=vlan200-guest
+/ip pool add name=guest-pool ranges=192.168.200.10-192.168.200.250
+/ip dhcp-server network add address=192.168.200.0/24 gateway=192.168.200.1 dns-server=8.8.8.8,8.8.4.4
+/ip dhcp-server add name=dhcp-guest interface=vlan200-guest address-pool=guest-pool lease-time=1h
+/ip firewall nat add chain=srcnat action=masquerade src-address=192.168.200.0/24 out-interface=ether1</pre>
+    </div>
+
+    <!-- Example 2 -->
+    <div class="ex-card" id="ex2">
+      <span class="ex-num">Example 02</span>
+      <h3>Create IoT Network with VLAN 50</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Set up an IoT network on VLAN 50 using the bridge interface. Assign IP
+        192.168.50.1/24, create DHCP server with range .10 to .200 and 24-hour lease time. Add
+        firewall rules to block IoT devices from accessing the main LAN (192.168.1.0/24) but allow
+        internet access.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create VLAN 50 interface on bridge with name "vlan50-iot"</li>
+        <li>Assign IP address 192.168.50.1/24 to the VLAN interface</li>
+        <li>Create IP pool "iot-pool" with range 192.168.50.10-200</li>
+        <li>Configure DHCP network with local DNS server</li>
+        <li>Create DHCP server with 24-hour lease time</li>
+        <li>Add firewall filter rule to drop traffic from IoT to LAN subnet</li>
+        <li>Add masquerade NAT rule for internet access</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/interface vlan add name=vlan50-iot vlan-id=50 interface=bridge comment="IoT Devices"
+/ip address add address=192.168.50.1/24 interface=vlan50-iot
+/ip pool add name=iot-pool ranges=192.168.50.10-192.168.50.200
+/ip dhcp-server network add address=192.168.50.0/24 gateway=192.168.50.1 dns-server=192.168.50.1
+/ip dhcp-server add name=dhcp-iot interface=vlan50-iot address-pool=iot-pool lease-time=24h
+/ip firewall filter add chain=forward src-address=192.168.50.0/24 dst-address=192.168.1.0/24 action=drop comment="Block IoT to LAN"
+/ip firewall nat add chain=srcnat src-address=192.168.50.0/24 out-interface=ether1 action=masquerade</pre>
+    </div>
+
+    <!-- Example 3 -->
+    <div class="ex-card" id="ex3">
+      <span class="ex-num">Example 03</span>
+      <h3>Port Forwarding for Web Server</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Configure port forwarding to redirect incoming HTTP (port 80) and HTTPS (port 443)
+        traffic from ether1 to my internal web server at 192.168.1.100. Also add firewall rules to
+        allow this forwarded traffic.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create destination NAT rule for port 80 (HTTP) forwarding to 192.168.1.100</li>
+        <li>Create destination NAT rule for port 443 (HTTPS) forwarding to 192.168.1.100</li>
+        <li>Add firewall filter rules to accept forwarded traffic to the web server on ports 80 and 443</li>
+        <li>Properly configure both dst-nat and forward chain rules</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip firewall nat add chain=dstnat protocol=tcp dst-port=80 in-interface=ether1 action=dst-nat to-addresses=192.168.1.100 to-ports=80 comment="HTTP to Web Server"
+/ip firewall nat add chain=dstnat protocol=tcp dst-port=443 in-interface=ether1 action=dst-nat to-addresses=192.168.1.100 to-ports=443 comment="HTTPS to Web Server"
+/ip firewall filter add chain=forward protocol=tcp dst-address=192.168.1.100 dst-port=80,443 action=accept comment="Allow Web Server Traffic"</pre>
+    </div>
+
+    <!-- Example 4 -->
+    <div class="ex-card" id="ex4">
+      <span class="ex-num">Example 04</span>
+      <h3>Basic Firewall Protection</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Set up basic firewall security rules for my router. Accept established and related
+        connections, drop invalid packets, allow ICMP ping, allow SSH access from WAN on port 22,
+        and drop all other incoming WAN traffic. Also configure similar rules for forwarded traffic.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create input chain rule to accept established/related connections</li>
+        <li>Create rule to drop invalid connection states</li>
+        <li>Add rule to allow ICMP (ping) protocol</li>
+        <li>Add rule to allow SSH (TCP port 22) from WAN interface</li>
+        <li>Add default drop rule for all other WAN input traffic</li>
+        <li>Create corresponding forward chain rules for established/related and invalid connections</li>
+        <li>Order rules properly for optimal firewall performance</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip firewall filter add chain=input connection-state=established,related action=accept comment="Accept Established/Related"
+/ip firewall filter add chain=input connection-state=invalid action=drop comment="Drop Invalid"
+/ip firewall filter add chain=input protocol=icmp action=accept comment="Allow ICMP"
+/ip firewall filter add chain=input in-interface=ether1 protocol=tcp dst-port=22 action=accept comment="Allow SSH from WAN"
+/ip firewall filter add chain=input in-interface=ether1 action=drop comment="Drop All Other WAN Input"
+/ip firewall filter add chain=forward connection-state=established,related action=accept
+/ip firewall filter add chain=forward connection-state=invalid action=drop</pre>
+    </div>
+
+    <!-- Example 5 -->
+    <div class="ex-card" id="ex5">
+      <span class="ex-num">Example 05</span>
+      <h3>VPN Server VLAN Setup</h3>
+      <p class="scenario"><strong>Scenario:</strong> Create dedicated VLAN 100 for VPN clients.</p>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/interface vlan add name=vlan100-vpn vlan-id=100 interface=bridge comment="VPN Clients"
+/ip address add address=10.10.100.1/24 interface=vlan100-vpn
+/ip pool add name=vpn-pool ranges=10.10.100.10-10.10.100.250
+/ip dhcp-server network add address=10.10.100.0/24 gateway=10.10.100.1 dns-server=8.8.8.8
+/ip dhcp-server add name=dhcp-vpn interface=vlan100-vpn address-pool=vpn-pool lease-time=8h
+/ip firewall nat add chain=srcnat src-address=10.10.100.0/24 action=masquerade comment="VPN Internet Access"</pre>
+    </div>
+
+    <!-- Example 6 -->
+    <div class="ex-card" id="ex6">
+      <span class="ex-num">Example 06</span>
+      <h3>Management VLAN</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Set up a secure management network on VLAN 10 using the bridge. Assign
+        192.168.10.1/24 as the gateway, create DHCP for range .10 to .50 with 4-hour leases, and add
+        a firewall rule to allow all traffic from this management subnet to access the router.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create VLAN 10 interface on bridge with name "vlan10-mgmt"</li>
+        <li>Assign IP address 192.168.10.1/24 to the management VLAN</li>
+        <li>Create IP pool "mgmt-pool" with limited range (.10-.50) for administrators</li>
+        <li>Configure DHCP network with local DNS server (192.168.10.1)</li>
+        <li>Create DHCP server with 4-hour lease time</li>
+        <li>Add firewall filter rule in input chain to accept all traffic from management subnet</li>
+        <li>Ensure proper commenting for security auditing</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/interface vlan add name=vlan10-mgmt vlan-id=10 interface=bridge comment="Management Network"
+/ip address add address=192.168.10.1/24 interface=vlan10-mgmt
+/ip pool add name=mgmt-pool ranges=192.168.10.10-192.168.10.50
+/ip dhcp-server network add address=192.168.10.0/24 gateway=192.168.10.1 dns-server=192.168.10.1
+/ip dhcp-server add name=dhcp-mgmt interface=vlan10-mgmt address-pool=mgmt-pool lease-time=4h
+/ip firewall filter add chain=input src-address=192.168.10.0/24 action=accept comment="Allow Management Access"</pre>
+    </div>
+
+    <!-- Example 7 -->
+    <div class="ex-card" id="ex7">
+      <span class="ex-num">Example 07</span>
+      <h3>DNS Configuration with DoH</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Configure the router to use Cloudflare DNS servers (1.1.1.1 and 1.0.0.1) with
+        DNS-over-HTTPS enabled for privacy. Set cache size to 4096 KiB, allow remote DNS requests,
+        and add static DNS entries for router.local pointing to 192.168.1.1 and nas.local pointing
+        to 192.168.1.10.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Set primary and secondary DNS servers to Cloudflare (1.1.1.1, 1.0.0.1)</li>
+        <li>Enable remote DNS request handling</li>
+        <li>Configure DNS cache size to 4096 KiB</li>
+        <li>Enable DNS-over-HTTPS using Cloudflare's DoH server</li>
+        <li>Enable certificate verification for DoH</li>
+        <li>Add static DNS entry for "router.local" → 192.168.1.1</li>
+        <li>Add static DNS entry for "nas.local" → 192.168.1.10</li>
+        <li>Add appropriate comments for each static entry</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip dns set servers=1.1.1.1,1.0.0.1 allow-remote-requests=yes cache-size=4096KiB
+/ip dns set use-doh-server=https://cloudflare-dns.com/dns-query verify-doh-cert=yes
+/ip dns static add name=router.local address=192.168.1.1 comment="Router Local DNS"
+/ip dns static add name=nas.local address=192.168.1.10 comment="NAS Device"</pre>
+    </div>
+
+    <!-- Example 8 -->
+    <div class="ex-card" id="ex8">
+      <span class="ex-num">Example 08</span>
+      <h3>Static Routes for Multiple Subnets</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Add static routes for my network: route traffic to 192.168.20.0/24 via gateway
+        192.168.1.254, route 192.168.30.0/24 via 192.168.1.253, route 10.0.0.0/8 via 192.168.1.252
+        with distance 10, and set default route to 192.168.1.1 with distance 1.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create static route for subnet 192.168.20.0/24 via gateway 192.168.1.254</li>
+        <li>Create static route for subnet 192.168.30.0/24 via gateway 192.168.1.253</li>
+        <li>Create static route for large private network 10.0.0.0/8 via 192.168.1.252 with custom distance</li>
+        <li>Create default route (0.0.0.0/0) via 192.168.1.1 with distance 1</li>
+        <li>Add descriptive comments for each route</li>
+        <li>Ensure proper route priority using distance values</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip route add dst-address=192.168.20.0/24 gateway=192.168.1.254 comment="Route to Subnet 20"
+/ip route add dst-address=192.168.30.0/24 gateway=192.168.1.253 comment="Route to Subnet 30"
+/ip route add dst-address=10.0.0.0/8 gateway=192.168.1.252 distance=10 comment="Route to Private Network"
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1 distance=1 comment="Default Route"</pre>
+    </div>
+
+    <!-- Example 9 -->
+    <div class="ex-card" id="ex9">
+      <span class="ex-num">Example 09</span>
+      <h3>Rate Limiting for Guest Network</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Limit bandwidth for my guest network (192.168.200.0/24) to prevent abuse. Set
+        maximum download speed to 10 Mbps and upload speed to 5 Mbps using queue rules, and ensure
+        guest traffic is allowed through the firewall.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create simple queue named "guest-download" targeting 192.168.200.0/24</li>
+        <li>Set maximum download limit to 10M/10M (10 Mbps)</li>
+        <li>Create simple queue named "guest-upload" targeting 192.168.200.0/24</li>
+        <li>Set maximum upload limit to 5M/5M (5 Mbps)</li>
+        <li>Add firewall filter rule to accept forwarded traffic from guest network</li>
+        <li>Add descriptive comments for bandwidth management</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/queue simple add name=guest-download target=192.168.200.0/24 dst=0.0.0.0/0 max-limit=10M/10M comment="Guest Network Limit"
+/queue simple add name=guest-upload target=192.168.200.0/24 dst=0.0.0.0/0 max-limit=5M/5M comment="Guest Upload Limit"
+/ip firewall filter add chain=forward src-address=192.168.200.0/24 action=accept comment="Allow Guest Forward"</pre>
+    </div>
+
+    <!-- Example 10 -->
+    <div class="ex-card" id="ex10">
+      <span class="ex-num">Example 10</span>
+      <h3>Block Specific Websites</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Block access to social media websites including facebook.com, twitter.com, and
+        instagram.com. Create an address list called "blocked-sites" and add a firewall rule to
+        reject traffic to these sites with an ICMP network unreachable message.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create firewall address-list named "blocked-sites"</li>
+        <li>Add facebook.com to the blocked-sites list</li>
+        <li>Add twitter.com to the blocked-sites list</li>
+        <li>Add instagram.com to the blocked-sites list</li>
+        <li>Create firewall filter rule in forward chain</li>
+        <li>Configure rule to reject traffic matching dst-address-list=blocked-sites</li>
+        <li>Set reject-with to icmp-network-unreachable for proper client notification</li>
+        <li>Add descriptive comment "Block Social Media"</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip firewall address-list add list=blocked-sites address=facebook.com comment="Block Facebook"
+/ip firewall address-list add list=blocked-sites address=twitter.com comment="Block Twitter"
+/ip firewall address-list add list=blocked-sites address=instagram.com comment="Block Instagram"
+/ip firewall filter add chain=forward dst-address-list=blocked-sites action=reject reject-with=icmp-network-unreachable comment="Block Social Media"</pre>
+    </div>
+
+    <!-- Example 11 -->
+    <div class="ex-card" id="ex11">
+      <span class="ex-num">Example 11</span>
+      <h3>Wireless Access Point Configuration</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Configure wlan1 as an access point with SSID "MyNetwork" using WPA2-PSK security.
+        Set the password to "YourStrongPassword123", use 2.4GHz band with b/g/n support, set channel
+        width to 20/40MHz-Ce, configure country to US, and enable the interface.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create wireless security profile named "secure-wifi"</li>
+        <li>Set authentication type to WPA2-PSK with dynamic keys</li>
+        <li>Configure pre-shared key (password) to "YourStrongPassword123"</li>
+        <li>Configure wlan1 interface in AP bridge mode</li>
+        <li>Set SSID to "MyNetwork"</li>
+        <li>Apply the secure-wifi security profile</li>
+        <li>Set frequency to auto with 2.4GHz b/g/n band support</li>
+        <li>Configure channel width to 20/40MHz-Ce</li>
+        <li>Set regulatory country to US</li>
+        <li>Enable the wireless interface (disabled=no)</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/interface wireless security-profiles add name=secure-wifi authentication-types=wpa2-psk mode=dynamic-keys wpa2-pre-shared-key=YourStrongPassword123
+/interface wireless set wlan1 mode=ap-bridge ssid=MyNetwork security-profile=secure-wifi frequency=auto band=2ghz-b/g/n disabled=no
+/interface wireless set wlan1 channel-width=20/40mhz-Ce country=us</pre>
+    </div>
+
+    <!-- Example 12 -->
+    <div class="ex-card" id="ex12">
+      <span class="ex-num">Example 12</span>
+      <h3>DHCP Reservation by MAC Address</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Reserve specific IP addresses for my devices: assign 192.168.1.50 to office
+        printer with MAC AA:BB:CC:DD:EE:01, assign 192.168.1.51 to NAS server with MAC
+        AA:BB:CC:DD:EE:02, and assign 192.168.1.52 to Security Camera 1 with MAC AA:BB:CC:DD:EE:03.
+        Make these leases static.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create DHCP lease for 192.168.1.50 bound to MAC AA:BB:CC:DD:EE:01</li>
+        <li>Add comment "Office Printer" to first lease</li>
+        <li>Create DHCP lease for 192.168.1.51 bound to MAC AA:BB:CC:DD:EE:02</li>
+        <li>Add comment "NAS Server" to second lease</li>
+        <li>Create DHCP lease for 192.168.1.52 bound to MAC AA:BB:CC:DD:EE:03</li>
+        <li>Add comment "Security Camera 1" to third lease</li>
+        <li>Convert the lease at 192.168.1.50 to static binding</li>
+        <li>Ensure leases persist across reboots</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip dhcp-server lease add address=192.168.1.50 mac-address=AA:BB:CC:DD:EE:01 comment="Office Printer"
+/ip dhcp-server lease add address=192.168.1.51 mac-address=AA:BB:CC:DD:EE:02 comment="NAS Server"
+/ip dhcp-server lease add address=192.168.1.52 mac-address=AA:BB:CC:DD:EE:03 comment="Security Camera 1"
+/ip dhcp-server lease make-static [find address=192.168.1.50]</pre>
+    </div>
+
+    <!-- Example 13 -->
+    <div class="ex-card" id="ex13">
+      <span class="ex-num">Example 13</span>
+      <h3>Separate VLANs for Departments</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Create isolated networks for three departments on the bridge interface: HR
+        department on VLAN 110 with subnet 192.168.110.0/24 and DHCP pool .10-.100, Finance
+        department on VLAN 120 with subnet 192.168.120.0/24 and DHCP pool .10-.100, IT department on
+        VLAN 130 with subnet 192.168.130.0/24 and DHCP pool .10-.100. Each should have its own DHCP
+        server.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create VLAN 110 interface "vlan110-hr" on bridge</li>
+        <li>Assign IP 192.168.110.1/24 to HR VLAN</li>
+        <li>Create IP pool "hr-pool" with range 192.168.110.10-100</li>
+        <li>Create DHCP server "dhcp-hr" for HR department</li>
+        <li>Repeat the same VLAN + address + pool + server steps for Finance (VLAN 120) and IT (VLAN 130)</li>
+        <li>Configure appropriate DHCP networks for each department</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># HR Department - VLAN 110
+/interface vlan add name=vlan110-hr vlan-id=110 interface=bridge
+/ip address add address=192.168.110.1/24 interface=vlan110-hr
+/ip pool add name=hr-pool ranges=192.168.110.10-192.168.110.100
+/ip dhcp-server add name=dhcp-hr interface=vlan110-hr address-pool=hr-pool
+
+# Finance Department - VLAN 120
+/interface vlan add name=vlan120-finance vlan-id=120 interface=bridge
+/ip address add address=192.168.120.1/24 interface=vlan120-finance
+/ip pool add name=finance-pool ranges=192.168.120.10-192.168.120.100
+/ip dhcp-server add name=dhcp-finance interface=vlan120-finance address-pool=finance-pool
+
+# IT Department - VLAN 130
+/interface vlan add name=vlan130-it vlan-id=130 interface=bridge
+/ip address add address=192.168.130.1/24 interface=vlan130-it
+/ip pool add name=it-pool ranges=192.168.130.10-192.168.130.100
+/ip dhcp-server add name=dhcp-it interface=vlan130-it address-pool=it-pool</pre>
+    </div>
+
+    <!-- Example 14 -->
+    <div class="ex-card" id="ex14">
+      <span class="ex-num">Example 14</span>
+      <h3>Time-Based Access Control</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Set up time-based access control for the guest network (192.168.200.0/24). Create
+        schedulers to enable guest network access at 8:00 AM and disable it at 6:00 PM daily. Add a
+        firewall rule that can be toggled by these schedulers.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create system scheduler named "enable-guest" at 08:00:00 with 1-day interval</li>
+        <li>Configure script to enable firewall rule with comment "Guest Access"</li>
+        <li>Create system scheduler named "disable-guest" at 18:00:00 with 1-day interval</li>
+        <li>Configure script to disable firewall rule with comment "Guest Access"</li>
+        <li>Create firewall filter rule in forward chain for source 192.168.200.0/24</li>
+        <li>Set action to accept with comment "Guest Access"; initially create rule as disabled</li>
+        <li>Add appropriate comments to schedulers explaining business hours control</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/system scheduler add name=enable-guest start-time=08:00:00 interval=1d on-event="/ip firewall filter enable [find comment=\"Guest Access\"]" comment="Enable Guest at 8 AM"
+/system scheduler add name=disable-guest start-time=18:00:00 interval=1d on-event="/ip firewall filter disable [find comment=\"Guest Access\"]" comment="Disable Guest at 6 PM"
+/ip firewall filter add chain=forward src-address=192.168.200.0/24 action=accept disabled=yes comment="Guest Access"</pre>
+    </div>
+
+    <!-- Example 15 -->
+    <div class="ex-card" id="ex15">
+      <span class="ex-num">Example 15</span>
+      <h3>Backup Multiple VLANs to Single Gateway</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Configure failover routing with primary gateway at 192.168.1.1 (distance 1) and
+        backup gateway at 192.168.1.2 (distance 2). Set up NAT masquerade for three networks through
+        ether1: IoT network (192.168.50.0/24), VPN network (192.168.100.0/24), and Guest network
+        (192.168.200.0/24).</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create default route (0.0.0.0/0) via primary gateway 192.168.1.1 with distance 1</li>
+        <li>Create backup default route via secondary gateway 192.168.1.2 with distance 2</li>
+        <li>Create NAT masquerade rule for IoT subnet (192.168.50.0/24) via ether1</li>
+        <li>Create NAT masquerade rule for VPN subnet (192.168.100.0/24) via ether1</li>
+        <li>Create NAT masquerade rule for Guest subnet (192.168.200.0/24) via ether1</li>
+        <li>Configure automatic failover based on route distance</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1 distance=1 comment="Primary Gateway"
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.2 distance=2 comment="Backup Gateway"
+/ip firewall nat add chain=srcnat src-address=192.168.50.0/24 out-interface=ether1 action=masquerade comment="IoT NAT"
+/ip firewall nat add chain=srcnat src-address=192.168.100.0/24 out-interface=ether1 action=masquerade comment="VPN NAT"
+/ip firewall nat add chain=srcnat src-address=192.168.200.0/24 out-interface=ether1 action=masquerade comment="Guest NAT"</pre>
+    </div>
+
+    <!-- Example 16 -->
+    <div class="ex-card" id="ex16">
+      <span class="ex-num">Example 16</span>
+      <h3>Layer 7 Protocol Filtering</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Block BitTorrent traffic and limit YouTube streaming using Layer 7 filtering.
+        Create a layer7 protocol matcher for BitTorrent using the pattern for detecting torrent
+        protocol headers, create another matcher for YouTube traffic, then add firewall rules to
+        drop BitTorrent completely and limit YouTube to 5 Mbps.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create Layer 7 protocol named "bittorrent" with a regex matching BitTorrent signatures</li>
+        <li>Create Layer 7 protocol named "youtube" matching YouTube and Google Video domains</li>
+        <li>Create firewall filter rule in forward chain matching layer7-protocol=bittorrent, action drop</li>
+        <li>Create firewall filter rule matching layer7-protocol=youtube, action accept with 5M/5M limit</li>
+        <li>Add descriptive comments for traffic management purposes</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip firewall layer7-protocol add name=bittorrent regexp="^(\x13bittorrent protocol|azver\x01$|get /announce\?info_hash=)" comment="Block Torrents"
+/ip firewall layer7-protocol add name=youtube regexp="^.*(youtube|googlevideo)\.com.*$" comment="Detect YouTube"
+/ip firewall filter add chain=forward layer7-protocol=bittorrent action=drop comment="Drop Torrent Traffic"
+/ip firewall filter add chain=forward layer7-protocol=youtube action=accept limit=5M/5M comment="Limit YouTube"</pre>
+    </div>
+
+    <!-- Example 17 -->
+    <div class="ex-card" id="ex17">
+      <span class="ex-num">Example 17</span>
+      <h3>Dual WAN Load Balancing</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Set up load balancing between two WAN connections. WAN1 is on ether1 with IP
+        192.168.1.2/24 and gateway 192.168.1.1, WAN2 is on ether2 with IP 192.168.2.2/24 and gateway
+        192.168.2.1. Configure per-connection classifier (PCC) to distribute traffic 50/50 between
+        both connections, with ping check for failover, and mark connections and routes
+        appropriately.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Assign IP address 192.168.1.2/24 to ether1 (WAN1) and 192.168.2.2/24 to ether2 (WAN2)</li>
+        <li>Create route for 0.0.0.0/0 via 192.168.1.1 with routing-mark=wan1-route and ping check</li>
+        <li>Create route for 0.0.0.0/0 via 192.168.2.1 with routing-mark=wan2-route</li>
+        <li>Create mangle rule in prerouting chain using per-connection-classifier (both-addresses:2/0)</li>
+        <li>Mark new connections as wan1-conn and mark routing for wan1-conn as wan1-route</li>
+        <li>Set up corresponding rules for wan2-conn and wan2-route</li>
+        <li>Configure proper distance values for route priority</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/ip address add address=192.168.1.2/24 interface=ether1 comment="WAN1"
+/ip address add address=192.168.2.2/24 interface=ether2 comment="WAN2"
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1 distance=1 routing-mark=wan1-route check-gateway=ping
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.2.1 distance=2 routing-mark=wan2-route check-gateway=ping
+/ip firewall mangle add chain=prerouting in-interface=bridge connection-mark=no-mark action=mark-connection new-connection-mark=wan1-conn per-connection-classifier=both-addresses:2/0
+/ip firewall mangle add chain=prerouting in-interface=bridge connection-mark=wan1-conn action=mark-routing new-routing-mark=wan1-route</pre>
+    </div>
+
+    <!-- Example 18 -->
+    <div class="ex-card" id="ex18">
+      <span class="ex-num">Example 18</span>
+      <h3>User Management and Groups</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Create a user management structure with different access levels. Create a
+        "monitoring" group with read-only access to SSH, web, and winbox. Create a "network-admin"
+        group with full access except sensitive operations. Add three users: "monitor" with password
+        "MonitorPass123" in monitoring group, "netadmin" with password "AdminPass456" in
+        network-admin group, and "readonly" with password "ReadPass789" in read group.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create user group "monitoring" with policies read, ssh, web, winbox</li>
+        <li>Create user group "network-admin" with policies read, write, ssh, ftp, web, winbox, policy, test</li>
+        <li>Create user "monitor" / MonitorPass123 in the monitoring group</li>
+        <li>Create user "netadmin" / AdminPass456 in the network-admin group</li>
+        <li>Create user "readonly" / ReadPass789 in the read group</li>
+        <li>Add descriptive comments to each group and user</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/user group add name=monitoring policy=read,ssh,web,winbox comment="Monitoring Only"
+/user group add name=network-admin policy=read,write,ssh,ftp,web,winbox,policy,test comment="Network Admins"
+/user add name=monitor password=MonitorPass123 group=monitoring comment="Monitoring User"
+/user add name=netadmin password=AdminPass456 group=network-admin comment="Network Administrator"
+/user add name=readonly password=ReadPass789 group=read comment="Read Only User"</pre>
+    </div>
+
+    <!-- Example 19 -->
+    <div class="ex-card" id="ex19">
+      <span class="ex-num">Example 19</span>
+      <h3>SNMP Monitoring Setup</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Enable SNMP v2 for network monitoring tools. Set contact to "admin@company.com"
+        and location to "Server Room", use trap version 2. Configure the default "public" community
+        to allow read-only access from 192.168.1.0/24. Add a new community called "monitoring" with
+        read-only access from management subnet 192.168.10.0/24, and create firewall rule to allow
+        SNMP (UDP port 161) from the monitoring subnet.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Enable SNMP service on the router</li>
+        <li>Set SNMP contact to "admin@company.com" and location to "Server Room"</li>
+        <li>Configure trap version to 2</li>
+        <li>Configure "public" community for 192.168.1.0/24 with read-only access</li>
+        <li>Create new SNMP community "monitoring" for 192.168.10.0/24 with read-only access</li>
+        <li>Create firewall filter rule in input chain matching UDP/161 from 192.168.10.0/24</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code">/snmp set enabled=yes contact="admin@company.com" location="Server Room" trap-version=2
+/snmp community set public address=192.168.1.0/24 read-access=yes write-access=no
+/snmp community add name=monitoring address=192.168.10.0/24 read-access=yes write-access=no
+/ip firewall filter add chain=input protocol=udp dst-port=161 src-address=192.168.10.0/24 action=accept comment="Allow SNMP from Monitoring"</pre>
+    </div>
+
+    <!-- Example 20 -->
+    <div class="ex-card" id="ex20">
+      <span class="ex-num">Example 20</span>
+      <h3>Complete Backup and Restore Strategy</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Set up an automated backup system for my router. Create manual backup named
+        "daily-backup", export configuration to "daily-config" file. Schedule automatic backups to
+        run daily at 2:00 AM with date in filename. Schedule weekly cleanup at 3:00 AM on Sundays to
+        delete backups older than 7 days. If USB drive is mounted as usb1, copy backups to USB drive
+        in a backups folder.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Create the "daily-backup" backup and the "daily-config" export</li>
+        <li>Create a "daily-backup" scheduler at 02:00:00 (1-day interval) writing date-stamped backups</li>
+        <li>Create a "cleanup-old-backups" scheduler at 03:00:00 (7-day interval) removing files older than 7 days (604800s)</li>
+        <li>Copy backup files to usb1/backups/ when the USB drive is mounted, with error handling for its availability</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># Create backup
+/system backup save name=daily-backup
+
+# Export configuration
+/export file=daily-config
+
+# Schedule daily backup at 2 AM
+/system scheduler add name=daily-backup start-time=02:00:00 interval=1d on-event="/system backup save name=auto-backup-\$[/system clock get date]" comment="Daily Backup"
+
+# Schedule weekly cleanup (keep last 7 backups)
+/system scheduler add name=cleanup-old-backups start-time=03:00:00 interval=7d on-event="/file remove [find name~\"auto-backup\" where creation-time<([:timestamp]-604800)]" comment="Weekly Cleanup"
+
+# Export to USB (if USB drive mounted)
+/file copy [find name~"backup"] destination-path=usb1/backups/</pre>
+    </div>
+
+    <!-- ============ MULTI-DEVICE EXAMPLES (INVENTORY) ============ -->
+    <h2 id="multi">Multi-device examples (inventory)</h2>
+    <p>The examples above target a single router. With an
+      <a href="reference.html#inventory">inventory</a> configured, one MCP server manages a whole
+      fleet: every tool accepts a <code>device</code> argument naming the inventory
+      <code>title</code> to target, and a <code>list_devices</code> tool lets the AI discover the
+      fleet on its own. The prompt-engineering pattern is simple — <strong>name your devices the way
+      you talk about them</strong> (<code>office-core</code>, <code>branch-berlin</code>), then refer
+      to them by name, by tag, or just say "all devices". If the AI ever omits or mistypes a device,
+      the server answers with the list of valid titles, so it corrects itself on the next call.</p>
+    <p>These examples assume this inventory:</p>
+    <div class="code-header"><span>inventory.yaml</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">- title: office-core
+  host: 192.168.88.1
+  username: admin
+  tags: [office, core]
+  region: NL
+
+- title: branch-berlin
+  host: 10.20.0.1
+  username: admin
+  tags: [branch]
+  region: DE</pre>
+
+    <!-- Example 21 -->
+    <div class="ex-card" id="ex21">
+      <span class="ex-num">Example 21</span>
+      <h3>Discover and Audit the Fleet</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Which MikroTik devices do you manage? For each one, show me its identity,
+        RouterOS version, and which interfaces are actually running.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Call <code>list_devices</code> to discover the fleet (titles, hosts, tags, regions)</li>
+        <li>Call <code>list_interfaces(device="office-core")</code> and filter for running interfaces</li>
+        <li>Call <code>list_interfaces(device="branch-berlin")</code> and do the same</li>
+        <li>Export the system identity from each device</li>
+        <li>Summarize the fleet in one table: title, host, identity, version, running interfaces</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># on office-core
+/system identity print
+/system resource print
+/interface print where running
+
+# on branch-berlin
+/system identity print
+/system resource print
+/interface print where running</pre>
+    </div>
+
+    <!-- Example 22 -->
+    <div class="ex-card" id="ex22">
+      <span class="ex-num">Example 22</span>
+      <h3>Roll Out a VLAN Across Tagged Devices</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">On every device tagged "office", create VLAN 40 on ether2 named vlan40-voip with
+        IP 10.40.0.1/24. Verify each device afterwards and tell me if any of them failed.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Call <code>list_devices</code> and select the devices whose tags include "office"</li>
+        <li>For each matching device (here only office-core): <code>create_vlan_interface(device="office-core", name="vlan40-voip", vlan_id=40, interface="ether2")</code> then <code>add_ip_address(device="office-core", address="10.40.0.1/24", interface="vlan40-voip")</code></li>
+        <li>Verify with <code>list_vlan_interfaces(device="office-core")</code> and <code>list_ip_addresses(device="office-core")</code></li>
+        <li>Report per-device success or failure instead of assuming the writes landed</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># on each device tagged "office"
+/interface vlan add name=vlan40-voip vlan-id=40 interface=ether2
+/ip address add address=10.40.0.1/24 interface=vlan40-voip
+/interface vlan print
+/ip address print where interface=vlan40-voip</pre>
+    </div>
+
+    <!-- Example 23 -->
+    <div class="ex-card" id="ex23">
+      <span class="ex-num">Example 23</span>
+      <h3>Compare Configuration Between Two Devices</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Compare the firewall filter rules on office-core and branch-berlin. Summarize
+        what exists on one but not the other, and flag anything on branch-berlin that allows traffic
+        office-core would drop.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Call <code>list_filter_rules(device="office-core")</code> and <code>list_filter_rules(device="branch-berlin")</code></li>
+        <li>Diff the two rule sets by chain, action, and match criteria</li>
+        <li>Highlight rules present on only one device</li>
+        <li>Call out permissive rules on branch-berlin that contradict office-core policy</li>
+        <li>Present the result as a summary, not a raw dump</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># on office-core
+/ip firewall filter print detail
+
+# on branch-berlin
+/ip firewall filter print detail
+
+# then compare the two outputs by hand</pre>
+    </div>
+
+    <!-- Example 24 -->
+    <div class="ex-card" id="ex24">
+      <span class="ex-num">Example 24</span>
+      <h3>Risky Change on One Device, Guarded by Safe Mode</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">I need to tighten the firewall on branch-berlin, but I'm remote and can't afford
+        to lock myself out. Enable safe mode on it first, add a forward-chain drop rule for
+        203.0.113.0/24, show me the resulting rules, and only commit if the rule looks correct.
+        office-core must not be touched.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Call <code>enable_safe_mode(device="branch-berlin")</code> — safe mode is tracked per device, so office-core is unaffected</li>
+        <li>Create the rule with <code>create_filter_rule(device="branch-berlin", chain="forward", action="drop", dst_address="203.0.113.0/24")</code></li>
+        <li>Verify with <code>list_filter_rules(device="branch-berlin")</code></li>
+        <li>If correct: <code>commit_safe_mode(device="branch-berlin")</code> to persist; if wrong: <code>rollback_safe_mode(device="branch-berlin")</code> and the router reverts automatically</li>
+        <li>Confirm <code>safe_mode_status(device="office-core")</code> still reports inactive</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># on branch-berlin (interactive session)
+# Ctrl+X                                  &lt;- enter safe mode
+/ip firewall filter add chain=forward action=drop dst-address=203.0.113.0/24
+/ip firewall filter print
+# Ctrl+X                                  &lt;- commit and leave safe mode
+# (or drop the session to auto-revert)</pre>
+    </div>
+
+    <!-- Example 25 -->
+    <div class="ex-card" id="ex25">
+      <span class="ex-num">Example 25</span>
+      <h3>Fleet-Wide DNS Record with Per-Device Verification</h3>
+      <span class="label">Prompt to AI</span>
+      <p class="ask">Add a static DNS record printer.lan pointing to 192.168.88.50 on all devices.
+        Then query each device to prove the record resolves everywhere.</p>
+      <p class="willdo-label">What AI will do</p>
+      <ol>
+        <li>Call <code>list_devices</code> to enumerate the fleet</li>
+        <li>For each device: <code>add_dns_static(device=…, name="printer.lan", address="192.168.88.50")</code></li>
+        <li>Confirm with <code>list_dns_static(device=…)</code>, then prove resolution with <code>test_dns_query(device=…, hostname="printer.lan")</code></li>
+        <li>Report a per-device table: created, verified, resolved</li>
+      </ol>
+      <div class="code-header"><span># Manual RouterOS commands</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"># on every device
+/ip dns static add name=printer.lan address=192.168.88.50
+/ip dns static print
+/resolve printer.lan</pre>
+    </div>
+
+    <!-- ============ QUERY COMMANDS REFERENCE ============ -->
+    <h2 id="query">Query commands reference</h2>
+    <p>Use these commands to verify your configurations.</p>
+    <div class="code-header"><span># verify VLANs, addresses, DHCP, firewall, routes &amp; more</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"># List all VLANs
+/interface vlan print
+
+# List all IP addresses
+/ip address print
+
+# List all IP pools
+/ip pool print detail
+
+# List DHCP servers
+/ip dhcp-server print
+
+# List DHCP networks
+/ip dhcp-server network print
+
+# List NAT rules
+/ip firewall nat print
+
+# List filter rules
+/ip firewall filter print
+
+# List routes
+/ip route print
+
+# List users
+/user print
+
+# List active connections
+/ip firewall connection print
+
+# System resources
+/system resource print
+
+# Interface statistics
+/interface print stats</pre>
+
+    <div class="pager">
+      <a href="examples.html">
+        <span class="label">← previous</span>
+        <span class="target">Examples</span>
+      </a>
+      <a href="contributing.html" class="next">
+        <span class="label">next →</span>
+        <span class="target">Contributing</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- TOC -->
+  <aside class="toc">
+    <h6>On this page</h6>
+    <ul>
+      <li><a href="#learning">Learning resources</a></li>
+      <li><a href="#diagrams">— Diagrams</a></li>
+      <li><a href="#examples">25 practical examples</a></li>
+      <li><a href="#ex1">1 · Guest VLAN</a></li>
+      <li><a href="#ex2">2 · IoT VLAN 50</a></li>
+      <li><a href="#ex3">3 · Port forwarding</a></li>
+      <li><a href="#ex4">4 · Basic firewall</a></li>
+      <li><a href="#ex5">5 · VPN VLAN</a></li>
+      <li><a href="#ex6">6 · Management VLAN</a></li>
+      <li><a href="#ex7">7 · DNS + DoH</a></li>
+      <li><a href="#ex8">8 · Static routes</a></li>
+      <li><a href="#ex9">9 · Rate limiting</a></li>
+      <li><a href="#ex10">10 · Block sites</a></li>
+      <li><a href="#ex11">11 · Wireless AP</a></li>
+      <li><a href="#ex12">12 · DHCP reservation</a></li>
+      <li><a href="#ex13">13 · Department VLANs</a></li>
+      <li><a href="#ex14">14 · Time-based access</a></li>
+      <li><a href="#ex15">15 · Failover + NAT</a></li>
+      <li><a href="#ex16">16 · Layer 7 filtering</a></li>
+      <li><a href="#ex17">17 · Dual WAN PCC</a></li>
+      <li><a href="#ex18">18 · User management</a></li>
+      <li><a href="#ex19">19 · SNMP monitoring</a></li>
+      <li><a href="#ex20">20 · Backup strategy</a></li>
+      <li><a href="#multi">Multi-device (inventory)</a></li>
+      <li><a href="#ex21">21 · Fleet audit</a></li>
+      <li><a href="#ex22">22 · Tagged rollout</a></li>
+      <li><a href="#ex23">23 · Config diff</a></li>
+      <li><a href="#ex24">24 · Safe-mode change</a></li>
+      <li><a href="#ex25">25 · Fleet DNS</a></li>
+      <li><a href="#query">Query commands</a></li>
+    </ul>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="brand" style="margin-bottom: 12px;">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+            <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+            <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+            <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+          </svg>
+        </span>
+        MikroTik MCP
+      </div>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
+      <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
+    </div>
+    <div>
+      <h5>Docs</h5>
+      <ul>
+        <li><a href="index.html">Installation</a></li>
+        <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+        <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Source</h5>
+      <ul>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
+        <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-header').nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => btn.textContent = orig, 1200);
+      });
+    });
+  });
+</script>
+</body>
+</html>

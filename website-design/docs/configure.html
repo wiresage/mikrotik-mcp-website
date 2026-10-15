@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
 <title>Integrations — MikroTik MCP docs</title>
+<meta name="description" content="Connect MikroTik MCP to Claude Desktop, the MCP Inspector, and MCPO (MCP-to-OpenAPI). Config snippets, one-liners, and curl examples straight from the source docs." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -49,6 +56,10 @@
   }
   .endpoint .path { color: var(--ink); padding-left: 14px; }
   .endpoint .path .ph { color: var(--amber); }
+
+  @media (max-width: 820px) {
+    .integrations-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -76,16 +87,19 @@
   <div class="nav-links">
     <a href="../index.html#what">Overview</a>
     <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html">Language server</a>
     <a href="index.html" class="active">Docs</a>
     <a href="reference.html">Reference</a>
+    <a href="examples.html">Examples</a>
   </div>
   <div class="nav-right">
-    <span class="pill"><span class="dot"></span> v1.0</span>
-    <a class="btn" href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </nav>
 
-<div class="docs" data-screen-label="03 Docs — Integrations">
+<!-- DOCS LAYOUT -->
+<div class="docs">
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <h6>Getting started</h6>
@@ -100,6 +114,15 @@
       <li><a href="configure.html#inspector">MCP Inspector</a></li>
       <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
     </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
     <h6>API reference</h6>
     <ul>
       <li><a href="reference.html#vlan">VLAN</a></li>
@@ -107,15 +130,20 @@
       <li><a href="reference.html#nat">NAT</a></li>
       <li><a href="reference.html#dhcp">DHCP</a></li>
       <li><a href="reference.html#dns">DNS</a></li>
-      <li><a href="reference.html#routes">Routes</a></li>
       <li><a href="reference.html#wireguard">WireGuard</a></li>
-      <li><a href="reference.html#users">Users</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
       <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
     </ul>
     <h6>Project</h6>
     <ul>
-      <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
-      <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
     </ul>
   </aside>
 
@@ -157,9 +185,10 @@
     <!-- CLAUDE -->
     <h2 id="claude">Claude Desktop</h2>
     <p>Claude Desktop reads its MCP server list from
-      <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> on macOS
-      (and the equivalent path on Windows). Add the server, restart, and Claude will discover the tools
-      on its next session.</p>
+      <code>claude_desktop_config.json</code> —
+      <code>~/Library/Application Support/Claude/</code> on macOS, and
+      <code>%APPDATA%\Claude\</code> on Windows. Add the server, restart, and Claude will
+      discover the tools on its next session.</p>
 
     <div class="code-header"><span>claude_desktop_config.json</span><button class="copy-btn">Copy</button></div>
     <pre class="code">{
@@ -211,7 +240,8 @@
     <span class="k">--port</span> <span class="n">22</span></pre>
 
     <h3 id="inspector-config">Against an mcp-config.json</h3>
-    <p>If you've already prepared a config file (recommended for MCPO too), point the global inspector at it:</p>
+    <p>If you've already prepared a config file (recommended for MCPO too), install the inspector globally
+      and point it at the file:</p>
 
     <div class="code-header"><span># Persistent config</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="p">$</span> npm install <span class="k">-g</span> @modelcontextprotocol/inspector
@@ -233,16 +263,25 @@
       <li><code>curl</code> scripts and CI jobs.</li>
     </ul>
 
+    <div class="callout">
+      <span class="icon">PREREQ</span>
+      <div>
+        Python 3.10+, a MikroTik MCP server already set up, and the <code>uv</code> package manager
+        (recommended) or <code>pip</code>.
+      </div>
+    </div>
+
     <h3 id="mcpo-install">Install</h3>
     <div class="code-header"><span># pick one</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="c"># Option 1 — uvx (no install)</span>
+    <pre class="code"><span class="c"># Option 1 — uvx (recommended, no install)</span>
 <span class="p">$</span> uvx mcpo <span class="k">--help</span>
 
 <span class="c"># Option 2 — pip</span>
 <span class="p">$</span> pip install mcpo</pre>
 
     <h3 id="mcpo-config">Config file</h3>
-    <p>Create <code>mcp-config.json</code> in your working directory:</p>
+    <p>Create <code>mcp-config.json</code> in your project directory. Adjust the connection parameters
+      (<code>host</code>, <code>username</code>, <code>password</code>, <code>port</code>) to match your setup:</p>
 
     <div class="code-header"><span>mcp-config.json</span><button class="copy-btn">Copy</button></div>
     <pre class="code">{
@@ -263,9 +302,13 @@
 
     <h3 id="mcpo-run">Run the server</h3>
     <div class="code-header"><span># With API-key auth (recommended)</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> uvx mcpo <span class="k">--port</span> <span class="n">8000</span> \
+    <pre class="code"><span class="c"># With API key authentication</span>
+<span class="p">$</span> uvx mcpo <span class="k">--port</span> <span class="n">8000</span> \
     <span class="k">--api-key</span> <span class="s">"your-secret-key"</span> \
-    <span class="k">--config</span> ./mcp-config.json</pre>
+    <span class="k">--config</span> ./mcp-config.json
+
+<span class="c"># Or without auth (not recommended for production)</span>
+<span class="p">$</span> uvx mcpo <span class="k">--port</span> <span class="n">8000</span> <span class="k">--config</span> ./mcp-config.json</pre>
 
     <p>You'll see two URLs in the startup log:</p>
     <div class="endpoint">
@@ -338,7 +381,7 @@
   </aside>
 </div>
 
-<!-- FOOTER (same as docs/index.html) -->
+<!-- FOOTER -->
 <footer class="footer">
   <div class="wrap">
     <div>
@@ -353,7 +396,7 @@
         </span>
         MikroTik MCP
       </div>
-      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices. Not affiliated with MikroTik.</p>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
       <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
     </div>
     <div>
@@ -361,23 +404,29 @@
       <ul>
         <li><a href="index.html">Installation</a></li>
         <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
         <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
       </ul>
     </div>
     <div>
       <h5>Source</h5>
       <ul>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
       </ul>
     </div>
     <div>
       <h5>Related</h5>
       <ul>
         <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
-        <li><a href="https://wiki.mikrotik.com" target="_blank" rel="noopener">RouterOS wiki</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
         <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
       </ul>
     </div>
   </div>

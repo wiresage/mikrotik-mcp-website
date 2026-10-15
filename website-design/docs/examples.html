@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
+<title>Examples — MikroTik MCP docs</title>
+<meta name="description" content="Hands-on MikroTik MCP examples: mcp-cli tool calls for every category, complete multi-step workflows (network segments, port forwarding, WiFi, backups), and natural-language prompts mapped to the real tools they invoke." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  .ex-sub {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-mute);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin: 32px 0 10px;
+  }
+  /* Natural-language example card */
+  .nl {
+    border: 1px solid var(--line); border-radius: var(--rad-lg);
+    background: var(--bg-1); padding: 22px; margin: 18px 0;
+  }
+  .nl .label {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-mute); display: block; margin-bottom: 8px; font-family: var(--mono);
+  }
+  .nl .ask {
+    font-size: 15px; color: var(--ink); border-left: 2px solid var(--amber);
+    padding-left: 14px; margin: 0 0 18px; line-height: 1.55;
+  }
+  .nl h4 { font-size: 14px; margin: 0 0 8px; }
+  .nl ol { margin: 0; padding-left: 18px; }
+  .nl ol li { font-size: 13.5px; color: var(--ink-dim); margin: 4px 0; }
+  .nl .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px;
+    padding-top: 14px; border-top: 1px dashed var(--line); }
+  .nl .tools code {
+    font-family: var(--mono); font-size: 11.5px; color: var(--amber);
+    background: var(--bg-3); border: 1px solid var(--line);
+    border-radius: 3px; padding: 3px 7px;
+  }
+  .wf-card {
+    border: 1px solid var(--line); border-left: 2px solid var(--lime);
+    border-radius: var(--rad); background: var(--bg-1);
+    padding: 6px 20px 4px; margin: 18px 0;
+  }
+  .wf-card > h3 { scroll-margin-top: 90px; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+        <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+        <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+        <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+        <line x1="7" y1="9" x2="5" y2="4" stroke="var(--amber)"/>
+        <line x1="12" y1="9" x2="12" y2="3" stroke="var(--amber)"/>
+        <line x1="17" y1="9" x2="19" y2="4" stroke="var(--amber)"/>
+        <circle cx="5" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="12" cy="3" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="19" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+      </svg>
+    </span>
+    MikroTik MCP <span class="brand-tag">docs</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#what">Overview</a>
+    <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html">Language server</a>
+    <a href="index.html">Docs</a>
+    <a href="reference.html">Reference</a>
+    <a href="examples.html" class="active">Examples</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="docs">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h6>Getting started</h6>
+    <ul>
+      <li><a href="index.html">Installation</a></li>
+      <li><a href="index.html#testing">Testing</a></li>
+      <li><a href="index.html#context">Context optimization</a></li>
+    </ul>
+    <h6>Integrations</h6>
+    <ul>
+      <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#inspector">MCP Inspector</a></li>
+      <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
+    </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
+    <h6>API reference</h6>
+    <ul>
+      <li><a href="reference.html#vlan">VLAN</a></li>
+      <li><a href="reference.html#firewall">Firewall</a></li>
+      <li><a href="reference.html#nat">NAT</a></li>
+      <li><a href="reference.html#dhcp">DHCP</a></li>
+      <li><a href="reference.html#dns">DNS</a></li>
+      <li><a href="reference.html#wireguard">WireGuard</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
+      <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html" class="active">Usage examples</a></li>
+      <li><a href="#workflows">Complete workflows</a></li>
+      <li><a href="#natural">Natural language</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
+    </ul>
+    <h6>Project</h6>
+    <ul>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="doc-main">
+    <div class="crumbs">
+      <a href="../index.html">MikroTik MCP</a> <span>/</span>
+      <a href="index.html">Docs</a> <span>/</span>
+      <span style="color:var(--ink);opacity:1">Examples</span>
+    </div>
+    <h1 class="doc-title">Examples</h1>
+    <p class="doc-lede">
+      Two ways to drive the server: type structured tool calls yourself, or just ask an AI client in
+      plain English. The examples below use <code>mcp-cli</code> so every argument is explicit — but the
+      same JSON arguments are what Claude Desktop or an MCPO REST call would send.
+    </p>
+
+    <h2 id="cli" style="margin-top:0">The mcp-cli pattern</h2>
+    <p>Every command on this page follows the same shape. <code>--server mikrotik</code> is the server name
+      from your mcp-cli config, <code>--tool</code> is any tool from the
+      <a href="reference.html">API reference</a>, and <code>--tool-args</code> is a JSON object of that
+      tool's parameters.</p>
+    <div class="code-header"><span># the shape of every call</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> \
+    <span class="k">--tool</span> <span class="s">&lt;tool_name&gt;</span> \
+    <span class="k">--tool-args</span> <span class="s">'{ "param": "value" }'</span></pre>
+    <div class="callout tip">
+      <span class="icon">TIP</span>
+      <div>
+        The <code>--tool-args</code> JSON is portable. Paste the same object into the MCP Inspector's
+        argument form, or POST it to <code>/&lt;server&gt;/&lt;tool&gt;</code> through MCPO — see
+        <a href="configure.html">Integrations</a>.
+      </div>
+    </div>
+    <!-- ============ BASIC OPERATIONS ============ -->
+    <h2 id="basics">Basic operations</h2>
+    <p>Single-tool calls grouped by category. Copy any block and swap in your own names, addresses, and IDs.</p>
+
+    <div class="ex-sub">Multiple devices (inventory)</div>
+    <div class="code-header"><span># discover the fleet, target a device by title</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># List the devices this server manages (titles, hosts, tags — never credentials)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">list_devices</span> <span class="k">--tool-args</span> <span class="s">'{}'</span>
+
+<span class="c"># With an inventory configured, every tool takes an optional "device" (the inventory title)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">list_interfaces</span> <span class="k">--tool-args</span> <span class="s">'{"device": "office-core"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_vlan_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"device": "branch-berlin", "name": "vlan100", "vlan_id": 100, "interface": "ether1"}'</span>
+
+<span class="c"># Single-device setups need no change — omit "device" and the one device is used</span></pre>
+
+    <div class="ex-sub">VLAN interfaces</div>
+    <div class="code-header"><span># create · list · get · update · remove</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Create a VLAN interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_vlan_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "vlan100", "vlan_id": 100, "interface": "ether1", "comment": "Production VLAN"}'</span>
+
+<span class="c"># List all VLANs</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_vlan_interfaces</span> <span class="k">--tool-args</span> <span class="s">'{}'</span>
+
+<span class="c"># Get one VLAN's details</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_get_vlan_interface</span> <span class="k">--tool-args</span> <span class="s">'{"name": "vlan100"}'</span>
+
+<span class="c"># Update, then remove</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_update_vlan_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "vlan100", "comment": "Updated Production VLAN"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_remove_vlan_interface</span> <span class="k">--tool-args</span> <span class="s">'{"name": "vlan100"}'</span></pre>
+
+    <div class="ex-sub">PoE (Power over Ethernet) — read-only monitoring</div>
+    <div class="code-header"><span># monitor · list · per-port settings</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Real-time PoE-out telemetry (voltage, current, power) for one or more ports</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">get_poe_monitor</span> <span class="k">--tool-args</span> <span class="s">'{"interfaces": "ether1"}'</span>
+
+<span class="c"># List PoE-capable interfaces (PoE-out mode, priority)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">list_poe</span> <span class="k">--tool-args</span> <span class="s">'{"interface_filter": "ether"}'</span>
+
+<span class="c"># Detailed PoE-out settings for a specific port</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">get_poe_settings</span> <span class="k">--tool-args</span> <span class="s">'{"name": "ether1"}'</span></pre>
+
+    <div class="ex-sub">IP addresses</div>
+    <div class="code-header"><span># bind / inspect / remove an address</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Add an address to an interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_ip_address</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"address": "192.168.100.1/24", "interface": "vlan100", "comment": "Gateway address"}'</span>
+
+<span class="c"># List (filtered) and remove by record ID</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_ip_addresses</span> <span class="k">--tool-args</span> <span class="s">'{"interface_filter": "vlan100"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_remove_ip_address</span> <span class="k">--tool-args</span> <span class="s">'{"address_id": "*1"}'</span></pre>
+
+    <div class="ex-sub">IPv6 addresses</div>
+    <div class="code-header"><span># add · list · get · remove (no mikrotik_ prefix)</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Add an IPv6 address, advertising the prefix in Router Advertisements</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">add_ipv6_address</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"address": "2001:db8:1::1/64", "interface": "bridge", "advertise": true}'</span>
+
+<span class="c"># Take the prefix from a delegated IPv6 pool (host part only)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">add_ipv6_address</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"address": "::1/64", "interface": "bridge", "from_pool": "isp-pd"}'</span>
+
+<span class="c"># List only routable (global) addresses, then only link-local</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">list_ipv6_addresses</span> <span class="k">--tool-args</span> <span class="s">'{"global_only": true}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">list_ipv6_addresses</span> <span class="k">--tool-args</span> <span class="s">'{"link_local_only": true}'</span>
+
+<span class="c"># Get / remove by id (*1) or by the address value itself</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">get_ipv6_address</span> <span class="k">--tool-args</span> <span class="s">'{"address_id": "2001:db8:1::1/64"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">remove_ipv6_address</span> <span class="k">--tool-args</span> <span class="s">'{"address_id": "*1"}'</span></pre>
+
+    <div class="ex-sub">DHCP server (pool → network → server)</div>
+    <div class="code-header"><span># build a DHCP service in three steps</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_pool</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "pool-vlan100", "ranges": "192.168.100.10-192.168.100.200"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_network</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"network": "192.168.100.0/24", "gateway": "192.168.100.1", "dns_servers": ["8.8.8.8", "8.8.4.4"]}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_server</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "dhcp-vlan100", "interface": "vlan100", "address_pool": "pool-vlan100"}'</span></pre>
+
+    <div class="ex-sub">DHCP leases &amp; neighbors</div>
+    <div class="code-header"><span># who holds an address, and what's on the segment</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Active IPv4 leases seen in the last 24 hours</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_dhcp_leases</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"status_filter": "bound", "last_seen_within": "24h"}'</span>
+
+<span class="c"># DHCPv6 bindings, then the ARP and IPv6 ND tables for one interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_dhcpv6_bindings</span> <span class="k">--tool-args</span> <span class="s">'{"status_filter": "bound"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_arp_entries</span> <span class="k">--tool-args</span> <span class="s">'{"interface_filter": "bridge", "status_filter": "reachable"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_ipv6_neighbors</span> <span class="k">--tool-args</span> <span class="s">'{"address_filter": "fe80", "interface_filter": "bridge"}'</span></pre>
+
+    <div class="ex-sub">NAT rules</div>
+    <div class="code-header"><span># masquerade out, port-forward in</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Masquerade (outbound internet)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_nat_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "srcnat", "action": "masquerade", "out_interface": "ether1", "comment": "Internet access"}'</span>
+
+<span class="c"># Port-forward HTTP to an internal host</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_nat_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "dstnat", "action": "dst-nat", "dst_port": "80", "protocol": "tcp", "to_addresses": "192.168.100.10", "to_ports": "80", "comment": "Web server"}'</span>
+
+<span class="c"># Reorder / toggle / remove</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_move_nat_rule</span> <span class="k">--tool-args</span> <span class="s">'{"rule_id": "*1", "destination": 0}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_remove_nat_rule</span> <span class="k">--tool-args</span> <span class="s">'{"rule_id": "*1"}'</span></pre>
+    <div class="ex-sub">IP pools</div>
+    <div class="code-header"><span># create · inspect · expand</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_ip_pool</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "main-pool", "ranges": "192.168.1.100-192.168.1.200"}'</span>
+
+<span class="c"># List with live usage, then expand without disruption</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_list_ip_pools</span> <span class="k">--tool-args</span> <span class="s">'{"include_used": true}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_expand_ip_pool</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "main-pool", "additional_ranges": "192.168.1.201-192.168.1.250"}'</span></pre>
+
+    <div class="ex-sub">IPv6 firewall filter rules</div>
+    <div class="code-header"><span># icmpv6, NDP and an SSH allow (no mikrotik_ prefix)</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Accept ICMPv6 — required for IPv6 to work at all</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">create_ipv6_filter_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "input", "action": "accept", "protocol": "icmpv6"}'</span>
+
+<span class="c"># Allow SSH from a trusted prefix</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">create_ipv6_filter_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "input", "action": "accept", "protocol": "tcp", "dst_port": "22", "src_address": "2001:db8::/64"}'</span>
+
+<span class="c"># NDP router solicitation, hop-limit 255</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">create_ipv6_filter_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "input", "action": "accept", "protocol": "icmpv6", "icmp_options": "133:0", "hop_limit": "equal:255"}'</span>
+
+<span class="c"># List, then reorder / toggle by internal id (*N — not the positional number)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">list_ipv6_filter_rules</span> <span class="k">--tool-args</span> <span class="s">'{"chain_filter": "input"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">move_ipv6_filter_rule</span> <span class="k">--tool-args</span> <span class="s">'{"rule_id": "*3", "destination": 0}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">disable_ipv6_filter_rule</span> <span class="k">--tool-args</span> <span class="s">'{"rule_id": "*3"}'</span></pre>
+
+    <div class="ex-sub">Firewall filter rules</div>
+    <div class="code-header"><span># baseline input chain</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Accept established/related, drop invalid, allow ICMP</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_filter_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "input", "action": "accept", "connection_state": "established,related", "comment": "Accept established"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_filter_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "input", "action": "drop", "connection_state": "invalid", "comment": "Drop invalid"}'</span>
+
+<span class="c"># Or scaffold a sensible baseline in one call</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_basic_firewall_setup</span> <span class="k">--tool-args</span> <span class="s">'{}'</span></pre>
+
+    <div class="ex-sub">Routes</div>
+    <div class="code-header"><span># static · default · path check</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_route</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"dst_address": "10.0.0.0/8", "gateway": "192.168.1.1", "comment": "Corporate network"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_default_route</span> <span class="k">--tool-args</span> <span class="s">'{"gateway": "192.168.1.1", "distance": 1}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_check_route_path</span> <span class="k">--tool-args</span> <span class="s">'{"destination": "8.8.8.8"}'</span></pre>
+
+    <div class="ex-sub">DNS</div>
+    <div class="code-header"><span># upstream servers, static records, blocklists</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_dns_servers</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"servers": ["8.8.8.8", "8.8.4.4"], "allow_remote_requests": true}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_dns_static</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "router.local", "address": "192.168.1.1", "comment": "Local router"}'</span>
+
+<span class="c"># Regex ad-block, then a live test query</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_dns_regexp</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"regexp": ".*\\.ads\\..*", "address": "0.0.0.0", "comment": "Block ads"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_test_dns_query</span> <span class="k">--tool-args</span> <span class="s">'{"name": "google.com"}'</span></pre>
+
+    <div class="ex-sub">Users</div>
+    <div class="code-header"><span># account + group provisioning</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_user</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "newuser", "password": "SecurePass123", "group": "write", "comment": "New operator"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_user_group</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "operators", "policy": ["read", "write", "test"], "comment": "Operator group"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_get_active_users</span> <span class="k">--tool-args</span> <span class="s">'{}'</span></pre>
+
+    <div class="ex-sub">Backup &amp; logs</div>
+    <div class="code-header"><span># snapshot config, then read the logs</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Binary backup + declarative export</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_backup</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "full_backup", "include_password": true}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_export</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "config_export", "file_format": "rsc", "export_type": "full"}'</span>
+
+<span class="c"># Read logs by topic; search for failed logins</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_get_logs</span> <span class="k">--tool-args</span> <span class="s">'{"topics": "firewall", "limit": 100}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_search_logs</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"search_term": "login failed", "case_sensitive": false}'</span></pre>
+
+    <!-- ============ WIRELESS ============ -->
+    <h2 id="wireless">Wireless configuration</h2>
+    <p>Wireless tooling depends on the device's RouterOS wireless package — run
+      <code>mikrotik_check_wireless_support</code> first.</p>
+
+    <div class="ex-sub">Interfaces</div>
+    <div class="code-header"><span># AP, station, and 5GHz interfaces</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Basic AP</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "wlan1", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "MyNetwork", "comment": "Main WiFi Network"}'</span>
+
+<span class="c"># 5GHz AP with explicit band and channel width</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "wlan-5g", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "MyNetwork-5G", "frequency": "5180", "band": "5ghz-a/n/ac", "channel_width": "80mhz"}'</span></pre>
+
+    <div class="ex-sub">Security profiles</div>
+    <div class="code-header"><span># WPA2-PSK and open profiles</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "wpa2-security", "mode": "dynamic-keys", "authentication_types": ["wpa2-psk"], "unicast_ciphers": ["aes-ccm"], "group_ciphers": ["aes-ccm"], "wpa2_pre_shared_key": "SecurePassword123"}'</span>
+
+<span class="c"># Attach a profile to an interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "wlan1", "security_profile": "wpa2-security"}'</span></pre>
+
+    <div class="ex-sub">Scanning &amp; access lists</div>
+    <div class="code-header"><span># survey, list clients, allow a MAC</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_scan_wireless_networks</span> <span class="k">--tool-args</span> <span class="s">'{"interface": "wlan1", "duration": 10}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_get_wireless_registration_table</span> <span class="k">--tool-args</span> <span class="s">'{"interface": "wlan1"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_access_list</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface": "wlan1", "mac_address": "AA:BB:CC:DD:EE:FF", "action": "accept", "comment": "Trusted device"}'</span></pre>
+    <h2 id="workflows">Complete workflows</h2>
+    <p>These chain several tool calls into a single repeatable procedure. Run them top to
+      bottom — each step assumes the previous one succeeded. Wrapping the whole sequence in
+      <a href="reference.html#safe-mode">safe mode</a> means a lost connection rolls every change back automatically.</p>
+
+    <div class="wf-card">
+      <h3>Setting up a new network segment</h3>
+      <p>A self-contained guest VLAN (<code>vlan200</code>) with its own subnet, DHCP, and
+        masqueraded internet access.</p>
+      <div class="code-header"><span># VLAN → addressing → DHCP → NAT</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># 1. Create the VLAN on the trunk port</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_vlan_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "vlan200", "vlan_id": 200, "interface": "ether1", "comment": "Guest Network"}'</span>
+
+<span class="c"># 2. Give the VLAN a gateway address</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_ip_address</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"address": "192.168.200.1/24", "interface": "vlan200"}'</span>
+
+<span class="c"># 3. Create the DHCP address pool</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_pool</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "pool-200", "ranges": "192.168.200.10-192.168.200.100"}'</span>
+
+<span class="c"># 4. Define the DHCP network (gateway + DNS)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_network</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"network": "192.168.200.0/24", "gateway": "192.168.200.1", "dns_servers": ["8.8.8.8", "8.8.4.4"]}'</span>
+
+<span class="c"># 5. Bind a DHCP server to the VLAN + pool</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_dhcp_server</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "dhcp-200", "interface": "vlan200", "address_pool": "pool-200"}'</span>
+
+<span class="c"># 6. Masquerade the segment out to the internet</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_nat_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "srcnat", "action": "masquerade", "out_interface": "ether1", "comment": "Internet access for VLAN 200"}'</span></pre>
+    </div>
+
+    <div class="wf-card">
+      <h3>Port forwarding setup</h3>
+      <p>Expose internal services by mapping public ports on <code>203.0.113.1</code> to a host at
+        <code>192.168.100.10</code> with <span class="ex-sub" style="display:inline;margin:0">dst-nat</span> rules.</p>
+      <div class="code-header"><span># HTTP, HTTPS, and a remapped SSH port</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># Forward HTTP (80 → 80)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_nat_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "dstnat", "action": "dst-nat", "dst_address": "203.0.113.1", "dst_port": "80", "protocol": "tcp", "to_addresses": "192.168.100.10", "to_ports": "80", "comment": "Web server"}'</span>
+
+<span class="c"># Forward HTTPS (443 → 443)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_nat_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "dstnat", "action": "dst-nat", "dst_address": "203.0.113.1", "dst_port": "443", "protocol": "tcp", "to_addresses": "192.168.100.10", "to_ports": "443", "comment": "HTTPS server"}'</span>
+
+<span class="c"># Remap an external SSH port (2222 → 22)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_nat_rule</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"chain": "dstnat", "action": "dst-nat", "dst_address": "203.0.113.1", "dst_port": "2222", "protocol": "tcp", "to_addresses": "192.168.100.10", "to_ports": "22", "comment": "SSH server"}'</span></pre>
+    </div>
+
+    <div class="wf-card">
+      <h3>Backup and restore process</h3>
+      <p>Capture a binary backup plus human-readable exports you can diff and store in version
+        control. Section exports let you snapshot just the firewall or NAT tables.</p>
+      <div class="code-header"><span># backup → full export → per-section exports</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># 1. Create a dedicated read-only backup account</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_add_user</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "backup_user", "password": "BackupPass123", "group": "read", "comment": "Backup account"}'</span>
+
+<span class="c"># 2. Full binary backup (restorable on the same device)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_backup</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "daily_backup", "include_password": true}'</span>
+
+<span class="c"># 3. Full text export (.rsc) — portable + diff-able</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_export</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "config_export", "file_format": "rsc", "export_type": "full"}'</span>
+
+<span class="c"># 4. Export just the firewall filter table</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_export_section</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"section": "ip firewall filter"}'</span>
+
+<span class="c"># 5. Export just the NAT table</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_export_section</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"section": "ip firewall nat"}'</span></pre>
+    </div>
+
+    <h3 id="wifi" style="scroll-margin-top:90px; margin-top:42px;">WiFi network setups</h3>
+    <p>Five end-to-end wireless recipes. Each follows the same shape: build a security profile,
+      create the interface, attach the profile, then enable it. Run
+      <code>mikrotik_check_wireless_support</code> first to confirm the device's wireless package.</p>
+
+    <div class="wf-card">
+      <h3>Basic home network</h3>
+      <div class="code-header"><span># WPA2-PSK AP on 2.4GHz</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># 1. Security profile (WPA2-PSK)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "home-security", "mode": "dynamic-keys", "authentication_types": ["wpa2-psk"], "unicast_ciphers": ["aes-ccm"], "group_ciphers": ["aes-ccm"], "wpa2_pre_shared_key": "MyHomePassword123"}'</span>
+
+<span class="c"># 2. Wireless interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "home-wifi", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "HomeNetwork", "band": "2ghz-b/g/n", "comment": "Main home network"}'</span>
+
+<span class="c"># 3. Apply the profile, then 4. enable</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "home-wifi", "security_profile": "home-security"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_enable_wireless_interface</span> <span class="k">--tool-args</span> <span class="s">'{"name": "home-wifi"}'</span></pre>
+    </div>
+
+    <div class="wf-card">
+      <h3>Guest network</h3>
+      <div class="code-header"><span># open SSID, isolated from the LAN</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># 1. Open security profile (no encryption)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "guest-open", "mode": "none", "comment": "Open guest network"}'</span>
+
+<span class="c"># 2. Guest interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "guest-wifi", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "GuestNetwork", "comment": "Guest access network"}'</span>
+
+<span class="c"># 3. Apply the profile, then 4. enable</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "guest-wifi", "security_profile": "guest-open"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_enable_wireless_interface</span> <span class="k">--tool-args</span> <span class="s">'{"name": "guest-wifi"}'</span></pre>
+    </div>
+
+    <div class="wf-card">
+      <h3>Enterprise network (WPA2-EAP)</h3>
+      <div class="code-header"><span># 802.1X on 5GHz + per-device access list</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># 1. WPA2-Enterprise profile (PEAP)</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "corp-security", "mode": "dynamic-keys", "authentication_types": ["wpa2-eap"], "unicast_ciphers": ["aes-ccm"], "group_ciphers": ["aes-ccm"], "eap_methods": "peap", "comment": "Corporate WPA2-Enterprise"}'</span>
+
+<span class="c"># 2. 5GHz corporate interface</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "corp-wifi", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "CorpNetwork", "band": "5ghz-a/n/ac", "channel_width": "80mhz", "comment": "Corporate network"}'</span>
+
+<span class="c"># 3. Apply security profile</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "corp-wifi", "security_profile": "corp-security"}'</span>
+
+<span class="c"># 4. Allow a specific corporate device by MAC</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_access_list</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface": "corp-wifi", "mac_address": "00:11:22:33:44:55", "action": "accept", "comment": "Corporate laptop"}'</span></pre>
+    </div>
+
+    <div class="wf-card">
+      <h3>Dual-band (2.4GHz + 5GHz)</h3>
+      <div class="code-header"><span># one profile, two radios, same SSID family</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># 1. Shared security profile</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "dual-band-security", "mode": "dynamic-keys", "authentication_types": ["wpa2-psk"], "unicast_ciphers": ["aes-ccm"], "group_ciphers": ["aes-ccm"], "wpa2_pre_shared_key": "DualBandPassword123"}'</span>
+
+<span class="c"># 2. 2.4GHz radio</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "wifi-2g", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "MyNetwork", "band": "2ghz-b/g/n", "channel_width": "20mhz", "comment": "2.4GHz network"}'</span>
+
+<span class="c"># 3. 5GHz radio</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "wifi-5g", "radio_name": "wlan2", "mode": "ap-bridge", "ssid": "MyNetwork-5G", "band": "5ghz-a/n/ac", "channel_width": "80mhz", "comment": "5GHz network"}'</span>
+
+<span class="c"># 4. Apply security to both radios</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "wifi-2g", "security_profile": "dual-band-security"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "wifi-5g", "security_profile": "dual-band-security"}'</span>
+
+<span class="c"># 5. Enable both</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_enable_wireless_interface</span> <span class="k">--tool-args</span> <span class="s">'{"name": "wifi-2g"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_enable_wireless_interface</span> <span class="k">--tool-args</span> <span class="s">'{"name": "wifi-5g"}'</span></pre>
+    </div>
+
+    <div class="wf-card">
+      <h3>Point-to-point link</h3>
+      <p>A station ↔ AP bridge on a fixed 5GHz frequency. Run the station command on one device
+        and the AP command on the other, then apply the shared profile to both ends.</p>
+      <div class="code-header"><span># station + AP on 5180 MHz</span><button class="copy-btn">Copy</button></div>
+      <pre class="code"><span class="c"># Device A — station end</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "p2p-station", "radio_name": "wlan1", "mode": "station", "ssid": "P2P-Link", "frequency": "5180", "band": "5ghz-a/n"}'</span>
+
+<span class="c"># Device B — AP end</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_interface</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "p2p-ap", "radio_name": "wlan1", "mode": "ap-bridge", "ssid": "P2P-Link", "frequency": "5180", "band": "5ghz-a/n"}'</span>
+
+<span class="c"># Shared link security</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_create_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"name": "p2p-security", "mode": "dynamic-keys", "authentication_types": ["wpa2-psk"], "unicast_ciphers": ["aes-ccm"], "group_ciphers": ["aes-ccm"], "wpa2_pre_shared_key": "P2PLinkPassword123"}'</span>
+
+<span class="c"># Apply to both ends</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "p2p-station", "security_profile": "p2p-security"}'</span>
+<span class="p">$</span> uv run mcp-cli cmd <span class="k">--server</span> <span class="s">mikrotik</span> <span class="k">--tool</span> <span class="s">mikrotik_set_wireless_security_profile</span> \
+    <span class="k">--tool-args</span> <span class="s">'{"interface_name": "p2p-ap", "security_profile": "p2p-security"}'</span></pre>
+    </div>
+
+    <h2 id="natural">Natural language</h2>
+    <p>Because every tool ships a description and typed schema, an MCP-aware assistant can turn a
+      plain-English request into the right sequence of calls. Below are real prompts and the actual
+      tools each one drives — see the <a href="reference.html">API reference</a> for parameters.
+      Tools in the <a href="reference.html#queue">Queues</a> category are called without the
+      <code>mikrotik_</code> prefix.</p>
+
+    <div class="nl">
+      <span class="label">Prompt</span>
+      <p class="ask">Create a new VLAN 200 for the guest network on ether1, assign IP
+        192.168.200.1/24, set up DHCP from .10 to .250, and add a masquerade NAT rule for
+        internet access.</p>
+      <h4>What the assistant does</h4>
+      <ol>
+        <li>Creates VLAN 200 on <code>ether1</code> as <code>vlan200-guest</code></li>
+        <li>Assigns <code>192.168.200.1/24</code> to the VLAN interface</li>
+        <li>Creates an IP pool for the <code>.10–.250</code> range</li>
+        <li>Configures the DHCP network (gateway + DNS), then creates the DHCP server</li>
+        <li>Adds a <code>srcnat</code> masquerade rule out <code>ether1</code></li>
+      </ol>
+      <div class="tools">
+        <code>mikrotik_create_vlan_interface</code>
+        <code>mikrotik_add_ip_address</code>
+        <code>mikrotik_create_ip_pool</code>
+        <code>mikrotik_create_dhcp_network</code>
+        <code>mikrotik_create_dhcp_server</code>
+        <code>mikrotik_create_nat_rule</code>
+      </div>
+    </div>
+
+    <div class="nl">
+      <span class="label">Prompt</span>
+      <p class="ask">Configure port forwarding to redirect incoming HTTP (port 80) and HTTPS
+        (port 443) traffic from ether1 to my internal web server at 192.168.1.100. Also add
+        firewall rules to allow this forwarded traffic.</p>
+      <h4>What the assistant does</h4>
+      <ol>
+        <li>Creates a <code>dst-nat</code> rule forwarding port 80 to <code>192.168.1.100</code></li>
+        <li>Creates a <code>dst-nat</code> rule forwarding port 443 to the same host</li>
+        <li>Adds a <code>forward</code>-chain filter rule accepting traffic to the web server</li>
+      </ol>
+      <div class="tools">
+        <code>mikrotik_create_nat_rule</code>
+        <code>mikrotik_create_filter_rule</code>
+      </div>
+    </div>
+
+    <div class="nl">
+      <span class="label">Prompt</span>
+      <p class="ask">Set up basic firewall security rules for my router. Accept established and
+        related connections, drop invalid packets, allow ICMP ping, allow SSH access from WAN on
+        port 22, and drop all other incoming WAN traffic. Also configure similar rules for
+        forwarded traffic.</p>
+      <h4>What the assistant does</h4>
+      <ol>
+        <li>Adds an <code>input</code> rule accepting established/related connections</li>
+        <li>Drops invalid connection states</li>
+        <li>Allows ICMP, then allows TCP/22 from the WAN interface</li>
+        <li>Adds a default drop for all other WAN input</li>
+        <li>Mirrors established/related + invalid handling on the <code>forward</code> chain</li>
+      </ol>
+      <div class="tools">
+        <code>mikrotik_create_filter_rule</code>
+      </div>
+    </div>
+
+    <div class="nl">
+      <span class="label">Prompt</span>
+      <p class="ask">Limit bandwidth for my guest network (192.168.200.0/24) to prevent abuse. Set
+        maximum download speed to 10 Mbps and upload speed to 5 Mbps using queue rules, and ensure
+        guest traffic is allowed through the firewall.</p>
+      <h4>What the assistant does</h4>
+      <ol>
+        <li>Creates a simple queue capping download at 10M for the guest subnet</li>
+        <li>Creates a second simple queue capping upload at 5M</li>
+        <li>Adds a <code>forward</code>-chain rule accepting guest traffic</li>
+      </ol>
+      <div class="tools">
+        <code>create_simple_queue</code>
+        <code>mikrotik_create_filter_rule</code>
+      </div>
+    </div>
+
+    <div class="nl">
+      <span class="label">Prompt</span>
+      <p class="ask">Configure wlan1 as an access point with SSID "MyNetwork" using WPA2-PSK
+        security. Set the password to "YourStrongPassword123", use the 2.4GHz b/g/n band, and
+        enable the interface.</p>
+      <h4>What the assistant does</h4>
+      <ol>
+        <li>Creates a WPA2-PSK security profile with the supplied pre-shared key</li>
+        <li>Configures <code>wlan1</code> in <code>ap-bridge</code> mode with the SSID and band</li>
+        <li>Applies the security profile to the interface</li>
+        <li>Enables the wireless interface</li>
+      </ol>
+      <div class="tools">
+        <code>mikrotik_create_wireless_security_profile</code>
+        <code>mikrotik_create_wireless_interface</code>
+        <code>mikrotik_set_wireless_security_profile</code>
+        <code>mikrotik_enable_wireless_interface</code>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a href="reference.html">
+        <span class="label">← previous</span>
+        <span class="target">API reference</span>
+      </a>
+      <a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener" class="next">
+        <span class="label">contribute →</span>
+        <span class="target">Source on GitHub ↗</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- TOC -->
+  <aside class="toc">
+    <h6>On this page</h6>
+    <ul>
+      <li><a href="#cli">The mcp-cli pattern</a></li>
+      <li><a href="#basics">Basic operations</a></li>
+      <li><a href="#wireless">Wireless</a></li>
+      <li><a href="#workflows">Complete workflows</a></li>
+      <li><a href="#wifi">— WiFi setups</a></li>
+      <li><a href="#natural">Natural language</a></li>
+    </ul>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="brand" style="margin-bottom: 12px;">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+            <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+            <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+            <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+          </svg>
+        </span>
+        MikroTik MCP
+      </div>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
+      <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
+    </div>
+    <div>
+      <h5>Docs</h5>
+      <ul>
+        <li><a href="index.html">Installation</a></li>
+        <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+        <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Source</h5>
+      <ul>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
+        <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-header').nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => btn.textContent = orig, 1200);
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
 <title>Installation — MikroTik MCP docs</title>
+<meta name="description" content="Install the MikroTik MCP server via the MCP Registry, Docker, or a manual Python install. Configuration, environment variables, CLI options, and context optimization." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -34,17 +41,19 @@
   <div class="nav-links">
     <a href="../index.html#what">Overview</a>
     <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html">Language server</a>
     <a href="index.html" class="active">Docs</a>
     <a href="reference.html">Reference</a>
+    <a href="examples.html">Examples</a>
   </div>
   <div class="nav-right">
-    <span class="pill"><span class="dot"></span> v1.0</span>
-    <a class="btn" href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </nav>
 
 <!-- DOCS LAYOUT -->
-<div class="docs" data-screen-label="02 Docs — Installation">
+<div class="docs">
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <h6>Getting started</h6>
@@ -59,6 +68,15 @@
       <li><a href="configure.html#inspector">MCP Inspector</a></li>
       <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
     </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+    </ul>
     <h6>API reference</h6>
     <ul>
       <li><a href="reference.html#vlan">VLAN</a></li>
@@ -66,15 +84,20 @@
       <li><a href="reference.html#nat">NAT</a></li>
       <li><a href="reference.html#dhcp">DHCP</a></li>
       <li><a href="reference.html#dns">DNS</a></li>
-      <li><a href="reference.html#routes">Routes</a></li>
       <li><a href="reference.html#wireguard">WireGuard</a></li>
-      <li><a href="reference.html#users">Users</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
       <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
     </ul>
     <h6>Project</h6>
     <ul>
-      <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
-      <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
     </ul>
   </aside>
 
@@ -87,33 +110,76 @@
     </div>
     <h1 class="doc-title">Installation</h1>
     <p class="doc-lede">
-      Three ways in: a Docker container (recommended), a manual Python install,
-      or running the published image with HTTP transports for remote agents.
-      Pick whichever matches your environment — all three speak the same MCP protocol.
+      Several ways in: the MCP Registry one-liner (recommended), a Docker container,
+      or a manual Python install — plus HTTP transports for remote agents.
+      Pick whichever matches your environment; all of them speak the same MCP protocol.
     </p>
 
     <div class="callout">
       <span class="icon">PRE-FLIGHT</span>
       <div>
-        You'll need a RouterOS device with API access enabled, a username with write policy,
-        and (ideally) SSH key auth. Default port is <code>22</code>.
+        You'll need a RouterOS device with SSH/API access enabled, a username with write policy,
+        and (ideally) SSH key auth. Default SSH port is <code>22</code>.
       </div>
     </div>
 
     <h2 id="prereq">Prerequisites</h2>
     <ul>
-      <li><strong>Python 3.8+</strong> — only if you're not running via Docker.</li>
-      <li><strong>MikroTik RouterOS device</strong> with API access enabled.</li>
+      <li><strong>Python 3.10+</strong> — only if you're not running via Docker.</li>
+      <li><strong>MikroTik RouterOS device</strong> with API/SSH access enabled.</li>
       <li><strong>Network reachability</strong> from your machine to the router's SSH port.</li>
       <li><strong>An MCP-capable client</strong> — Claude Desktop, MCP Inspector, or any tool that speaks MCP.</li>
     </ul>
 
-    <!-- DOCKER -->
-    <h2 id="docker">Docker (recommended)</h2>
-    <p>The fastest path. The image bundles Python, the server, and all dependencies — you just provide credentials.</p>
+    <!-- REGISTRY -->
+    <h2 id="registry">MCP Registry (recommended)</h2>
+    <p>MikroTik MCP is listed on the <a href="https://registry.modelcontextprotocol.io" target="_blank" rel="noopener">MCP Registry</a> —
+      a community catalog of MCP servers. Registry-aware clients (Claude Desktop, VS Code, Cursor) can install it
+      in one command without hand-editing config files.</p>
 
+    <div class="code-header"><span># One-line install for registry-aware clients</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> claude mcp add io.github.wiresage/mikrotik-mcp</pre>
+
+    <p>The client fetches the server metadata from the registry, installs
+      <code>mcp-server-mikrotik</code> from PyPI, and prompts you for the required environment variables —
+      <code>MIKROTIK_HOST</code>, <code>MIKROTIK_USERNAME</code>, and <code>MIKROTIK_PASSWORD</code>.</p>
+
+    <div class="callout tip">
+      <span class="icon">NOTE</span>
+      <div>
+        If your client does not support registry-based install, use the Docker or manual methods below —
+        both pull the same <code>mcp-server-mikrotik</code> package.
+      </div>
+    </div>
+
+    <!-- DOCKER -->
+    <h2 id="docker">Docker</h2>
+    <p>The fastest path when you'd rather not touch a Python toolchain. The image bundles Python, the server,
+      and all dependencies — you just provide credentials.</p>
+
+    <h3 id="ghcr">Official prebuilt image (GHCR)</h3>
+    <p>A multi-arch image (<code>linux/amd64</code> + <code>linux/arm64</code>) is published to the GitHub
+      Container Registry — pull it directly instead of building from source. You can substitute
+      <code>ghcr.io/wiresage/mikrotik-mcp:latest</code> anywhere <code>mikrotik-mcp</code> appears below.</p>
+    <div class="code-header"><span># pull the published image</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Latest release</span>
+<span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:latest
+
+<span class="c"># A specific version (matches the PyPI / git tag)</span>
+<span class="p">$</span> docker pull ghcr.io/wiresage/mikrotik-mcp:&lt;version&gt;</pre>
+    <table class="table">
+      <thead><tr><th>Tag</th><th>Points to</th></tr></thead>
+      <tbody>
+        <tr><td><code class="mono">latest</code></td><td>The most recent release</td></tr>
+        <tr><td><code class="mono">X.Y.Z</code></td><td>A specific released version, aligned with the PyPI release</td></tr>
+        <tr><td><code class="mono">X.Y</code></td><td>The latest patch of a minor line</td></tr>
+        <tr><td><code class="mono">sha-&lt;short&gt;</code></td><td>A specific commit</td></tr>
+      </tbody>
+    </table>
+
+    <h3 id="build">Build from source</h3>
     <div class="code-header"><span>1 · Clone &amp; build</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> git clone https://github.com/jeff-nasseri/mikrotik-mcp.git
+    <pre class="code"><span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
 <span class="p">$</span> docker build <span class="k">-t</span> mikrotik-mcp .</pre>
 
@@ -165,11 +231,187 @@
         <tr><td><code class="mono">MIKROTIK_USERNAME</code></td><td>SSH username</td><td><code class="mono">admin</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_PASSWORD</code></td><td>SSH password</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">MIKROTIK_PORT</code></td><td>SSH port</td><td><code class="mono">22</code></td></tr>
+        <tr><td><code class="mono">MIKROTIK_READ_ONLY</code></td><td><code>true</code> exposes only tools that don't modify RouterOS or its file store</td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">MIKROTIK_SENSITIVE_HIDING</code></td><td><code>true</code> redacts recognized credentials and private key material</td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">MIKROTIK_INVENTORY</code></td><td>Multiple devices, written inline in YAML (or its JSON subset). Takes precedence over <code>MIKROTIK_INVENTORY_FILE</code> and the four variables above — see <a href="reference.html#inventory">Inventory</a>.</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
+        <tr><td><code class="mono">MIKROTIK_INVENTORY_FILE</code></td><td>Path <strong>inside the container</strong> to a YAML inventory file — mount it as a volume</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">MIKROTIK_MCP__TRANSPORT</code></td><td>Transport — <code>stdio</code> · <code>sse</code> · <code>streamable-http</code></td><td><code class="mono">stdio</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_MCP__HOST</code></td><td>HTTP listen address</td><td><code class="mono">0.0.0.0</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_MCP__PORT</code></td><td>HTTP listen port</td><td><code class="mono">8000</code></td></tr>
+        <tr><td><code class="mono">MIKROTIK_MCP__ALLOWED_HOSTS</code></td><td>Comma-separated <code>Host</code>-header allowlist for the HTTP transports (DNS-rebinding protection). Append <code>:*</code> to allow any port; set <code>*</code> to disable the check.</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
+        <tr><td><code class="mono">MIKROTIK_MCP__ALLOWED_ORIGINS</code></td><td>Comma-separated <code>Origin</code>-header allowlist for the HTTP transports.</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
+        <tr><td><code class="mono">MIKROTIK_MCP__ALLOWED_IPS</code></td><td>Comma-separated client IP addresses and CIDR networks allowed to use the HTTP transports — see <a href="#allowed-ips">Restricting client IPs</a>.</td><td><em style="color:var(--ink-mute)">(empty; unrestricted)</em></td></tr>
       </tbody>
     </table>
+
+    <div class="callout">
+      <span class="icon">SECURITY</span>
+      <div>
+        Passing <code>MIKROTIK_PASSWORD</code> as an environment variable makes it visible via
+        <code>docker inspect</code>. For safer alternatives, see
+        <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/SECURITY.md" target="_blank" rel="noopener">SECURITY.md</a>.
+      </div>
+    </div>
+
+    <h3 id="compose">Docker Compose</h3>
+    <p>For a long-running, self-hosted service, use an HTTP-based transport (<code>sse</code> or
+      <code>streamable-http</code>) so MCP clients can connect over the network. The <code>stdio</code>
+      transport is meant for direct IDE integration where the client attaches to the process — not for a
+      standalone background service.</p>
+    <div class="code-header"><span>docker-compose.yml</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">services</span>:
+  <span class="k">mikrotik-mcp</span>:
+    <span class="k">image</span>: ghcr.io/wiresage/mikrotik-mcp:latest
+    <span class="k">container_name</span>: mikrotik-mcp
+    <span class="k">restart</span>: unless-stopped
+    <span class="k">ports</span>:
+      - <span class="s">"8000:8000"</span>
+    <span class="k">environment</span>:
+      MIKROTIK_HOST: <span class="s">"192.168.88.1"</span>
+      MIKROTIK_USERNAME: <span class="s">"admin"</span>
+      MIKROTIK_PASSWORD: <span class="s">"change-me"</span>
+      MIKROTIK_PORT: <span class="s">"22"</span>
+      MIKROTIK_MCP__TRANSPORT: <span class="s">"streamable-http"</span>
+      MIKROTIK_MCP__HOST: <span class="s">"0.0.0.0"</span>
+      MIKROTIK_MCP__PORT: <span class="s">"8000"</span></pre>
+    <div class="code-header"><span># start it</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> docker compose up <span class="k">-d</span></pre>
+    <p style="font-size:13.5px;color:var(--ink-mute)">Reachable at <code>http://localhost:8000/mcp</code>
+      (streamable HTTP) or <code>/sse</code> (if you set <code>MIKROTIK_MCP__TRANSPORT: sse</code>), and
+      <code>GET http://localhost:8000/health</code> returns <code>OK</code>.</p>
+
+    <h3 id="inventory-docker">Managing several devices</h3>
+    <p>To manage a fleet, give the container an <strong>inventory</strong> instead of the four
+      single-device variables. The inventory is a YAML file on your host, and it <strong>must be
+      mounted into the container as a volume</strong> — the image ships <code>/config</code> as the
+      mount point. A mounted file is also the safer channel: unlike an environment variable, its
+      contents do not show up in <code>docker inspect</code>. A ready-to-copy template ships at the
+      repository root as
+      <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/inventory.example.yml" target="_blank" rel="noopener"><code>inventory.example.yml</code></a>.</p>
+
+    <div class="code-header"><span>inventory.yaml</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">- title</span>: office-core
+  <span class="k">host</span>: 192.168.88.1
+  <span class="k">port</span>: 22
+  <span class="k">username</span>: admin
+  <span class="k">password</span>: <span class="s">change-me</span>
+  <span class="k">region</span>: NL
+  <span class="k">tags</span>: [branch]
+
+<span class="k">- title</span>: branch-berlin
+  <span class="k">host</span>: 192.168.89.1
+  <span class="k">username</span>: admin
+  <span class="k">key_filename</span>: /config/keys/id_ed25519</pre>
+
+    <div class="code-header"><span># docker run with the mounted inventory</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> docker run <span class="k">--rm -i</span> \
+    <span class="k">-v</span> <span class="s">"$PWD/inventory.yaml:/config/inventory.yaml:ro"</span> \
+    <span class="k">-e</span> MIKROTIK_INVENTORY_FILE=<span class="s">/config/inventory.yaml</span> \
+    ghcr.io/wiresage/mikrotik-mcp:latest</pre>
+
+    <div class="code-header"><span>docker-compose.yml — fleet variant</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">services</span>:
+  <span class="k">mikrotik-mcp</span>:
+    <span class="k">image</span>: ghcr.io/wiresage/mikrotik-mcp:latest
+    <span class="k">restart</span>: unless-stopped
+    <span class="k">ports</span>:
+      - <span class="s">"8000:8000"</span>
+    <span class="k">volumes</span>:
+      - <span class="s">./inventory.yaml:/config/inventory.yaml:ro</span>
+    <span class="k">environment</span>:
+      MIKROTIK_INVENTORY_FILE: <span class="s">"/config/inventory.yaml"</span>
+      MIKROTIK_MCP__TRANSPORT: <span class="s">"streamable-http"</span>
+      MIKROTIK_MCP__HOST: <span class="s">"0.0.0.0"</span>
+      MIKROTIK_MCP__PORT: <span class="s">"8000"</span></pre>
+
+    <p>If a mount is inconvenient, the inventory can go inline in <code>MIKROTIK_INVENTORY</code>
+      using YAML flow syntax (no escaped quotes; JSON also works, since it is a YAML subset), or via
+      the <code>--inventory</code> / <code>--inventory-file</code> entrypoint arguments. Inline always
+      wins over the file. When an inventory is set it takes precedence and <code>MIKROTIK_HOST</code> /
+      <code>MIKROTIK_USERNAME</code> / <code>MIKROTIK_PASSWORD</code> / <code>MIKROTIK_PORT</code> are
+      ignored — the entrypoint also stops applying its <code>192.168.88.1</code> default. Tools then
+      take a <code>device</code> argument naming the title to target; see the
+      <a href="reference.html#inventory">Inventory reference</a>.</p>
+
+    <div class="callout">
+      <span class="icon">TRAPS</span>
+      <div>
+        Two mistakes the entrypoint catches with an explicit error rather than starting a server with
+        no devices: the container runs as <strong>uid&nbsp;1000</strong> (<code>mcpuser</code>), so the
+        mounted file must be readable by that uid — <code>chmod 644 inventory.yaml</code> is usually
+        enough; and if <code>inventory.yaml</code> does not exist on the host when the container
+        starts, Docker silently creates a <em>directory</em> in its place — create the file before
+        starting the container.
+      </div>
+    </div>
+
+    <h3 id="hardening">Read-only and sensitive-hiding modes</h3>
+    <p>Two flags narrow what the server exposes, independently of the RouterOS account you connect with.</p>
+    <div class="code-header"><span># both also available as MIKROTIK_READ_ONLY / MIKROTIK_SENSITIVE_HIDING</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> mcp-server-mikrotik <span class="k">--read-only</span>
+<span class="p">$</span> mcp-server-mikrotik <span class="k">--sensitive-hiding</span></pre>
+    <p><strong><code>--read-only</code></strong> keeps modifying tools out of the MCP tool catalogue
+      entirely. It limits the <em>catalogue only</em> — use a restricted RouterOS account for actual
+      write protection; that account is the enforcement layer if another SSH client or a server defect
+      bypasses the catalogue.</p>
+    <p><strong><code>--sensitive-hiding</code></strong> redacts recognized passwords, passphrases,
+      private and preshared keys, authentication and encryption keys, tokens, secrets, and SNMP
+      communities from tool results, MCP notifications, exceptions, and server logs. It also omits
+      <code>download_file</code> and <code>generate_wireguard_client_config</code>, whose payloads can't
+      be safely field-redacted, and stops export tools from using RouterOS <code>show-sensitive</code>.
+      Public keys, addresses, usernames, and SSIDs stay visible.</p>
+    <div class="callout">
+      <span class="icon">LIMIT</span>
+      <div>
+        Redaction recognises <em>labelled</em> secrets. Arbitrary unlabelled secrets sitting in
+        free-form log messages or comments can't be identified reliably, so don't treat
+        <code>--sensitive-hiding</code> as a guarantee that nothing sensitive can ever reach a client.
+      </div>
+    </div>
+
+    <h3 id="allowed-ips">Restricting client IP addresses</h3>
+    <p><code>MIKROTIK_MCP__ALLOWED_IPS</code> limits <strong>all</strong> HTTP endpoints — <code>/mcp</code>,
+      <code>/sse</code>, <code>/messages/</code>, and <code>/health</code> — to specific IPv4 or IPv6
+      addresses and networks. Requests from anywhere else get <strong>HTTP 403</strong>. Leave it unset to
+      keep access unrestricted. Entries are validated at startup, and CIDRs must use a network address —
+      <code>10.0.0.0/8</code>, not <code>10.0.0.1/8</code>.</p>
+    <div class="code-header"><span>docker-compose.yml</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">    <span class="k">environment</span>:
+      MIKROTIK_MCP__TRANSPORT: <span class="s">"streamable-http"</span>
+      MIKROTIK_MCP__ALLOWED_IPS: <span class="s">"192.168.1.50, 10.20.0.0/16, 2001:db8::/48"</span></pre>
+    <p>The allowlist uses the client address supplied by Uvicorn. For direct connections nothing else is
+      needed. Behind a reverse proxy, set Uvicorn's <code>FORWARDED_ALLOW_IPS</code> to the proxy address
+      or network so the allowlist sees the original address from <code>X-Forwarded-For</code>:</p>
+    <div class="code-header"><span># trust only your proxy</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">    <span class="k">environment</span>:
+      MIKROTIK_MCP__ALLOWED_IPS: <span class="s">"192.168.1.0/24"</span>
+      FORWARDED_ALLOW_IPS: <span class="s">"172.18.0.0/16"</span></pre>
+    <div class="callout">
+      <span class="icon">SECURITY</span>
+      <div>
+        Only trust addresses your proxy controls. Setting <code>FORWARDED_ALLOW_IPS=*</code> lets direct
+        clients spoof their source address through forwarded headers, which defeats the allowlist.
+      </div>
+    </div>
+
+    <h3 id="reverse-proxy">Behind a reverse proxy</h3>
+    <p>The HTTP transports apply DNS-rebinding protection by validating the request's <code>Host</code>
+      header. When the server is reached on a custom domain or non-localhost IP — e.g. through a reverse
+      proxy — requests to <code>/mcp</code> are rejected with <strong>HTTP 421 "Invalid Host header"</strong>
+      (while <code>/health</code> stays exempt) unless you allowlist that host.</p>
+    <div class="code-header"><span># allowlist the host(s) clients use to reach the server</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">environment</span>:
+      MIKROTIK_MCP__TRANSPORT: <span class="s">"streamable-http"</span>
+      MIKROTIK_MCP__HOST: <span class="s">"0.0.0.0"</span>
+      <span class="c"># comma-separated; append :* to allow the host on any port</span>
+      MIKROTIK_MCP__ALLOWED_HOSTS: <span class="s">"mcp.example.com, mcp.example.com:*"</span>
+      <span class="c"># Origin allowlist for browser-based clients</span>
+      MIKROTIK_MCP__ALLOWED_ORIGINS: <span class="s">"https://app.example.com"</span></pre>
+    <ul>
+      <li>Append <code>:*</code> to a host (e.g. <code>mcp.example.com:*</code>) to allow it on any port.</li>
+      <li>Set <code>MIKROTIK_MCP__ALLOWED_HOSTS: "*"</code> to disable the host check entirely.</li>
+      <li>If left unset on a non-localhost bind, the check auto-disables (with a logged warning) so the server still works out of the box.</li>
+    </ul>
 
     <!-- MANUAL -->
     <h2 id="manual">Manual install</h2>
@@ -177,7 +419,7 @@
 
     <div class="code-header"><span># Source install</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="c"># Clone the repository</span>
-<span class="p">$</span> git clone https://github.com/jeff-nasseri/mikrotik-mcp.git
+<span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
 
 <span class="c"># Create &amp; activate virtual environment</span>
@@ -203,8 +445,11 @@
         <tr><td><code class="mono">--host</code></td><td>MikroTik device IP / hostname</td><td>from config</td></tr>
         <tr><td><code class="mono">--username</code></td><td>SSH username</td><td>from config</td></tr>
         <tr><td><code class="mono">--password</code></td><td>SSH password</td><td>from config</td></tr>
-        <tr><td><code class="mono">--key-filename</code></td><td>SSH key file (preferred over password)</td><td>—</td></tr>
+        <tr><td><code class="mono">--key-filename</code></td><td>SSH key file (preferred over password)</td><td>from config</td></tr>
         <tr><td><code class="mono">--port</code></td><td>SSH port</td><td><code class="mono">22</code></td></tr>
+        <tr><td><code class="mono">--read-only</code></td><td>Expose only tools that don't modify RouterOS or its file store</td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">--sensitive-hiding</code></td><td>Redact credentials and private key material from client-visible output</td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">--mcp.allowed-ips</code></td><td>Comma-separated client IPs / CIDR networks allowed to use the HTTP transports</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">--mcp.transport</code></td><td><code>stdio</code> · <code>sse</code> · <code>streamable-http</code></td><td><code class="mono">stdio</code></td></tr>
         <tr><td><code class="mono">--mcp.host</code></td><td>HTTP listen address</td><td><code class="mono">0.0.0.0</code></td></tr>
         <tr><td><code class="mono">--mcp.port</code></td><td>HTTP listen port</td><td><code class="mono">8000</code></td></tr>
@@ -215,9 +460,13 @@
       <span class="icon">TIP</span>
       <div>
         Prefer SSH keys over passwords for production. Pass <code>--key-filename ~/.ssh/mikrotik_ed25519</code>
-        and create the matching public key under <code>/user ssh-keys</code> on the device.
+        and register the matching public key under <code>/user ssh-keys</code> on the device.
       </div>
     </div>
+
+    <p style="font-size:13.5px;color:var(--ink-mute)">HTTP-based transports (<code>sse</code>, <code>streamable-http</code>)
+      expose a <code>GET /health</code> endpoint for health checks. This endpoint is <strong>not</strong> available in
+      <code>stdio</code> mode.</p>
 
     <!-- TESTING -->
     <h2 id="testing">Testing the install</h2>
@@ -232,18 +481,73 @@
     <span class="k">--password</span> <span class="s">"&lt;PASSWORD&gt;"</span> \
     <span class="k">--port</span> <span class="n">22</span></pre>
 
-    <p>A browser tab opens with the tool catalog. Try <code>mikrotik_list_vlan_interfaces</code> with an
-      empty argument — if you get back a JSON list, you're in.</p>
+    <p>A browser tab opens with the tool catalog. Try <code>mikrotik_list_vlan_interfaces</code> with empty
+      arguments — if you get back a JSON list, you're in. Contributors can also run the project's
+      <code>pytest</code> suite against a RouterOS container; see
+      <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/docs/getting-started/testing.md" target="_blank" rel="noopener">testing.md</a>.</p>
+
+    <h3 id="pytest">Integration test suite</h3>
+    <p>The project ships a <strong>pytest</strong> integration suite that runs against a temporary RouterOS
+      container, so you'll need <strong>Docker installed and running</strong>. Install the dev dependencies,
+      then run the tests:</p>
+    <div class="code-header"><span># from a source checkout</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># 1. Install test dependencies</span>
+<span class="p">$</span> pip install <span class="k">-r</span> requirements-dev.txt
+
+<span class="c"># 2. Run the full suite</span>
+<span class="p">$</span> pytest <span class="k">-v</span>
+
+<span class="c"># Run only integration-marked tests</span>
+<span class="p">$</span> pytest <span class="k">-m</span> integration <span class="k">-v</span></pre>
+    <p><code>pytest -v</code> spins up a MikroTik RouterOS container, runs the integration tests (create,
+      list, and delete user), then tears the container down automatically. Tests are marked with
+      <code>@pytest.mark.integration</code> by default.</p>
 
     <!-- CONTEXT -->
     <h2 id="context">Context length optimization</h2>
-    <p>The full tool catalog is ~140 entries. For local LLMs with tight context windows, you can scope the
-      server to specific categories using the <code>--mcp.tools</code> flag (comma-separated list of categories).</p>
+    <p>MikroTik MCP ships <strong>196 tools</strong>. At full verbosity the tool schema can occupy
+      <strong>≈ 54,000 tokens</strong> — more than the entire context window of many local LLMs
+      (LM Studio, Ollama, and similar).</p>
 
-    <div class="code-header"><span># Only expose VLAN + firewall + NAT</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> mcp-server-mikrotik <span class="k">--mcp.tools</span> <span class="s">"vlan,firewall,nat"</span></pre>
+    <p>To keep that manageable, every tool carries a short <code>title</code> annotation
+      (per the MCP tool-annotations spec) plus a trimmed one-line description. The function signature
+      already carries full type information, so the description only needs to convey <em>what</em> the
+      tool does. This cuts the description token budget by roughly <strong>75%</strong> — bringing the
+      schema for a 64k-token model from <strong>≈ 54k → ≈ 48k tokens</strong> and leaving real room for
+      the conversation.</p>
 
-    <p>This roughly halves the schema you send on each request. Useful for ChatGPT 7B/13B local models.</p>
+    <div class="callout tip">
+      <span class="icon">FURTHER</span>
+      <div>
+        Need only a subset of tools (say, just DNS and WireGuard)? Comment out the unused scope imports in
+        <code>src/mcp_mikrotik/app.py</code> to drop those categories entirely — the dropped tools never
+        reach the schema at all.
+      </div>
+    </div>
+
+    <h3 id="devnotes">Developer notes</h3>
+    <p>The title comes from the <a href="https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/" target="_blank" rel="noopener">MCP Tool Annotations spec</a>
+      (2025-03-26). Every tool is registered through an <code>annotate()</code> helper (in
+      <code>src/mcp_mikrotik/app.py</code>) that attaches a short human-readable title while preserving the
+      read-only / destructive / idempotent / open-world hints:</p>
+    <div class="code-header"><span># src/mcp_mikrotik/app.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># before</span>
+@mcp.tool(name=<span class="s">"create_queue_type"</span>, annotations=WRITE)
+
+<span class="c"># after</span>
+@mcp.tool(name=<span class="s">"create_queue_type"</span>, annotations=annotate(WRITE, <span class="s">"Create Queue Type"</span>))</pre>
+    <p>When adding a tool, always pass a title via <code>annotate()</code> — e.g.
+      <code>annotations=annotate(READ, "My New Tool")</code> — rather than a bare constant like
+      <code>annotations=READ</code>, which omits the title. See the
+      <a href="contributing.html">contributing guide</a> for the full tool-authoring workflow.</p>
+
+    <div class="callout tip">
+      <span class="icon">SCRIPTS</span>
+      <div>
+        Handing the model a <code>.rsc</code> script instead of tool calls? Check it first with
+        <a class="ln-link" href="lsp.html">routeros-lsp</a>, the language server for RouterOS scripts. It runs offline and needs no router.
+      </div>
+    </div>
 
     <!-- NEXT -->
     <div class="pager">
@@ -263,14 +567,23 @@
     <h6>On this page</h6>
     <ul>
       <li><a href="#prereq">Prerequisites</a></li>
+      <li><a href="#registry">MCP Registry</a></li>
       <li><a href="#docker">Docker</a></li>
+      <li><a href="#ghcr">— Prebuilt image</a></li>
       <li><a href="#stdio-docker">— stdio</a></li>
       <li><a href="#sse-docker">— SSE / HTTP</a></li>
       <li><a href="#env">— Env variables</a></li>
+      <li><a href="#compose">— Docker Compose</a></li>
+      <li><a href="#inventory-docker">— Multiple devices</a></li>
+      <li><a href="#hardening">— Read-only / redaction</a></li>
+      <li><a href="#allowed-ips">— Client IP allowlist</a></li>
+      <li><a href="#reverse-proxy">— Reverse proxy</a></li>
       <li><a href="#manual">Manual install</a></li>
       <li><a href="#cli">— CLI options</a></li>
       <li><a href="#testing">Testing the install</a></li>
+      <li><a href="#pytest">— Test suite</a></li>
       <li><a href="#context">Context optimization</a></li>
+      <li><a href="#devnotes">— Developer notes</a></li>
     </ul>
   </aside>
 </div>
@@ -290,7 +603,7 @@
         </span>
         MikroTik MCP
       </div>
-      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices. Not affiliated with MikroTik.</p>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
       <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
     </div>
     <div>
@@ -298,23 +611,29 @@
       <ul>
         <li><a href="index.html">Installation</a></li>
         <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
         <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
       </ul>
     </div>
     <div>
       <h5>Source</h5>
       <ul>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
-        <li><a href="https://github.com/jeff-nasseri/mikrotik-mcp/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
       </ul>
     </div>
     <div>
       <h5>Related</h5>
       <ul>
         <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
-        <li><a href="https://wiki.mikrotik.com" target="_blank" rel="noopener">RouterOS wiki</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
         <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
       </ul>
     </div>
   </div>
