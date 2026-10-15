@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta name="theme-color" content="#0a0d12" />
 <title>MikroTik MCP — Talk to your RouterOS routers in plain English</title>
-<meta name="description" content="MikroTik MCP is an open-source Model Context Protocol server that lets AI clients manage RouterOS devices — VLANs, firewall, DHCP, DNS, WireGuard and more — in plain English." />
+<meta name="description" content="MikroTik MCP is an open-source Model Context Protocol server that lets AI clients manage RouterOS devices — VLANs, firewall, DHCP, DNS, WireGuard and more — in plain English. Plus routeros-lsp, a language server that checks RouterOS scripts before they reach a router." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -262,6 +262,44 @@
   .cta p { font-size: 17px; max-width: 540px; margin: 0 auto 36px; }
   .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
+  /* ===== Hero tags ===== */
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+  .hero-tags .hero-eyebrow { margin-bottom: 0; }
+  .hero-new { color: var(--ink); border-color: rgba(255,138,61,0.35); background: rgba(255,138,61,0.07); transition: border-color .15s, background .15s; }
+  .hero-new:hover { color: var(--ink); border-color: var(--amber); background: rgba(255,138,61,0.12); }
+  .hero-new b { font-weight: 600; color: #18100a; background: var(--amber); border-radius: 100px; padding: 1px 7px; margin-left: -6px; letter-spacing: 0.1em; }
+  .hero-new .pkg { text-transform: none; letter-spacing: 0.02em; font-size: 12px; }
+  .hero-new .arr { color: var(--amber); transition: transform .15s; }
+  .hero-new:hover .arr { transform: translateX(3px); }
+
+  /* ===== Language server band ===== */
+  .band-head p code { font: 13px var(--mono); color: var(--amber); }
+  .lsp-grid { display: grid; grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.68fr); gap: 48px; align-items: start; }
+  .lsp-switch { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .lsp-switch button { font: 12px var(--mono); letter-spacing: 0.02em; padding: 8px 14px; border-radius: var(--rad); border: 1px solid var(--line); background: transparent; color: var(--ink-dim); cursor: pointer; transition: all .15s; }
+  .lsp-switch button:hover { border-color: var(--line-strong); color: var(--ink); }
+  .lsp-switch button[aria-pressed="true"] { border-color: var(--amber); background: rgba(255,138,61,0.06); color: var(--ink); }
+  .ed .hv { background: rgba(111,182,255,0.2); border-radius: 2px; }
+  .lsp-note { margin-top: 18px; font-size: 13.5px; line-height: 1.6; color: var(--ink-mute); max-width: 680px; }
+  .lsp-note b { color: var(--ink-dim); font-weight: 500; }
+  .lsp-pts { border-top: 1px solid var(--line); }
+  .lsp-pt { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .lsp-pt svg { width: 26px; height: 26px; color: var(--amber); margin-top: 1px; }
+  .lsp-pt h4 { margin-bottom: 6px; }
+  .lsp-pt p { font-size: 13.5px; line-height: 1.55; }
+  .lsp-pt code, .lsp-card p code { font: 12px var(--mono); color: var(--amber); }
+  .lsp-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-top: 48px; }
+  .lsp-card { background: var(--bg); border: 1px solid var(--line); border-radius: var(--rad-lg); padding: 26px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .lsp-card h3 { font-size: 21px; }
+  .lsp-card .eyebrow { margin-bottom: 10px; }
+  .lsp-links { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 12px var(--mono); }
+  .lsp-links a { color: var(--amber); }
+  .lsp-links a:hover { color: var(--ink); }
+  .lsp-meta { font: 11.5px/1.6 var(--mono); color: var(--ink-mute); }
+  .cta-also { margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px; font: 12.5px var(--mono); color: var(--ink-mute); }
+  @media (max-width: 1080px) { .lsp-grid, .lsp-row { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .lsp-card { padding: 18px; } .ed-tab i { display: none; } }
+
   /* responsive */
   @media (max-width: 1080px) {
     .hero-grid, .arch, .install { grid-template-columns: 1fr; }
@@ -305,6 +343,7 @@
   <div class="nav-links">
     <a href="#what">Overview</a>
     <a href="#capabilities">Capabilities</a>
+    <a href="#lsp">Language server <span class="new">New</span></a>
     <a href="#install">Install</a>
     <a href="docs/index.html">Docs</a>
     <a href="docs/reference.html">Reference</a>
@@ -321,7 +360,10 @@
 <section class="hero">
   <div class="hero-grid">
     <div>
-      <span class="hero-eyebrow"><span class="pulse"></span> Open-source MCP server · RouterOS-native</span>
+      <div class="hero-tags">
+        <span class="hero-eyebrow"><span class="pulse"></span> Open-source MCP server · RouterOS-native</span>
+        <a class="hero-eyebrow hero-new" href="#lsp" aria-label="New: routeros-lsp, a language server for RouterOS scripts"><b>New</b> <span class="pkg">routeros-lsp</span> <span class="arr">→</span></a>
+      </div>
       <h1>
         Talk to your<br>
         <span class="accent">RouterOS</span> routers<br>
@@ -802,6 +844,149 @@
   </div>
 </section>
 
+<!-- ============ LANGUAGE SERVER ============ -->
+<section class="band alt" id="lsp">
+  <div class="wrap">
+    <div class="band-head">
+      <div>
+        <div class="eyebrow">05 — Language server</div>
+        <h2>Catch it in the editor, not on the router.</h2>
+      </div>
+      <p>routeros-lsp is a Language Server Protocol server for RouterOS scripts (<code>.rsc</code>). Your editor — or your AI coding agent — gets immediate feedback while the script is being written: syntax errors, unknown menus, commands and parameters, and the variable-scope mistakes RouterOS only reveals at import time. A sibling of MikroTik MCP; it works on its own.</p>
+    </div>
+
+    <div class="lsp-grid">
+      <div class="lsp-demo">
+        <div class="lsp-switch" role="group" aria-label="Editor feature">
+          <button type="button" aria-pressed="true" data-view="diag">Diagnostics</button>
+          <button type="button" aria-pressed="false" data-view="complete">Completion</button>
+          <button type="button" aria-pressed="false" data-view="hover">Hover</button>
+        </div>
+        <div class="ed" id="ed" aria-label="Example of routeros-lsp inside an editor">
+          <div class="ed-head"><span class="ed-dot r"></span><span class="ed-dot y"></span><span class="ed-dot g"></span><span class="ed-st"><span class="dot"></span> routeros-lsp · RouterOS 7.21.4</span></div>
+          <div class="ed-views">
+
+            <!-- Diagnostics -->
+            <div class="ed-view" data-view="diag">
+              <div class="ed-tab"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>guest-vlan.rsc<i><span><b class="si e"></b>2 errors</span><span><b class="si w"></b>2 warnings</span></i></div>
+              <div class="ed-code">
+                <div class="ln" data-n="1"><span class="c"># Guest VLAN</span></div>
+                <div class="ln" data-n="2"><span class="p">:local</span> vlanId 200</div>
+                <div class="ln w" data-n="3"><span class="n">/interface vlan</span> <span class="p">add</span> <span class="k">name</span>=vlan200 <span class="k">vlan-id</span>=<span class="sq w" data-i="0"><span class="v">$vlanId</span></span> <span class="k">interface</span>=ether1</div>
+                <div class="ln w" data-n="4"><span class="n">/ip</span> <span class="sq w" data-i="1">adress</span> <span class="p">add</span> <span class="k">address</span>=192.168.200.1/24 <span class="k">interface</span>=vlan200</div>
+                <div class="ln" data-n="5"><span class="n">/ip pool</span> <span class="p">add</span> <span class="k">name</span>=pool-200 <span class="k">ranges</span>=192.168.200.10-192.168.200.100</div>
+                <div class="ln e" data-n="6"><span class="n">/ip firewall nat</span> <span class="p">add</span> <span class="k">chain</span>=srcnat <span class="k">action</span>=masquerade <span class="sq e" data-i="2">#</span> WAN</div>
+                <div class="ln e" data-n="7"><span class="p">:set</span> <span class="sq e" data-i="3">vlanId</span> 201</div>
+              </div>
+              <div class="ed-prob">
+                <div class="ph"><b>Problems</b><span><b class="si e"></b>2 errors</span><span><b class="si w"></b>2 warnings</span></div>
+                <div class="pbody split">
+                  <div class="pl" role="group" aria-label="Problems in guest-vlan.rsc">
+                    <button type="button" class="pr" data-i="0"><span class="si w"></span><span class="msg">$vlanId is a local variable of an earlier line or of a block that has ended, so it is empty here (an imported file gives every line its own scope). Use ':global vlanId' or put the commands in one { } block.</span><span class="pos">3:42</span></button>
+                    <button type="button" class="pr" data-i="1"><span class="si w"></span><span class="msg">'adress' is not a menu or command in /ip of the RouterOS 7.21.4 command database. Did you mean 'address'?</span><span class="pos">4:5</span></button>
+                    <button type="button" class="pr" data-i="2"><span class="si e"></span><span class="msg">This command takes no unnamed arguments, and a '#' only starts a comment at the beginning of a command, so RouterOS reads this as an argument. Put ';' before the comment.</span><span class="pos">6:53</span></button>
+                    <button type="button" class="pr" data-i="3"><span class="si e"></span><span class="msg">':set vlanId' needs 'vlanId' to be declared first, with ':local vlanId' or ':global vlanId' earlier in the same block or in a block around it. 'vlanId' is declared elsewhere in this file, but each line of an imported file is its own scope and a block that has ended hides its names. Declare it again here or put the commands in one { } block.</span><span class="pos">7:6</span></button>
+                  </div>
+                  <div class="pd" aria-live="polite">
+                    <div data-i="0" hidden><div class="hd"><span class="si w"></span><span class="id">vars/local-out-of-scope</span><span class="src">device</span><span class="pos">Ln 3, Col 42</span></div><p>$vlanId is a local variable of an earlier line or of a block that has ended, so it is empty here (an imported file gives every line its own scope). Use ':global vlanId' or put the commands in one { } block. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></div>
+                    <div data-i="1" hidden><div class="hd"><span class="si w"></span><span class="id">schema/unknown-command</span><span class="src">device</span><span class="pos">Ln 4, Col 5</span></div><p>'adress' is not a menu or command in /ip of the RouterOS 7.21.4 command database. Did you mean 'address'? <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></div>
+                    <div data-i="2"><div class="hd"><span class="si e"></span><span class="id">schema/unexpected-argument</span><span class="src">device</span><span class="pos">Ln 6, Col 53</span></div><p>This command takes no unnamed arguments, and a '#' only starts a comment at the beginning of a command, so RouterOS reads this as an argument. Put ';' before the comment. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></div>
+                    <div data-i="3" hidden><div class="hd"><span class="si e"></span><span class="id">vars/set-undeclared</span><span class="src">device</span><span class="pos">Ln 7, Col 6</span></div><p>':set vlanId' needs 'vlanId' to be declared first, with ':local vlanId' or ':global vlanId' earlier in the same block or in a block around it. 'vlanId' is declared elsewhere in this file, but each line of an imported file is its own scope and a block that has ended hides its names. Declare it again here or put the commands in one { } block. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completion -->
+            <div class="ed-view" data-view="complete" hidden>
+              <div class="ed-tab"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>gateway.rsc<i><span><b class="si e"></b>1 error</span></i></div>
+              <div class="ed-code" style="min-height:268px">
+                <div class="ln" data-n="1"><span class="c"># Add the gateway address</span></div>
+                <div class="ln" data-n="2"><span class="n">/ip address</span></div>
+                <div class="ln e" data-n="3"><span class="sq e"><span class="p">add</span></span> <span class="caret" id="edCaret"></span></div>
+                <div class="ed-menu" data-anchor="edCaret">
+                  <div class="it sel">address<i>required, A.B.C.D (IP address)</i></div>
+                  <div class="it">interface<i>required</i></div>
+                  <div class="it">broadcast<i>A.B.C.D (IP address)</i></div>
+                  <div class="it">comment<i>Comment</i></div>
+                  <div class="dc">Local IP address<br>Type: <code>A.B.C.D (IP address)</code></div>
+                </div>
+              </div>
+              <div class="ed-prob">
+                <div class="ph"><b>Problems</b><span><b class="si e"></b>1 error</span></div>
+                <div class="pbody"><div class="pl"><div class="pr"><span class="si e"></span><span class="msg">Missing values for address, interface. (RouterOS behaviour that the documentation does not describe)</span><span class="pos">3:1</span></div></div></div>
+              </div>
+            </div>
+
+            <!-- Hover -->
+            <div class="ed-view" data-view="hover" hidden>
+              <div class="ed-tab"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>gateway.rsc<i><span><b class="si ok"></b>no problems</span></i></div>
+              <div class="ed-code" style="min-height:268px">
+                <div class="ln" data-n="1"><span class="c"># Add the gateway address</span></div>
+                <div class="ln" data-n="2"><span class="n">/ip address</span></div>
+                <div class="ln" data-n="3"><span class="p">add</span> <span class="k">address</span>=192.168.200.1/24 <span class="k">interface</span>=vlan200 <span class="k hv" id="edTok">disabled</span>=no</div>
+                <div class="ed-card" data-anchor="edTok">
+                  <p><b>disabled</b> parameter of <code>/ip address add</code></p>
+                  <p>Defines whether item is ignored or used</p>
+                  <p>Values: <code>no</code>, <code>yes</code></p>
+                </div>
+              </div>
+              <div class="ed-prob">
+                <div class="ph"><b>Problems</b><span><b class="si ok"></b>none</span></div>
+                <div class="pbody"><div class="pl"><div class="pr"><span class="si ok"></span><span class="msg">No problems found in gateway.rsc</span><span class="pos"></span></div></div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <p class="lsp-note"><b>Built to stay quiet when you're right.</b> Checked against RouterOS 7.21.4 on 16,900 generated command lines, it never reported one the router accepts. It does miss some the router rejects — mostly the kinds it doesn't check, like parameter values. <a class="ln-link" href="docs/lsp.html#accuracy">Method and limits →</a></p>
+      </div>
+
+      <div class="lsp-pts">
+        <div class="lsp-pt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h10"/><path d="M4 16l2-2.2 2 2.2 2-2.2 2 2.2 2-2.2 2 2.2 2-2.2"/></svg>
+          <div><h4>Diagnostics</h4><p>Syntax, variables, menus and commands: 36 rules, each with an id, a severity and a label for how well founded it is. Messages say what RouterOS will do and how to fix it.</p></div>
+        </div>
+        <div class="lsp-pt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3.5" width="18" height="5" rx="1"/><rect x="3" y="11" width="18" height="9.5" rx="1"/><path d="M7 14.5h7M7 17.5h5"/></svg>
+          <div><h4>Completion and hover</h4><p>Menus, commands and parameters (required first), values after <code>name=</code>, variables in scope. Hover shows the description, type and values from the command database.</p></div>
+        </div>
+        <div class="lsp-pt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M8 12h12M8 18h12M5 9v9"/></svg>
+          <div><h4>Outline and folding</h4><p>Functions, <code>:global</code> and <code>:local</code> declarations and the menu headers of an export fill the outline; blocks, continued lines and comment runs fold.</p></div>
+        </div>
+        <div class="lsp-pt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 10l3 2.5L7 15M12.5 15.5H17"/></svg>
+          <div><h4>Command line</h4><p><code>routeros-lsp check</code> runs the same analysis for CI, a pre-commit hook, or a script an agent just wrote. Exit status 1 when it finds errors.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lsp-row">
+      <div class="lsp-card">
+        <div><div class="eyebrow">Install</div><h3>One command. No dependencies.</h3></div>
+        <div>
+          <div class="code-header"><span># Python 3.10+</span><button class="copy-btn">Copy</button></div>
+          <pre class="code"><span class="p">$</span> pipx install routeros-lsp     <span class="c"># or: uv tool install routeros-lsp</span>
+<span class="p">$</span> routeros-lsp --version
+<span class="p">$</span> routeros-lsp check scripts/     <span class="c"># exit 1 when there are errors</span></pre>
+        </div>
+        <div class="lsp-links"><a href="docs/lsp.html">Language server docs →</a><a href="docs/lsp-rules.html">Diagnostic rules →</a><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">wiresage/routeros-lsp ↗</a></div>
+        <div class="lsp-meta">MIT licensed · Claude Code plugin included · works with any LSP client over stdio</div>
+      </div>
+      <div class="lsp-card">
+        <div><div class="eyebrow">Better together</div><h3>Check the script, then apply it.</h3></div>
+        <div class="flow">
+          <div class="st"><span class="tg">Write</span><div>Your editor or AI agent drafts a <code>.rsc</code> script.</div></div>
+          <div class="st"><span class="tg l">Check</span><div><strong>routeros-lsp</strong> reports what the router would reject — no router needed.</div></div>
+          <div class="st"><span class="tg m">Apply</span><div><strong>MikroTik MCP</strong> uploads and imports it: <code>mikrotik_upload_file</code>, then <code>mikrotik_import_configuration</code>.</div></div>
+        </div>
+        <div class="lsp-meta">Independent tools — use either one on its own.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ CTA ============ -->
 <section class="cta">
   <div class="wrap">
@@ -816,6 +1001,7 @@
     <p style="margin-top:18px;font-size:14px;color:var(--ink-mute)">Got a question, an idea, or something
       you'd like to talk through? Users and contributors are both welcome — whether you're connecting your
       first router or working on a PR.</p>
+    <div class="cta-also"><span>Also new:</span><a class="ln-link" href="docs/lsp.html">routeros-lsp, a language server for RouterOS scripts →</a></div>
   </div>
 </section>
 
@@ -834,7 +1020,7 @@
         </span>
         MikroTik MCP
       </div>
-      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices. Not affiliated with MikroTik.</p>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
       <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
     </div>
     <div>
@@ -842,6 +1028,8 @@
       <ul>
         <li><a href="docs/index.html">Installation</a></li>
         <li><a href="docs/configure.html">Integrations</a></li>
+        <li><a href="docs/lsp.html">Language server</a></li>
+        <li><a href="docs/lsp-rules.html">Diagnostic rules</a></li>
         <li><a href="docs/reference.html">API reference</a></li>
         <li><a href="docs/examples.html">Examples</a></li>
         <li><a href="docs/articles.html">Articles</a></li>
@@ -850,7 +1038,8 @@
     <div>
       <h5>Source</h5>
       <ul>
-        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
         <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
         <li><a href="docs/contributing.html">Contributing</a></li>
       </ul>
@@ -861,6 +1050,7 @@
         <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
         <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
         <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
         <li><a href="https://discord.gg/kmVSpstbNU" target="_blank" rel="noopener">Discord community</a></li>
       </ul>
     </div>
@@ -891,6 +1081,35 @@
       });
     });
   });
+
+  // Language server demo: view switcher, problem picker, anchored popups
+  (function () {
+    var ed = document.getElementById('ed'); if (!ed) return;
+    var views = [].slice.call(ed.querySelectorAll('.ed-view')), btns = [].slice.call(document.querySelectorAll('.lsp-switch button'));
+    var rows = [].slice.call(ed.querySelectorAll('.pr[data-i]')), toks = [].slice.call(ed.querySelectorAll('.sq[data-i]')), dets = [].slice.call(ed.querySelectorAll('.pd [data-i]'));
+    function place(el) {
+      var a = document.getElementById(el.dataset.anchor), p = el.offsetParent; if (!a || !p) return;
+      el.style.left = Math.max(8, Math.min(a.offsetLeft - 4, p.clientWidth - el.offsetWidth - 8)) + 'px';
+      el.style.top = (a.offsetTop + a.offsetHeight + 8) + 'px';
+    }
+    function placeAll() { [].forEach.call(ed.querySelectorAll('[data-anchor]'), place); }
+    function show(name) {
+      views.forEach(function (v) { v.hidden = v.dataset.view !== name; });
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === name)); });
+      placeAll();
+    }
+    function pick(i) {
+      rows.forEach(function (r) { var on = r.dataset.i === i; r.classList.toggle('on', on); r.setAttribute('aria-pressed', String(on)); });
+      toks.forEach(function (t) { t.classList.toggle('on', t.dataset.i === i); });
+      dets.forEach(function (d) { d.hidden = d.dataset.i !== i; });
+    }
+    btns.forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); }); });
+    rows.forEach(function (r) { r.addEventListener('click', function () { pick(r.dataset.i); }); });
+    toks.forEach(function (t) { t.addEventListener('mouseenter', function () { pick(t.dataset.i); }); t.addEventListener('click', function () { pick(t.dataset.i); }); });
+    pick('2'); show('diag');
+    window.addEventListener('resize', placeAll);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeAll);
+  })();
 </script>
 </body>
 </html>

@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="theme-color" content="#0a0d12" />
+<title>Diagnostic rules — MikroTik MCP docs</title>
+<meta name="description" content="All 36 routeros-lsp diagnostic rules: id, default severity and source, with real examples of the messages." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  .doc-main td:first-child { white-space: nowrap; }
+  .srcs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0 6px; }
+  .srcc { background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--rad-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .doc-main .srcc p { margin: 0; font-size: 12.5px; line-height: 1.5; }
+  .srcc .sfx { font: 11px/1.5 var(--mono); color: var(--ink-mute); }
+  .srcc .num { margin-top: auto; font: 11px var(--mono); color: var(--ink-mute); }
+  .sevlist { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--rad-lg); background: var(--bg-1); overflow: hidden; }
+  .sevlist li { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding: 12px 16px; margin: 0; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--ink-dim); align-items: baseline; }
+  .sevlist li:first-child { border-top: 0; }
+  .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 20px 0 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--rad-lg); background: var(--bg-1); }
+  .tools input { flex: 1 1 220px; min-width: 0; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--rad); padding: 8px 12px; color: var(--ink); font: 13px var(--mono); }
+  .tools input:focus { outline: none; border-color: var(--amber); }
+  .tools input::placeholder { color: var(--ink-mute); }
+  .grp { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .grp > span { font: 10.5px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); margin-right: 4px; }
+  .chip { font: 11.5px var(--mono); padding: 5px 11px; border-radius: 100px; border: 1px solid var(--line); background: transparent; color: var(--ink-dim); cursor: pointer; transition: all .15s; }
+  .chip:hover { border-color: var(--line-strong); color: var(--ink); }
+  .chip[aria-pressed="true"] { border-color: var(--amber); background: rgba(255,138,61,0.07); color: var(--ink); }
+  .chip em { font-style: normal; color: var(--ink-mute); margin-left: 6px; }
+  .rcount { margin-left: auto; font: 11.5px var(--mono); color: var(--ink-mute); }
+  .rules { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--rad-lg); overflow: hidden; background: var(--bg-1); }
+  .rule { display: grid; grid-template-columns: minmax(210px, 290px) 92px 96px minmax(0, 1fr); gap: 6px 18px; align-items: baseline; padding: 14px 18px; margin: 0; border-top: 1px solid var(--line); }
+  .rule:first-child { border-top: 0; }
+  .rule[hidden] { display: none; }
+  .rule:target { background: rgba(255,138,61,0.06); }
+  .rule .rid { font: 12.5px var(--mono); color: var(--amber); word-break: break-all; }
+  .rule .rid i { font-style: normal; color: var(--ink-mute); }
+  .rule .sum { font-size: 13.5px; line-height: 1.55; color: var(--ink-dim); }
+  .rule .refs { display: block; margin-top: 6px; font: 11px var(--mono); color: var(--ink-mute); }
+  .rule details { grid-column: 4; margin-top: 2px; }
+  .rule summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 6px; font: 11.5px var(--mono); color: var(--amber); }
+  .rule summary::-webkit-details-marker { display: none; }
+  .rule summary::before { content: "▸"; display: inline-block; transition: transform .15s; }
+  .rule details[open] summary::before { transform: rotate(90deg); }
+  .rule details .code { margin-top: 10px; padding: 12px 14px; }
+  .rule .exm { margin: 10px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-dim); }
+  .rule .exm .sev { margin-right: 8px; }
+  .rule .exm .why { color: var(--ink-mute); }
+  .rempty { padding: 28px; text-align: center; color: var(--ink-mute); border: 1px solid var(--line); border-radius: var(--rad-lg); }
+  @media (max-width: 1000px) { .srcs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .rule { grid-template-columns: minmax(0, 1fr) auto auto; } .rule .sum, .rule details { grid-column: 1 / -1; } }
+  @media (max-width: 520px) { .srcs { grid-template-columns: 1fr; } .sevlist li { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+        <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+        <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+        <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+        <line x1="7" y1="9" x2="5" y2="4" stroke="var(--amber)"/>
+        <line x1="12" y1="9" x2="12" y2="3" stroke="var(--amber)"/>
+        <line x1="17" y1="9" x2="19" y2="4" stroke="var(--amber)"/>
+        <circle cx="5" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="12" cy="3" r="0.9" fill="var(--amber)" stroke="none"/>
+        <circle cx="19" cy="4" r="0.9" fill="var(--amber)" stroke="none"/>
+      </svg>
+    </span>
+    MikroTik MCP <span class="brand-tag">docs</span>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#what">Overview</a>
+    <a href="../index.html#capabilities">Capabilities</a>
+    <a href="lsp.html" class="active">Language server</a>
+    <a href="index.html">Docs</a>
+    <a href="reference.html">Reference</a>
+    <a href="examples.html">Examples</a>
+  </div>
+  <div class="nav-right">
+    <span class="pill"><span class="dot"></span> MIT licensed</span>
+    <a class="btn" href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">routeros-lsp ↗</a>
+  </div>
+</nav>
+
+<!-- DOCS LAYOUT -->
+<div class="docs">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h6>Getting started</h6>
+    <ul>
+      <li><a href="index.html">Installation</a></li>
+      <li><a href="index.html#testing">Testing</a></li>
+      <li><a href="index.html#context">Context optimization</a></li>
+    </ul>
+    <h6>Integrations</h6>
+    <ul>
+      <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#inspector">MCP Inspector</a></li>
+      <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
+    </ul>
+    <h6>Language server</h6>
+    <ul>
+      <li><a href="lsp.html">Overview</a></li>
+      <li><a href="lsp.html#install">Install</a></li>
+      <li><a href="lsp.html#editors">Editors &amp; Claude Code</a></li>
+      <li><a href="lsp.html#cli">Command line</a></li>
+      <li><a href="lsp.html#configuration">Configuration</a></li>
+      <li><a href="lsp-rules.html" class="active">Diagnostic rules</a></li>
+    </ul>
+    <h6>API reference</h6>
+    <ul>
+      <li><a href="reference.html#vlan">VLAN</a></li>
+      <li><a href="reference.html#firewall">Firewall</a></li>
+      <li><a href="reference.html#nat">NAT</a></li>
+      <li><a href="reference.html#dhcp">DHCP</a></li>
+      <li><a href="reference.html#dns">DNS</a></li>
+      <li><a href="reference.html#wireguard">WireGuard</a></li>
+      <li><a href="reference.html#wireless">Wireless</a></li>
+      <li><a href="reference.html">All categories →</a></li>
+    </ul>
+    <h6>Examples</h6>
+    <ul>
+      <li><a href="examples.html">Usage examples</a></li>
+      <li><a href="examples.html#workflows">Complete workflows</a></li>
+      <li><a href="articles.html">Articles &amp; tutorials</a></li>
+    </ul>
+    <h6>Project</h6>
+    <ul>
+      <li><a href="contributing.html">Contributing</a></li>
+      <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="doc-main">
+    <div class="crumbs">
+      <a href="../index.html">MikroTik MCP</a> <span>/</span>
+      <a href="lsp.html">Language server</a> <span>/</span>
+      <span style="color:var(--ink);opacity:1">Diagnostic rules</span>
+    </div>
+    <h1 class="doc-title">Diagnostic rules</h1>
+    <p class="doc-lede">
+      Every finding is a rule with a stable id, a default severity and a source that says how well founded it is.
+      There are 36 today. This page mirrors <a class="ln-link" href="https://github.com/wiresage/routeros-lsp/blob/master/docs/rules.md" target="_blank" rel="noopener">docs/rules.md</a>,
+      which the repository generates from the code.
+    </p>
+
+    <h2 id="sources">Sources</h2>
+    <p>The source is shown in the message whenever a rule is not the documented language, so a quirk of RouterOS 7.21.4 is never presented as the specification.</p>
+    <div class="srcs">
+      <div class="srcc"><span class="src">doc</span><p>The Scripting documentation states it.</p><span class="num">8 rules</span></div>
+      <div class="srcc"><span class="src">doc-example</span><p>The documentation does not state it, but one of its examples shows it.</p><span class="num">no rules yet</span></div>
+      <div class="srcc"><span class="src">device</span><p>Observed on RouterOS, not described in the documentation.</p><span class="sfx">Message ends: (RouterOS behaviour that the documentation does not describe)</span><span class="num">25 rules</span></div>
+      <div class="srcc"><span class="src open">open</span><p>The documentation is silent or contradicts itself.</p><span class="sfx">Message ends: (the documentation does not specify this)</span><span class="num">3 rules</span></div>
+    </div>
+    <p>Where the documentation and the device disagree, the device decides what is an error — a script that fails to compile — and the documentation decides what is merely reported as a warning.
+      The <code>register</code> ids point to rows of <a class="ln-link" href="https://github.com/wiresage/routeros-lsp/blob/master/docs/ambiguities.md" target="_blank" rel="noopener">ambiguities.md</a>, the evidence for each rule.</p>
+
+    <h2 id="severities">Severities</h2>
+    <ul class="sevlist">
+      <li><span class="sev e"><span class="si e"></span>error</span><span>A script that fails to compile on RouterOS. 28 rules.</span></li>
+      <li><span class="sev w"><span class="si w"></span>warning</span><span>RouterOS accepts it, or the finding depends on your hardware's command list. 8 rules.</span></li>
+      <li><span class="sev"><span class="si"></span>information · hint</span><span>Available when you set a severity yourself; no rule defaults to them.</span></li>
+      <li><span class="sev"><span class="si" style="background:transparent;border:1px solid var(--ink-mute)"></span>off</span><span>Switches the rule off.</span></li>
+    </ul>
+    <p>Change one with the <code>severities</code> setting, or <code>--severity RULE=LEVEL</code> on the command line. See
+      <a class="ln-link" href="lsp.html#configuration">Configuration</a>.</p>
+
+    <h2 id="all">All rules</h2>
+    <div class="tools" role="search">
+      <input id="rq" type="search" placeholder="Filter — try “scope”, “schema/” or “L-10”" aria-label="Filter rules" />
+      <div class="grp"><span>Area</span><button type="button" class="chip" data-k="area" data-v="all" aria-pressed="true">All<em>36</em></button><button type="button" class="chip" data-k="area" data-v="syntax" aria-pressed="false">Syntax<em>23</em></button><button type="button" class="chip" data-k="area" data-v="vars" aria-pressed="false">Variables<em>5</em></button><button type="button" class="chip" data-k="area" data-v="schema" aria-pressed="false">Menus &amp; commands<em>8</em></button></div>
+      <div class="grp"><span>Severity</span><button type="button" class="chip" data-k="sev" data-v="all" aria-pressed="true">All</button><button type="button" class="chip" data-k="sev" data-v="error" aria-pressed="false">Error<em>28</em></button><button type="button" class="chip" data-k="sev" data-v="warning" aria-pressed="false">Warning<em>8</em></button></div>
+      <div class="grp"><span>Source</span><button type="button" class="chip" data-k="src" data-v="all" aria-pressed="true">All</button><button type="button" class="chip" data-k="src" data-v="doc" aria-pressed="false">doc<em>8</em></button><button type="button" class="chip" data-k="src" data-v="device" aria-pressed="false">device<em>25</em></button><button type="button" class="chip" data-k="src" data-v="open" aria-pressed="false">open<em>3</em></button></div>
+      <div class="grp"><button type="button" class="chip" id="rex" aria-pressed="false">Show 10 examples</button></div>
+      <span class="rcount" id="rcount" aria-live="polite">36 of 36 rules</span>
+    </div>
+    <ul class="rules" id="rules">
+<li class="rule" id="schema-ambiguous-name" data-area="schema" data-sev="error" data-src="device">
+<div class="rid"><i>schema/</i>ambiguous-name</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">An abbreviated name that matches more than one menu, command or parameter.<span class="refs">register C-10</span></div>
+</li>
+<li class="rule" id="schema-duplicate-parameter" data-area="schema" data-sev="error" data-src="device">
+<div class="rid"><i>schema/</i>duplicate-parameter</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">The same parameter given twice.</div>
+<details><summary>Example</summary><pre class="code"><span class="n">/ip address</span> <span class="p">add</span> <span class="k">address</span>=10.0.0.1/24 <span class="sq e">address</span>=10.0.1.1/24 <span class="k">interface</span>=ether1</pre><p class="exm"><span class="sev e"><span class="si e"></span>error</span>'address' is given more than once. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="schema-flag-with-value" data-area="schema" data-sev="error" data-src="device">
+<div class="rid"><i>schema/</i>flag-with-value</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A flag such as detail or count-only written as name=value.</div>
+</li>
+<li class="rule" id="schema-missing-required" data-area="schema" data-sev="error" data-src="device">
+<div class="rid"><i>schema/</i>missing-required</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A parameter that the command cannot be compiled without is missing.</div>
+<details><summary>Example</summary><pre class="code"><span class="n">/ip address</span> <span class="sq e"><span class="p">add</span></span> <span class="k">address</span>=192.168.88.2/24</pre><p class="exm"><span class="sev e"><span class="si e"></span>error</span>Missing a value for interface. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="schema-parameter-needs-value" data-area="schema" data-sev="error" data-src="device">
+<div class="rid"><i>schema/</i>parameter-needs-value</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A parameter that takes a value written without one, as if it were a flag.</div>
+<details><summary>Example</summary><pre class="code"><span class="n">/ip address</span> <span class="p">add</span> <span class="k">address</span>=10.0.0.1/24 <span class="k">interface</span>=ether1 <span class="sq e">comment</span></pre><p class="exm"><span class="sev e"><span class="si e"></span>error</span>'comment' takes a value: write comment=... <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="schema-unexpected-argument" data-area="schema" data-sev="error" data-src="device">
+<div class="rid"><i>schema/</i>unexpected-argument</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">More unnamed arguments than the command takes.<span class="refs">register C-04</span></div>
+<details><summary>Example</summary><pre class="code"><span class="n">/ip firewall nat</span> <span class="p">add</span> <span class="k">chain</span>=srcnat <span class="k">action</span>=masquerade <span class="sq e">#</span> WAN</pre><p class="exm"><span class="sev e"><span class="si e"></span>error</span>This command takes no unnamed arguments, and a '#' only starts a comment at the beginning of a command, so RouterOS reads this as an argument. Put ';' before the comment. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="schema-unknown-command" data-area="schema" data-sev="warning" data-src="device">
+<div class="rid"><i>schema/</i>unknown-command</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A menu or command that is not in the command database. Menus of packages the database was not generated with are missing from it.<span class="refs">register C-02, C-10, P-01, P-02</span></div>
+<details><summary>Example</summary><pre class="code"><span class="n">/ip firewall</span> <span class="sq w">filtr</span> add chain=input action=drop</pre><p class="exm"><span class="sev w"><span class="si w"></span>warning</span>'filtr' is not a menu or command in /ip firewall of the RouterOS 7.21.4 command database. Did you mean 'filter'? <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="schema-unknown-parameter" data-area="schema" data-sev="warning" data-src="device">
+<div class="rid"><i>schema/</i>unknown-parameter</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A parameter that the command does not have in the command database. Some parameters exist only on some hardware.<span class="refs">register C-10</span></div>
+<details><summary>Example</summary><pre class="code"><span class="n">/ip address</span> <span class="p">add</span> <span class="sq w">adress</span>=192.168.88.2/24 <span class="k">interface</span>=ether1</pre><p class="exm"><span class="sev w"><span class="si w"></span>warning</span>'adress' is not a parameter of this command in the RouterOS 7.21.4 command database. Did you mean 'address'? <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="syntax-adjacent-tokens" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>adjacent-tokens</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">Two values written with no space between them.<span class="refs">register L-10, L-16</span></div>
+</li>
+<li class="rule" id="syntax-bad-interpolation" data-area="syntax" data-sev="error" data-src="doc">
+<div class="rid"><i>syntax/</i>bad-interpolation</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">A "$" inside a string that is not followed by a variable name, "(" or "[".</div>
+</li>
+<li class="rule" id="syntax-bare-dollar" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>bare-dollar</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A "$" that is not followed by a variable name.</div>
+</li>
+<li class="rule" id="syntax-bom" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>bom</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A byte order mark at the start of the file is rejected by RouterOS.<span class="refs">register L-06</span></div>
+</li>
+<li class="rule" id="syntax-dollar-expression-outside-string" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>dollar-expression-outside-string</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">"$(" and "$[" are only valid inside a string.<span class="refs">register O-09</span></div>
+</li>
+<li class="rule" id="syntax-empty-expression" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>empty-expression</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">An empty "( )".</div>
+</li>
+<li class="rule" id="syntax-expected-command" data-area="syntax" data-sev="error" data-src="doc">
+<div class="rid"><i>syntax/</i>expected-command</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">A prefix such as ":" with no command after it, or a line that starts with something that cannot be a command.</div>
+</li>
+<li class="rule" id="syntax-expected-operand" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>expected-operand</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">An operator without the value it needs.</div>
+</li>
+<li class="rule" id="syntax-invalid-character" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>invalid-character</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A character that RouterOS does not accept outside a string.<span class="refs">register L-15, L-16</span></div>
+</li>
+<li class="rule" id="syntax-invalid-escape" data-area="syntax" data-sev="error" data-src="doc">
+<div class="rid"><i>syntax/</i>invalid-escape</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">Backslash followed by something that is not a documented escape sequence.<span class="refs">register E-03, E-04</span></div>
+</li>
+<li class="rule" id="syntax-missing-closer" data-area="syntax" data-sev="error" data-src="doc">
+<div class="rid"><i>syntax/</i>missing-closer</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">A "(", "[" or "{" is never closed.</div>
+</li>
+<li class="rule" id="syntax-missing-separator" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>missing-separator</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">Two commands on one line without ";" between them.<span class="refs">register L-11</span></div>
+</li>
+<li class="rule" id="syntax-newline-in-parens" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>newline-in-parens</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A line break inside "( )" without a backslash.</div>
+</li>
+<li class="rule" id="syntax-space-before-equals" data-area="syntax" data-sev="error" data-src="doc">
+<div class="rid"><i>syntax/</i>space-before-equals</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">Whitespace before "=" in a parameter.<span class="refs">register L-09</span></div>
+</li>
+<li class="rule" id="syntax-statement-starts-with-pair" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>statement-starts-with-pair</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A command line that starts with name=value, for example "else=" on its own line.<span class="refs">register C-12, A-01</span></div>
+</li>
+<li class="rule" id="syntax-stray-backslash" data-area="syntax" data-sev="warning" data-src="open">
+<div class="rid"><i>syntax/</i>stray-backslash</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src open">open</span></div>
+<div class="sum">A backslash outside a string that does not end the line. The documentation calls it illegal; RouterOS ignores it.<span class="refs">register L-03</span></div>
+</li>
+<li class="rule" id="syntax-stray-closer" data-area="syntax" data-sev="warning" data-src="open">
+<div class="rid"><i>syntax/</i>stray-closer</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src open">open</span></div>
+<div class="sum">A "}" or "]" without a matching opener. RouterOS accepts it.<span class="refs">register L-13</span></div>
+</li>
+<li class="rule" id="syntax-too-deeply-nested" data-area="syntax" data-sev="error" data-src="open">
+<div class="rid"><i>syntax/</i>too-deeply-nested</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src open">open</span></div>
+<div class="sum">Brackets nested deeper than the parser follows.</div>
+</li>
+<li class="rule" id="syntax-trailing-comment" data-area="syntax" data-sev="warning" data-src="device">
+<div class="rid"><i>syntax/</i>trailing-comment</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A "#" after the first word of a command is an argument, not a comment. With a command database the surplus arguments are reported as errors by schema/unexpected-argument.<span class="refs">register L-01</span></div>
+</li>
+<li class="rule" id="syntax-unexpected-closer" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>unexpected-closer</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A ")" without a matching "(".</div>
+</li>
+<li class="rule" id="syntax-unexpected-equals" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>unexpected-equals</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">An "=" that does not belong to a parameter.<span class="refs">register L-16</span></div>
+</li>
+<li class="rule" id="syntax-unexpected-token" data-area="syntax" data-sev="error" data-src="device">
+<div class="rid"><i>syntax/</i>unexpected-token</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A token that cannot appear inside an expression.</div>
+</li>
+<li class="rule" id="syntax-unterminated-string" data-area="syntax" data-sev="error" data-src="doc">
+<div class="rid"><i>syntax/</i>unterminated-string</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">A string literal is not closed.</div>
+</li>
+<li class="rule" id="vars-invalid-name" data-area="vars" data-sev="error" data-src="device">
+<div class="rid"><i>vars/</i>invalid-name</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A variable name with characters other than letters and digits, written without quotes, or with a "$" where it is declared.<span class="refs">register V-07</span></div>
+<details><summary>Example</summary><pre class="code"><span class="p">:local</span> my<span class="sq e">-</span>var 1</pre><p class="exm"><span class="sev e"><span class="si e"></span>error</span>A variable name written without quotes may only contain letters and digits, not '-'. Quote the name: "my-var". <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="vars-keyword-name" data-area="vars" data-sev="warning" data-src="doc">
+<div class="rid"><i>vars/</i>keyword-name</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">A variable named and, or or in. The documentation reserves them; RouterOS accepts them.<span class="refs">register V-08</span></div>
+</li>
+<li class="rule" id="vars-local-out-of-scope" data-area="vars" data-sev="warning" data-src="device">
+<div class="rid"><i>vars/</i>local-out-of-scope</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">A local variable is read where its scope has ended, for example on a later top-level line of an imported file.<span class="refs">register V-03</span></div>
+<details><summary>Example</summary><pre class="code"><span class="p">:local</span> gw 192.168.88.1
+<span class="n">/ip route</span> <span class="p">add</span> <span class="k">gateway</span>=<span class="sq w"><span class="v">$gw</span></span></pre><p class="exm"><span class="sev w"><span class="si w"></span>warning</span>$gw is a local variable of an earlier line or of a block that has ended, so it is empty here (an imported file gives every line its own scope). Use ':global gw' or put the commands in one { } block. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="vars-set-undeclared" data-area="vars" data-sev="error" data-src="device">
+<div class="rid"><i>vars/</i>set-undeclared</div>
+<div><span class="sev e"><span class="si e"></span>error</span></div>
+<div><span class="src">device</span></div>
+<div class="sum">:set of a variable that is not declared in the same or an enclosing block.<span class="refs">register V-01, V-03, V-04</span></div>
+<details><summary>Example</summary><pre class="code"><span class="p">:local</span> count 0
+<span class="p">:set</span> <span class="sq e">count</span> 1</pre><p class="exm"><span class="sev e"><span class="si e"></span>error</span>':set count' needs 'count' to be declared first, with ':local count' or ':global count' earlier in the same block or in a block around it. 'count' is declared elsewhere in this file, but each line of an imported file is its own scope and a block that has ended hides its names. Declare it again here or put the commands in one { } block. <span class="why">(RouterOS behaviour that the documentation does not describe)</span></p></details>
+</li>
+<li class="rule" id="vars-undeclared-read" data-area="vars" data-sev="warning" data-src="doc">
+<div class="rid"><i>vars/</i>undeclared-read</div>
+<div><span class="sev w"><span class="si w"></span>warning</span></div>
+<div><span class="src">doc</span></div>
+<div class="sum">A variable is read but never declared in the file. RouterOS reads it as empty.<span class="refs">register V-01, V-14</span></div>
+<details><summary>Example</summary><pre class="code"><span class="p">:put</span> <span class="sq w"><span class="v">$custom</span></span></pre><p class="exm"><span class="sev w"><span class="si w"></span>warning</span>$custom is not declared in this file. The documentation requires a declaration before use; RouterOS 7.21.4 reads an undeclared variable as empty. Declare it with ':local custom' or ':global custom', or list it under "contextVariables" if RouterOS provides it.</p></details>
+</li>
+    </ul>
+    <p class="rempty" id="rempty" hidden>No rule matches. Try a shorter search or clear a filter.</p>
+
+    <div class="callout tip">
+      <span class="icon">MESSAGES</span>
+      <div>Message wording comes from the server's source; the example lines are illustrative. Run <code>routeros-lsp check</code> on your own
+        scripts to see exactly what it reports for them.</div>
+    </div>
+
+    <div class="pager">
+      <a href="lsp.html">
+        <span class="label">← previous</span>
+        <span class="target">Language server</span>
+      </a>
+      <a href="reference.html" class="next">
+        <span class="label">next →</span>
+        <span class="target">API reference</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- TOC -->
+  <aside class="toc">
+    <h6>On this page</h6>
+    <ul>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#severities">Severities</a></li>
+      <li><a href="#all">All rules</a></li>
+    </ul>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="brand" style="margin-bottom: 12px;">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="2.5" y="9" width="19" height="8.5" rx="1" stroke="var(--amber)"/>
+            <line x1="6" y1="13.25" x2="9" y2="13.25" stroke="var(--lime)"/>
+            <line x1="11" y1="13.25" x2="14" y2="13.25" stroke="var(--lime)"/>
+            <line x1="16" y1="13.25" x2="18" y2="13.25" stroke="var(--lime)"/>
+          </svg>
+        </span>
+        MikroTik MCP
+      </div>
+      <p style="font-size:13px;max-width:280px;">An open-source MCP server bridging large language models with RouterOS devices — plus routeros-lsp, a language server for RouterOS scripts. Not affiliated with MikroTik.</p>
+      <p style="margin-top: 14px; font-size: 12px; color: var(--ink-mute);">MIT License · © 2026 jeff-nasseri &amp; contributors</p>
+    </div>
+    <div>
+      <h5>Docs</h5>
+      <ul>
+        <li><a href="index.html">Installation</a></li>
+        <li><a href="configure.html">Integrations</a></li>
+        <li><a href="lsp.html">Language server</a></li>
+        <li><a href="lsp-rules.html">Diagnostic rules</a></li>
+        <li><a href="reference.html">API reference</a></li>
+        <li><a href="examples.html">Examples</a></li>
+        <li><a href="articles.html">Articles</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Source</h5>
+      <ul>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp" target="_blank" rel="noopener">MCP server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/routeros-lsp" target="_blank" rel="noopener">Language server on GitHub</a></li>
+        <li><a href="https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="contributing.html">Contributing</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a></li>
+        <li><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">Language Server Protocol</a></li>
+        <li><a href="https://help.mikrotik.com/docs" target="_blank" rel="noopener">RouterOS docs</a></li>
+        <li><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">MCP Inspector</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var rows = [].slice.call(document.querySelectorAll('.rule')), st = { area: 'all', sev: 'all', src: 'all', q: '' };
+  var count = document.getElementById('rcount'), empty = document.getElementById('rempty'), q = document.getElementById('rq');
+  function apply() {
+    var n = 0;
+    rows.forEach(function (r) {
+      var ok = (st.area === 'all' || r.dataset.area === st.area) && (st.sev === 'all' || r.dataset.sev === st.sev) && (st.src === 'all' || r.dataset.src === st.src) && (!st.q || r.textContent.toLowerCase().indexOf(st.q) > -1);
+      r.hidden = !ok; if (ok) n++;
+    });
+    count.textContent = n + ' of ' + rows.length + ' rules'; empty.hidden = n > 0;
+  }
+  [].forEach.call(document.querySelectorAll('.chip[data-k]'), function (c) {
+    c.addEventListener('click', function () {
+      var k = c.dataset.k; st[k] = c.dataset.v;
+      [].forEach.call(document.querySelectorAll('.chip[data-k="' + k + '"]'), function (o) { o.setAttribute('aria-pressed', String(o === c)); });
+      apply();
+    });
+  });
+  q.addEventListener('input', function () { st.q = q.value.trim().toLowerCase(); apply(); });
+  var ex = document.getElementById('rex');
+  ex.addEventListener('click', function () {
+    var on = ex.getAttribute('aria-pressed') !== 'true'; ex.setAttribute('aria-pressed', String(on));
+    ex.firstChild.nodeValue = (on ? 'Hide ' : 'Show ') + '10 examples';
+    rows.forEach(function (r) { var d = r.querySelector('details'); if (d) d.open = on; });
+  });
+  if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t && t.classList.contains('rule')) { var d = t.querySelector('details'); if (d) d.open = true; } }
+})();
+</script>
+</body>
+</html>
