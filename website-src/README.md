@@ -2,7 +2,10 @@
 
 The marketing and documentation site for **[MikroTik MCP](https://github.com/wiresage/mikrotik-mcp)**,
 an open-source [Model Context Protocol](https://modelcontextprotocol.io) server that lets AI
-assistants manage MikroTik RouterOS devices in plain English.
+assistants manage MikroTik RouterOS devices in plain English, and for its two sibling projects:
+[routeros-lsp](https://github.com/wiresage/routeros-lsp), a language server for RouterOS scripts, and
+[routeros-skills](https://github.com/wiresage/routeros-skills), agent skills that teach AI agents RouterOS
+(listed on [skills.sh](https://www.skills.sh/wiresage/routeros-skills)).
 
 This is a fully static site — hand-written HTML, one shared CSS file, and a little vanilla
 JavaScript. There is no build step, framework, or bundler.
@@ -11,18 +14,29 @@ JavaScript. There is no build step, framework, or bundler.
 
 ```
 .
-├── index.html              # Landing page
+├── index.html              # Landing page (MCP server, language server and agent skills bands)
 ├── styles.css              # Shared design system (dark theme, design tokens)
+├── favicon.svg · favicon.ico · favicon-16.png · favicon-32.png · apple-touch-icon.png
 ├── docs/
 │   ├── index.html          # Getting started — installation & testing
 │   ├── configure.html      # Integrations — Claude Desktop, MCP Inspector, MCPO
-│   ├── reference.html      # API reference — all 16 tool categories
-│   └── examples.html       # Examples — mcp-cli calls, workflows, natural language
+│   ├── reference.html      # API reference — all 22 tool categories
+│   ├── examples.html       # Examples — mcp-cli calls, workflows, natural language
+│   ├── articles.html       # Articles & tutorials — 25 scenarios, Medium write-ups
+│   ├── contributing.html   # Contributing guide
+│   ├── lsp.html            # Language server (routeros-lsp) — install, editors, CLI, configuration
+│   ├── lsp-rules.html      # routeros-lsp diagnostic rules — all 36, filterable
+│   ├── skills.html         # Agent skills (routeros-skills) — 34 skills by area, with repo and skills.sh links
+│   └── media/              # Landing-page demo assets (skills replay GIF + reduced-motion poster)
 ├── Dockerfile              # nginx image that serves this directory
 ├── docker-compose.yml      # One-command local container
 ├── nginx.conf              # Static-serving config (gzip, caching, security headers)
 └── .dockerignore
 ```
+
+> The `Dockerfile` copies files explicitly. A new top-level asset (an icon, a page, an image) is
+> not in the image until it is added to a `COPY` line — it will 404 on the live site while working
+> locally from the folder. `docs/` is copied as a whole, so new pages and `docs/media/` need nothing.
 
 ## Local development
 
