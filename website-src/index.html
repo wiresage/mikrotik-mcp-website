@@ -854,16 +854,14 @@
         </div>
         <div class="install-panel" data-panel="manual">
           <div class="code-header"><span># Manual / Python install</span><button class="copy-btn">Copy</button></div>
-          <pre class="code"><span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
+          <pre class="code"><span class="c"># Run the published package (no install, needs uv)</span>
+<span class="p">$</span> uvx mcp-server-mikrotik
+
+<span class="c"># Or run from a source checkout</span>
+<span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
-
-<span class="c"># Create &amp; activate venv</span>
-<span class="p">$</span> python <span class="k">-m</span> venv .venv
-<span class="p">$</span> <span class="k">source</span> .venv/bin/activate
-
-<span class="c"># Install + run</span>
-<span class="p">$</span> pip install <span class="k">-e</span> .
-<span class="p">$</span> mcp-server-mikrotik</pre>
+<span class="p">$</span> uv sync <span class="k">--frozen</span>
+<span class="p">$</span> uv run mcp-server-mikrotik</pre>
         </div>
         <div class="install-panel" data-panel="claude">
           <div class="code-header"><span># ~/Library/Application Support/Claude/claude_desktop_config.json</span><button class="copy-btn">Copy</button></div>

@@ -66,6 +66,7 @@
     <h6>Integrations</h6>
     <ul>
       <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#claude-code">Claude Code</a></li>
       <li><a href="configure.html#inspector">MCP Inspector</a></li>
       <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
     </ul>
@@ -123,7 +124,7 @@
     <h1 class="doc-title">Installation</h1>
     <p class="doc-lede">
       Several ways in: the MCP Registry one-liner (recommended), a Docker container,
-      or a manual Python install — plus HTTP transports for remote agents.
+      or a Python install with <code>uvx</code> or pip — plus HTTP transports for remote agents.
       Pick whichever matches your environment; all of them speak the same MCP protocol.
     </p>
 
@@ -137,8 +138,10 @@
 
     <h2 id="prereq">Prerequisites</h2>
     <ul>
-      <li><strong>Python 3.10+</strong> — only if you're not running via Docker.</li>
-      <li><strong>MikroTik RouterOS device</strong> with API/SSH access enabled.</li>
+      <li><strong>Python 3.10 or newer</strong> — only if you're not running via Docker.</li>
+      <li><strong><a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener">uv</a></strong> —
+        for the <code>uvx</code> install and for running from source. The <code>pip</code> and Docker installs don't need it.</li>
+      <li><strong>MikroTik RouterOS device</strong> reachable over SSH (RouterOS 7 is the tested version).</li>
       <li><strong>Network reachability</strong> from your machine to the router's SSH port.</li>
       <li><strong>An MCP-capable client</strong> — Claude Desktop, MCP Inspector, or any tool that speaks MCP.</li>
     </ul>
@@ -194,6 +197,8 @@
     <pre class="code"><span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
 <span class="p">$</span> docker build <span class="k">-t</span> mikrotik-mcp .</pre>
+    <p>The image installs the runtime dependencies from <code>uv.lock</code> (no test tooling), so a rebuild gives
+      the same versions every time.</p>
 
     <h3 id="stdio-docker">Run with stdio (IDE / desktop client)</h3>
     <p>stdio transport is what Claude Desktop, Cursor, and most IDE integrations expect. The container reads
@@ -242,10 +247,12 @@
         <tr><td><code class="mono">MIKROTIK_HOST</code></td><td>Device IP / hostname</td><td><code class="mono">192.168.88.1</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_USERNAME</code></td><td>SSH username</td><td><code class="mono">admin</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_PASSWORD</code></td><td>SSH password</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
+        <tr><td><code class="mono">MIKROTIK_ALLOW_SSH_AGENT</code></td><td><code>true</code> authenticates with keys offered by the SSH agent through <code>SSH_AUTH_SOCK</code></td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">MIKROTIK_SSH_AGENT_KEY</code></td><td>Restrict agent authentication to the matching key: a full public-key line, its base64 blob, or a <code>SHA256:</code> fingerprint. Requires <code>MIKROTIK_ALLOW_SSH_AGENT=true</code></td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">MIKROTIK_PORT</code></td><td>SSH port</td><td><code class="mono">22</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_READ_ONLY</code></td><td><code>true</code> exposes only tools that don't modify RouterOS or its file store</td><td><code class="mono">false</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_SENSITIVE_HIDING</code></td><td><code>true</code> redacts recognized credentials and private key material</td><td><code class="mono">false</code></td></tr>
-        <tr><td><code class="mono">MIKROTIK_INVENTORY</code></td><td>Multiple devices, written inline in YAML (or its JSON subset). Takes precedence over <code>MIKROTIK_INVENTORY_FILE</code> and the four variables above — see <a href="reference.html#inventory">Inventory</a>.</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
+        <tr><td><code class="mono">MIKROTIK_INVENTORY</code></td><td>Multiple devices, written inline in YAML (or its JSON subset). Takes precedence over <code>MIKROTIK_INVENTORY_FILE</code> and the flat single-device settings above — see <a href="reference.html#inventory">Inventory</a>.</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">MIKROTIK_INVENTORY_FILE</code></td><td>Path <strong>inside the container</strong> to a YAML inventory file — mount it as a volume</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">MIKROTIK_MCP__TRANSPORT</code></td><td>Transport — <code>stdio</code> · <code>sse</code> · <code>streamable-http</code></td><td><code class="mono">stdio</code></td></tr>
         <tr><td><code class="mono">MIKROTIK_MCP__HOST</code></td><td>HTTP listen address</td><td><code class="mono">0.0.0.0</code></td></tr>
@@ -293,8 +300,8 @@
       <code>GET http://localhost:8000/health</code> returns <code>OK</code>.</p>
 
     <h3 id="inventory-docker">Managing several devices</h3>
-    <p>To manage a fleet, give the container an <strong>inventory</strong> instead of the four
-      single-device variables. The inventory is a YAML file on your host, and it <strong>must be
+    <p>To manage a fleet, give the container an <strong>inventory</strong> instead of the flat
+      single-device settings. The inventory is a YAML file on your host, and it <strong>must be
       mounted into the container as a volume</strong> — the image ships <code>/config</code> as the
       mount point. A mounted file is also the safer channel: unlike an environment variable, its
       contents do not show up in <code>docker inspect</code>. A ready-to-copy template ships at the
@@ -340,7 +347,8 @@
       using YAML flow syntax (no escaped quotes; JSON also works, since it is a YAML subset), or via
       the <code>--inventory</code> / <code>--inventory-file</code> entrypoint arguments. Inline always
       wins over the file. When an inventory is set it takes precedence and <code>MIKROTIK_HOST</code> /
-      <code>MIKROTIK_USERNAME</code> / <code>MIKROTIK_PASSWORD</code> / <code>MIKROTIK_PORT</code> are
+      <code>MIKROTIK_USERNAME</code> / <code>MIKROTIK_PASSWORD</code> / <code>MIKROTIK_PORT</code> /
+      <code>MIKROTIK_ALLOW_SSH_AGENT</code> / <code>MIKROTIK_SSH_AGENT_KEY</code> are
       ignored — the entrypoint also stops applying its <code>192.168.88.1</code> default. Tools then
       take a <code>device</code> argument naming the title to target; see the
       <a href="reference.html#inventory">Inventory reference</a>.</p>
@@ -427,26 +435,56 @@
 
     <!-- MANUAL -->
     <h2 id="manual">Manual install</h2>
-    <p>If you prefer to run from a Python venv — useful for development and debugging.</p>
+    <p>Run the published PyPI package with <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">uv</a>
+      or pip, or run from a source checkout if you're developing or debugging.</p>
 
-    <div class="code-header"><span># Source install</span><button class="copy-btn">Copy</button></div>
+    <h3 id="uvx">uvx (recommended)</h3>
+    <p>Run the published package directly — <code>uvx</code> fetches <code>mcp-server-mikrotik</code> and its
+      dependencies into an isolated, cached environment, so there is nothing to install into your system Python
+      or clean up afterwards.</p>
+
+    <div class="code-header"><span># Install-free run</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Run the server (stdio, default)</span>
+<span class="p">$</span> uvx mcp-server-mikrotik
+
+<span class="c"># Run with SSE transport</span>
+<span class="p">$</span> uvx mcp-server-mikrotik <span class="k">--mcp.transport</span> sse
+
+<span class="c"># Run with streamable HTTP transport</span>
+<span class="p">$</span> uvx mcp-server-mikrotik <span class="k">--mcp.transport</span> streamable-http</pre>
+
+    <h3 id="pip">Alternative: pip</h3>
+    <p>For a persistent install, install the published package from PyPI and launch it as a module:</p>
+
+    <div class="code-header"><span># pip install</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Create a virtual environment (recommended)</span>
+<span class="p">$</span> python <span class="k">-m</span> venv .venv
+<span class="p">$</span> <span class="k">source</span> .venv/bin/activate    <span class="c"># Windows: .venv\Scripts\activate</span>
+
+<span class="c"># Install the published package</span>
+<span class="p">$</span> pip install mcp-server-mikrotik
+
+<span class="c"># Run the server (stdio, default)</span>
+<span class="p">$</span> python <span class="k">-m</span> mcp_mikrotik
+
+<span class="c"># Run with SSE / streamable HTTP transport</span>
+<span class="p">$</span> python <span class="k">-m</span> mcp_mikrotik <span class="k">--mcp.transport</span> sse
+<span class="p">$</span> python <span class="k">-m</span> mcp_mikrotik <span class="k">--mcp.transport</span> streamable-http</pre>
+
+    <h3 id="source">Run from source (contributors)</h3>
+    <div class="code-header"><span># Source checkout</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="c"># Clone the repository</span>
 <span class="p">$</span> git clone https://github.com/wiresage/mikrotik-mcp.git
 <span class="p">$</span> <span class="k">cd</span> mikrotik-mcp
 
-<span class="c"># Create &amp; activate virtual environment</span>
-<span class="p">$</span> python <span class="k">-m</span> venv .venv
-<span class="p">$</span> <span class="k">source</span> .venv/bin/activate    <span class="c"># Windows: .venv\Scripts\activate</span>
+<span class="c"># Provision the exact locked environment (creates .venv automatically)</span>
+<span class="p">$</span> uv sync <span class="k">--frozen</span>
 
-<span class="c"># Install in editable mode</span>
-<span class="p">$</span> pip install <span class="k">-e</span> .
-
-<span class="c"># Run the server (stdio, default)</span>
-<span class="p">$</span> mcp-server-mikrotik
-
-<span class="c"># Or with SSE / streamable HTTP transport</span>
-<span class="p">$</span> mcp-server-mikrotik <span class="k">--mcp.transport</span> sse
-<span class="p">$</span> mcp-server-mikrotik <span class="k">--mcp.transport</span> streamable-http</pre>
+<span class="c"># Run the server</span>
+<span class="p">$</span> uv run mcp-server-mikrotik</pre>
+    <p><code>uv sync --frozen</code> installs the versions pinned in <code>uv.lock</code>, plus the test tooling.
+      See the <a href="contributing.html#dev-setup">Contributing guide</a> for running the tests and changing
+      dependencies.</p>
 
     <h3 id="cli">CLI options</h3>
     <table class="table">
@@ -458,9 +496,12 @@
         <tr><td><code class="mono">--username</code></td><td>SSH username</td><td>from config</td></tr>
         <tr><td><code class="mono">--password</code></td><td>SSH password</td><td>from config</td></tr>
         <tr><td><code class="mono">--key-filename</code></td><td>SSH key file (preferred over password)</td><td>from config</td></tr>
+        <tr><td><code class="mono">--allow-ssh-agent</code></td><td>Authenticate with keys offered by the SSH agent through <code>SSH_AUTH_SOCK</code></td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">--ssh-agent-key</code></td><td>Restrict agent authentication to the matching key: a full public-key line, its base64 blob, or a <code>SHA256:</code> fingerprint; requires <code>--allow-ssh-agent</code></td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">--port</code></td><td>SSH port</td><td><code class="mono">22</code></td></tr>
         <tr><td><code class="mono">--read-only</code></td><td>Expose only tools that don't modify RouterOS or its file store</td><td><code class="mono">false</code></td></tr>
         <tr><td><code class="mono">--sensitive-hiding</code></td><td>Redact credentials and private key material from client-visible output</td><td><code class="mono">false</code></td></tr>
+        <tr><td><code class="mono">--command-timeout</code></td><td>Seconds a command may wait for the device before the call fails (<code>MIKROTIK_COMMAND_TIMEOUT</code>)</td><td><code class="mono">180</code></td></tr>
         <tr><td><code class="mono">--mcp.allowed-ips</code></td><td>Comma-separated client IPs / CIDR networks allowed to use the HTTP transports</td><td><em style="color:var(--ink-mute)">(empty)</em></td></tr>
         <tr><td><code class="mono">--mcp.transport</code></td><td><code>stdio</code> · <code>sse</code> · <code>streamable-http</code></td><td><code class="mono">stdio</code></td></tr>
         <tr><td><code class="mono">--mcp.host</code></td><td>HTTP listen address</td><td><code class="mono">0.0.0.0</code></td></tr>
@@ -500,20 +541,24 @@
 
     <h3 id="pytest">Integration test suite</h3>
     <p>The project ships a <strong>pytest</strong> integration suite that runs against a temporary RouterOS
-      container, so you'll need <strong>Docker installed and running</strong>. Install the dev dependencies,
-      then run the tests:</p>
+      container, so you'll need <strong>Docker installed and running</strong>. Install the dependencies with
+      uv, then run the tests:</p>
     <div class="code-header"><span># from a source checkout</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="c"># 1. Install test dependencies</span>
-<span class="p">$</span> pip install <span class="k">-r</span> requirements-dev.txt
+    <pre class="code"><span class="c"># 1. Install dependencies</span>
+<span class="p">$</span> uv sync
 
 <span class="c"># 2. Run the full suite</span>
-<span class="p">$</span> pytest <span class="k">-v</span>
+<span class="p">$</span> uv run pytest <span class="k">-v</span>
 
 <span class="c"># Run only integration-marked tests</span>
-<span class="p">$</span> pytest <span class="k">-m</span> integration <span class="k">-v</span></pre>
-    <p><code>pytest -v</code> spins up a MikroTik RouterOS container, runs the integration tests (create,
+<span class="p">$</span> uv run pytest <span class="k">-m</span> integration <span class="k">-v</span></pre>
+    <p><code>uv run pytest -v</code> spins up a MikroTik RouterOS container, runs the integration tests (create,
       list, and delete user), then tears the container down automatically. Tests are marked with
       <code>@pytest.mark.integration</code> by default.</p>
+    <p>The unit tests need neither Docker nor a router, and are what CI runs on every pull request
+      (Python 3.10, 3.11 and 3.12):</p>
+    <div class="code-header"><span># unit tests only</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run pytest <span class="k">-m</span> <span class="s">"not integration"</span></pre>
 
     <!-- CONTEXT -->
     <h2 id="context">Context length optimization</h2>
@@ -569,7 +614,7 @@
       </a>
       <a href="configure.html" class="next">
         <span class="label">next →</span>
-        <span class="target">Integrations · Claude Desktop, Inspector, MCPO</span>
+        <span class="target">Integrations · Claude Desktop, Claude Code, Inspector, MCPO</span>
       </a>
     </div>
   </main>
@@ -591,6 +636,9 @@
       <li><a href="#allowed-ips">— Client IP allowlist</a></li>
       <li><a href="#reverse-proxy">— Reverse proxy</a></li>
       <li><a href="#manual">Manual install</a></li>
+      <li><a href="#uvx">— uvx</a></li>
+      <li><a href="#pip">— pip</a></li>
+      <li><a href="#source">— From source</a></li>
       <li><a href="#cli">— CLI options</a></li>
       <li><a href="#testing">Testing the install</a></li>
       <li><a href="#pytest">— Test suite</a></li>

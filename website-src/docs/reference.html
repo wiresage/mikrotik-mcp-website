@@ -183,6 +183,7 @@
     <h6>Integrations</h6>
     <ul>
       <li><a href="configure.html#claude">Claude Desktop</a></li>
+      <li><a href="configure.html#claude-code">Claude Code</a></li>
       <li><a href="configure.html#inspector">MCP Inspector</a></li>
       <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
     </ul>
@@ -344,6 +345,8 @@
           <div class="row"><span class="pname">host</span><span class="pkind req">required</span><span class="pdesc">IP or hostname</span></div>
           <div class="row"><span class="pname">port · username</span><span class="pkind">optional</span><span class="pdesc">Defaults: <code>22</code>, <code>admin</code></span></div>
           <div class="row"><span class="pname">password · key_filename</span><span class="pkind">optional</span><span class="pdesc">Prefer an SSH key over a password; omit <code>password</code> when using a key</span></div>
+          <div class="row"><span class="pname">allow_ssh_agent</span><span class="pkind">optional</span><span class="pdesc">Authenticate with keys offered by the SSH agent through <code>SSH_AUTH_SOCK</code>; default <code>false</code></span></div>
+          <div class="row"><span class="pname">ssh_agent_key</span><span class="pkind">optional</span><span class="pdesc">Restrict agent authentication to the matching key: a full public-key line, its base64 blob, or a <code>SHA256:</code> fingerprint; requires <code>allow_ssh_agent: true</code></span></div>
           <div class="row"><span class="pname">tags · region</span><span class="pkind">optional</span><span class="pdesc">Free-form labels — <code>[branch, eu]</code>, <code>NL</code> — great targets for "every device tagged office" prompts</span></div>
         </div>
       </div>
@@ -375,7 +378,8 @@
         Docker silently creates a <em>directory</em> in its place — create the YAML first. The
         entrypoint also accepts <code>--inventory '&lt;yaml&gt;'</code> / <code>--inventory-file &lt;path&gt;</code>.
         When an inventory is configured it wins, and <code>MIKROTIK_HOST</code> /
-        <code>MIKROTIK_USERNAME</code> / <code>MIKROTIK_PASSWORD</code> / <code>MIKROTIK_PORT</code>
+        <code>MIKROTIK_USERNAME</code> / <code>MIKROTIK_PASSWORD</code> / <code>MIKROTIK_PORT</code> /
+        <code>MIKROTIK_ALLOW_SSH_AGENT</code> / <code>MIKROTIK_SSH_AGENT_KEY</code>
         are ignored. See <a href="index.html#inventory-docker">Installation</a>.
       </div>
     </div>

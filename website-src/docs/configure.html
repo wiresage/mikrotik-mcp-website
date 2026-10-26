@@ -18,7 +18,7 @@
 <style>
   /* Integration cards */
   .integrations-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
     margin: 28px 0 48px;
   }
   .int-card {
@@ -112,6 +112,7 @@
     <h6>Integrations</h6>
     <ul>
       <li><a href="configure.html#claude" class="active">Claude Desktop</a></li>
+      <li><a href="configure.html#claude-code">Claude Code</a></li>
       <li><a href="configure.html#inspector">MCP Inspector</a></li>
       <li><a href="configure.html#mcpo">MCPO (REST API)</a></li>
     </ul>
@@ -168,9 +169,9 @@
     </div>
     <h1 class="doc-title">Integrations</h1>
     <p class="doc-lede">
-      Three first-class ways to talk to the server: an AI desktop client (Claude),
-      an interactive testing harness (MCP Inspector), and a REST shim (MCPO) for
-      anything that doesn't speak MCP natively.
+      Four first-class ways to talk to the server: an AI desktop client (Claude Desktop),
+      the Claude Code command line, an interactive testing harness (MCP Inspector), and a
+      REST shim (MCPO) for anything that doesn't speak MCP natively.
     </p>
 
     <div class="integrations-grid">
@@ -178,6 +179,12 @@
         <div class="logo">CD</div>
         <h4>Claude Desktop</h4>
         <p>Native MCP support. Drop a JSON snippet into the config file, restart, and the tools appear in the conversation.</p>
+        <div class="meta"><span>● ready</span><span>stdio · uvx</span></div>
+      </div>
+      <div class="int-card">
+        <div class="logo">CC</div>
+        <h4>Claude Code</h4>
+        <p>One <code>claude mcp add</code> command registers the server for the CLI, with credentials from flags, environment variables or an SSH key.</p>
         <div class="meta"><span>● ready</span><span>stdio · uvx</span></div>
       </div>
       <div class="int-card">
@@ -236,6 +243,52 @@
       <li>If the call fails with a connection error, double-check <code>--host</code>, the SSH user's policies, and that <code>/ip ssh</code> is allowed on the device.</li>
     </ul>
 
+    <!-- CLAUDE CODE -->
+    <h2 id="claude-code">Claude Code</h2>
+    <p>Claude Code registers MCP servers with <code>claude mcp add</code>. The server runs over stdio,
+      launched on demand through <code>uvx</code>, so there is nothing to install first beyond
+      <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener">uv</a>.</p>
+
+    <h3 id="claude-code-quick">Quick setup</h3>
+    <div class="code-header"><span># credentials on the command line</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> claude mcp add <span class="k">--transport</span> stdio mikrotik \
+    <span class="k">--</span> uvx mcp-server-mikrotik \
+    <span class="k">--host</span> <span class="s">&lt;HOST&gt;</span> <span class="k">--username</span> <span class="s">&lt;USERNAME&gt;</span> <span class="k">--password</span> <span class="s">&lt;PASSWORD&gt;</span></pre>
+
+    <h3 id="claude-code-env">Setup with environment variables (recommended)</h3>
+    <p>Keeps credentials out of the command line:</p>
+    <div class="code-header"><span># credentials as environment variables</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> claude mcp add <span class="k">--transport</span> stdio mikrotik \
+    <span class="k">--env</span> MIKROTIK_HOST=<span class="s">192.168.88.1</span> \
+    <span class="k">--env</span> MIKROTIK_USERNAME=<span class="s">admin</span> \
+    <span class="k">--env</span> MIKROTIK_PASSWORD=<span class="s">your_password</span> \
+    <span class="k">--</span> uvx mcp-server-mikrotik</pre>
+
+    <h3 id="claude-code-key">Setup with an SSH key</h3>
+    <p>Generate a dedicated key, register its public half on the router, then point the server at the private key.</p>
+    <div class="code-header"><span>1 · Generate a dedicated key</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> ssh-keygen <span class="k">-t</span> ed25519 <span class="k">-f</span> ~/.ssh/mcp-server-mikrotik <span class="k">-N</span> <span class="s">""</span> <span class="k">-C</span> <span class="s">"mcp-server-mikrotik"</span></pre>
+
+    <div class="code-header"><span>2 · Copy the public key to the router</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="c"># Upload the key file</span>
+<span class="p">$</span> scp ~/.ssh/mcp-server-mikrotik.pub admin@192.168.88.1:/
+
+<span class="c"># Import it on the router</span>
+<span class="p">$</span> ssh admin@192.168.88.1 <span class="s">"/user ssh-keys import public-key-file=mcp-server-mikrotik.pub user=admin"</span></pre>
+
+    <div class="code-header"><span>3 · Add the server to Claude Code</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> claude mcp add <span class="k">--transport</span> stdio mikrotik \
+    <span class="k">--</span> uvx mcp-server-mikrotik \
+    <span class="k">--host</span> <span class="s">192.168.88.1</span> <span class="k">--username</span> <span class="s">admin</span> <span class="k">--key-filename</span> ~/.ssh/mcp-server-mikrotik</pre>
+
+    <h3 id="claude-code-verify">Verify and manage</h3>
+    <p>Inside Claude Code, run <code>/mcp</code> to check that the server is connected and all tools are listed.
+      The registered server is managed with the usual subcommands:</p>
+    <div class="code-header"><span># manage the server</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> claude mcp list             <span class="c"># list all configured servers</span>
+<span class="p">$</span> claude mcp get mikrotik     <span class="c"># show server details</span>
+<span class="p">$</span> claude mcp remove mikrotik  <span class="c"># remove the server</span></pre>
+
     <!-- INSPECTOR -->
     <h2 id="inspector">MCP Inspector</h2>
     <p>The Inspector is the official debugging tool for MCP servers. It launches a server, connects to it,
@@ -285,11 +338,12 @@
 
     <h3 id="mcpo-install">Install</h3>
     <div class="code-header"><span># pick one</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="c"># Option 1 — uvx (recommended, no install)</span>
+    <pre class="code"><span class="c"># Using uvx (no installation needed)</span>
 <span class="p">$</span> uvx mcpo <span class="k">--help</span>
 
-<span class="c"># Option 2 — pip</span>
-<span class="p">$</span> pip install mcpo</pre>
+<span class="c"># Or using pip</span>
+<span class="p">$</span> pip install mcpo
+<span class="p">$</span> mcpo <span class="k">--help</span></pre>
 
     <h3 id="mcpo-config">Config file</h3>
     <p>Create <code>mcp-config.json</code> in your project directory. Adjust the connection parameters
@@ -299,11 +353,29 @@
     <pre class="code">{
   <span class="k">"mcpServers"</span>: {
     <span class="k">"mikrotik-mcp-server"</span>: {
+      <span class="k">"command"</span>: <span class="s">"uvx"</span>,
+      <span class="k">"args"</span>: [
+        <span class="s">"mcp-server-mikrotik"</span>,
+        <span class="s">"--password"</span>, <span class="s">"admin"</span>,
+        <span class="s">"--host"</span>,     <span class="s">"192.168.88.1"</span>,
+        <span class="s">"--port"</span>,     <span class="s">"22"</span>,
+        <span class="s">"--username"</span>, <span class="s">"admin"</span>
+      ],
+      <span class="k">"env"</span>: {}
+    }
+  }
+}</pre>
+
+    <p>Installed <code>mcp-server-mikrotik</code> with pip instead of uv? Launch it as a module in the config:</p>
+    <div class="code-header"><span>mcp-config.json — pip / python variant</span><button class="copy-btn">Copy</button></div>
+    <pre class="code">{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"mikrotik-mcp-server"</span>: {
       <span class="k">"command"</span>: <span class="s">"python"</span>,
       <span class="k">"args"</span>: [
-        <span class="s">"src/mcp_mikrotik/server.py"</span>,
+        <span class="s">"-m"</span>, <span class="s">"mcp_mikrotik"</span>,
         <span class="s">"--password"</span>, <span class="s">"admin"</span>,
-        <span class="s">"--host"</span>,     <span class="s">"192.168.1.1"</span>,
+        <span class="s">"--host"</span>,     <span class="s">"192.168.88.1"</span>,
         <span class="s">"--port"</span>,     <span class="s">"22"</span>,
         <span class="s">"--username"</span>, <span class="s">"admin"</span>
       ],
@@ -320,7 +392,12 @@
     <span class="k">--config</span> ./mcp-config.json
 
 <span class="c"># Or without auth (not recommended for production)</span>
-<span class="p">$</span> uvx mcpo <span class="k">--port</span> <span class="n">8000</span> <span class="k">--config</span> ./mcp-config.json</pre>
+<span class="p">$</span> uvx mcpo <span class="k">--port</span> <span class="n">8000</span> <span class="k">--config</span> ./mcp-config.json
+
+<span class="c"># Using pip-installed mcpo</span>
+<span class="p">$</span> mcpo <span class="k">--port</span> <span class="n">8000</span> \
+    <span class="k">--api-key</span> <span class="s">"your-secret-key"</span> \
+    <span class="k">--config</span> ./mcp-config.json</pre>
 
     <p>You'll see two URLs in the startup log:</p>
     <div class="endpoint">
@@ -381,6 +458,11 @@
     <ul>
       <li><a href="#claude">Claude Desktop</a></li>
       <li><a href="#claude-verify">— Verifying</a></li>
+      <li><a href="#claude-code">Claude Code</a></li>
+      <li><a href="#claude-code-quick">— Quick setup</a></li>
+      <li><a href="#claude-code-env">— Environment variables</a></li>
+      <li><a href="#claude-code-key">— SSH key</a></li>
+      <li><a href="#claude-code-verify">— Verify &amp; manage</a></li>
       <li><a href="#inspector">MCP Inspector</a></li>
       <li><a href="#inspector-quick">— Quick one-liner</a></li>
       <li><a href="#inspector-config">— With config file</a></li>
