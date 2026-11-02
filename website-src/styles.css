@@ -427,3 +427,16 @@ div.pr{cursor:default}div.pr:hover{background:none}
 @media (max-width:760px){.ed-prob .pbody.split{grid-template-columns:minmax(0,1fr)}.ed-prob .pbody.split .pl{border-right:0;border-bottom:1px solid var(--line)}.ed-code{font-size:12px}}
 @media (max-width:540px){.flow .st{grid-template-columns:1fr;gap:8px}.flow .tg{justify-self:start;padding:3px 10px}}
 @media (prefers-reduced-motion:reduce){.caret{animation:none}}
+
+/* ---------- Phones: no sideways page scroll ---------- */
+/* Code blocks already scroll inside their own box; these keep the nav row and wide tables from
+   widening the whole page (a grid item sized with 1fr will not shrink below its content). */
+@media (max-width: 820px) {
+  .docs { grid-template-columns: minmax(0, 1fr); }
+  .nav-links { flex-wrap: wrap; gap: 6px 16px; }
+  .doc-main .table { display: block; max-width: 100%; overflow-x: auto; }
+  .hero-grid > *, .arch > *, .install > * { min-width: 0; }
+  .endpoint { grid-template-columns: 70px minmax(0, 1fr); }
+  .endpoint .path, .doc-main code { overflow-wrap: anywhere; }
+  .hero-ctas, .section-hd { flex-wrap: wrap; }
+}

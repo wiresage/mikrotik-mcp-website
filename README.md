@@ -11,6 +11,7 @@ server that lets AI assistants manage MikroTik RouterOS devices in plain English
 | Folder | What it is |
 | --- | --- |
 | [`website-src/`](website-src/) | The deployable static site — hand-written HTML, one shared CSS file, vanilla JS. Ships with an nginx Dockerfile and compose file. **Start here.** |
+| [`tools/`](tools/) | `seo.py` generates the page heads (titles, descriptions, canonical, Open Graph, JSON-LD) and `sitemap.xml`, and checks them; `og-image.html` is the source of the social preview image. Not deployed. |
 | [`website-design/`](website-design/) | The design reference the site is built against: the pages as designed, including the language-server and agent-skills sections. Kept for provenance; not deployed. |
 
 ## Quick start

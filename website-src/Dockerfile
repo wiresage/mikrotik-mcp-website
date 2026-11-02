@@ -11,6 +11,9 @@ COPY index.html styles.css /usr/share/nginx/html/
 # Browser tab and home-screen icons. These must be copied explicitly: the page links to them at the
 # site root, and an icon that is missing from the image is a silent 404.
 COPY favicon.svg favicon.ico favicon-16.png favicon-32.png apple-touch-icon.png /usr/share/nginx/html/
+# Crawl and sharing files, also served from the site root: robots.txt and sitemap.xml for search
+# engines, 404.html (error_page in nginx.conf) and og-image.png (the social preview in the page <head>).
+COPY robots.txt sitemap.xml 404.html og-image.png /usr/share/nginx/html/
 COPY docs/ /usr/share/nginx/html/docs/
 
 EXPOSE 80
