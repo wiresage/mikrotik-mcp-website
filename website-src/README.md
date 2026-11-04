@@ -14,7 +14,7 @@ JavaScript. There is no build step, framework, or bundler.
 
 ```
 .
-├── index.html              # Landing page (MCP server, language server and agent skills bands)
+├── index.html              # Landing page (MCP server, language server and agent skills bands, Bisque presentations strip)
 ├── styles.css              # Shared design system (dark theme, design tokens)
 ├── favicon.svg · favicon.ico · favicon-16.png · favicon-32.png · apple-touch-icon.png
 ├── robots.txt              # Crawl rules + the sitemap location

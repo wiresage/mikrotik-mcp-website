@@ -392,6 +392,17 @@
   .cta p { font-size: 17px; max-width: 540px; margin: 0 auto 36px; }
   .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
+  /* ===== Presentations strip (Bisque Cloud) ===== */
+  section.band.slim { padding: 56px 32px; }
+  .present { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; }
+  .present h3 { margin: 10px 0 10px; font-size: 24px; letter-spacing: -0.02em; }
+  .present p { max-width: 680px; font-size: 15px; }
+  .present-links { display: flex; flex-wrap: wrap; gap: 12px; }
+  @media (max-width: 820px) {
+    section.band.slim { padding: 44px 20px; }
+    .present { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  }
+
   /* ===== Hero tags ===== */
   .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
   .hero-tags .hero-eyebrow { margin-bottom: 0; }
@@ -1270,6 +1281,25 @@
       you'd like to talk through? Users and contributors are both welcome — whether you're connecting your
       first router or working on a PR.</p>
     <div class="cta-also"><span>Also new:</span><a class="ln-link" href="docs/lsp.html">routeros-lsp, a language server for RouterOS scripts →</a><a class="ln-link" href="#skills">routeros-skills, agent skills for RouterOS →</a></div>
+  </div>
+</section>
+
+<!-- ============ PRESENTATIONS (Bisque Cloud) ============ -->
+<section class="band alt slim" id="presentations">
+  <div class="wrap">
+    <div class="present">
+      <div>
+        <div class="eyebrow">Presentations</div>
+        <h3>Watch MikroTik MCP on Bisque Cloud</h3>
+        <p>The official MikroTik MCP presentations live on
+          <a class="ln-link" href="https://bisque.cloud" target="_blank" rel="noopener">Bisque Cloud</a>, which turns the work of
+          coding agents into presentations you can watch. They are short video walkthroughs of new features
+          and pull requests, so you can see what changed without reading the diff.</p>
+      </div>
+      <div class="present-links">
+        <a class="btn" href="https://bisque.today/p/wiresage/mikrotik-mcp" target="_blank" rel="noopener">Watch the presentations ↗</a>
+      </div>
+    </div>
   </div>
 </section>
 
