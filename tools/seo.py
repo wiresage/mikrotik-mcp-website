@@ -195,8 +195,8 @@ PAGES = [
         "path": "/docs/contributing.html",
         "title": "Contribute to MikroTik MCP: setup, tools and tests",
         "description": (
-            "How to contribute to MikroTik MCP: uv development setup, adding a scope and "
-            "tools, tool annotations, tests with testcontainers, commits and pull requests."
+            "How to contribute to MikroTik MCP: uv setup, adding a scope and tools, tool "
+            "annotations, the API coverage manifest, tests, commit format and pull requests."
         ),
         "crumbs": [HOME, DOCS, ("Contributing", None)],
         "about": ["mcp"],

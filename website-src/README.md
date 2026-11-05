@@ -24,7 +24,7 @@ JavaScript. There is no build step, framework, or bundler.
 ├── docs/
 │   ├── index.html          # Getting started — installation & testing
 │   ├── configure.html      # Integrations — Claude Desktop, Claude Code, MCP Inspector, MCPO
-│   ├── reference.html      # API reference — all 22 tool categories
+│   ├── reference.html      # API reference — all 23 tool categories
 │   ├── api-coverage.html   # API coverage — short page linking the GitHub checklist and the official RouterOS manual
 │   ├── examples.html       # Examples — mcp-cli calls, workflows, natural language
 │   ├── articles.html       # Articles & tutorials — 25 scenarios, Medium write-ups
