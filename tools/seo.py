@@ -158,6 +158,17 @@ PAGES = [
         "about": ["mcp"],
     },
     {
+        "file": "docs/api-coverage.html",
+        "path": "/docs/api-coverage.html",
+        "title": "MikroTik MCP API coverage vs the RouterOS manual",
+        "description": (
+            "See which RouterOS commands MikroTik MCP covers, checked against the official "
+            "MikroTik manual: implemented, partial, planned and legacy commands."
+        ),
+        "crumbs": [HOME, DOCS, ("API coverage", None)],
+        "about": ["mcp"],
+    },
+    {
         "file": "docs/examples.html",
         "path": "/docs/examples.html",
         "title": "MikroTik MCP examples: tool calls and RouterOS workflows",
