@@ -60,7 +60,14 @@ python tools/seo.py check    # verify titles, descriptions, JSON-LD, links and t
 - **Changing a title or description:** edit it in `tools/seo.py` (not in the HTML), then run `build`.
   Keep titles to 60 characters and descriptions to 70–160; `check` enforces both.
 - **URLs:** the canonical host is `https://www.mikrotik-mcp.com`. Link to `/` and `/docs/`, never to
-  `index.html`; nginx answers `/index.html` and `/docs/index.html` with a 301 to the clean URL.
+  `index.html`; nginx answers `/index.html` and `/docs/index.html` with a 301 to the clean URL, and
+  sends the apex host `mikrotik-mcp.com` to `https://www.mikrotik-mcp.com` in one hop. Plain `http://`
+  on the `www` host is left to Cloudflare (Always Use HTTPS), because the origin only sees the
+  proxy's connection.
+- **Moved pages:** when a page is renamed or removed, add a 301 in `nginx.conf` (see
+  `/docs/integrations.html`) and keep the old `#anchor` as an empty `<span id="…">` on the new page.
+  Search Console's *Pages* report and the `page` dimension of the Performance report list old URLs that
+  still get impressions.
 - **Structured data:** `WebSite`, `Organization` and `SoftwareSourceCode` on the pages that describe a
   project, and a `BreadcrumbList` on every docs page. Only describe what the page shows.
 - `robots.txt` is served from the origin, but at the time of writing Cloudflare also serves its own
