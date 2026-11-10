@@ -343,15 +343,15 @@
     </div>
     <h1 class="doc-title">API reference</h1>
     <p class="doc-lede">
-      Every tool the server exposes, grouped into <strong>23 categories</strong> (202 tools total). Each
+      Every tool the server exposes, grouped into <strong>24 categories</strong> (218 tools total). Each
       entry shows the name, what it does, its parameters (required vs optional), and a canonical example.
       Wondering which RouterOS commands are not covered yet? See the <a href="api-coverage.html">API coverage</a>.
     </p>
     <p class="doc-lede" style="font-size:15px;">
       <strong>Naming convention.</strong> Most tools are prefixed with <code>mikrotik_</code> followed by a
       verb — <code>create</code>, <code>list</code>, <code>get</code>, <code>update</code>,
-      <code>remove</code>, plus category-specific verbs. Eight categories are exceptions:
-      <strong>Inventory</strong>, <strong>Interfaces</strong>, <strong>PoE</strong>, <strong>IPv6&nbsp;Address</strong>, <strong>IPv6&nbsp;Firewall</strong>, <strong>Address&nbsp;Lists</strong>, <strong>Queues</strong>, and <strong>Safe Mode</strong> tools are called
+      <code>remove</code>, plus category-specific verbs. Nine categories are exceptions:
+      <strong>Inventory</strong>, <strong>Interfaces</strong>, <strong>PoE</strong>, <strong>IPv6&nbsp;Address</strong>, <strong>IPv6&nbsp;Firewall</strong>, <strong>Firewall&nbsp;Raw</strong>, <strong>Address&nbsp;Lists</strong>, <strong>Queues</strong>, and <strong>Safe Mode</strong> tools are called
       <em>without</em> the prefix (e.g. <code>list_interfaces</code>, <code>create_simple_queue</code>,
       <code>enable_safe_mode</code>). The category headers below flag which convention applies. With a multi-device
       <a href="#inventory">inventory</a> configured, every device-scoped tool also accepts an optional
@@ -374,15 +374,16 @@
       <a href="#routes"><span class="ci-num">12</span><span class="ci-name">Routes</span><span class="ci-count">14 tools</span></a>
       <a href="#firewall"><span class="ci-num">13</span><span class="ci-name">Firewall</span><span class="ci-count">9 tools</span></a>
       <a href="#ipv6-firewall"><span class="ci-num">14</span><span class="ci-name">IPv6 Firewall</span><span class="ci-count">8 tools</span></a>
-      <a href="#address-list"><span class="ci-num">15</span><span class="ci-name">Address Lists</span><span class="ci-count">7 tools</span></a>
-      <a href="#nat"><span class="ci-num">16</span><span class="ci-name">NAT</span><span class="ci-count">8 tools</span></a>
-      <a href="#wireguard"><span class="ci-num">17</span><span class="ci-name">WireGuard</span><span class="ci-count">15 tools</span></a>
-      <a href="#wireless"><span class="ci-num">18</span><span class="ci-name">Wireless</span><span class="ci-count">19 tools</span></a>
-      <a href="#queue"><span class="ci-num">19</span><span class="ci-name">Queues</span><span class="ci-count">19 tools</span></a>
-      <a href="#users"><span class="ci-num">20</span><span class="ci-name">Users</span><span class="ci-count">18 tools</span></a>
-      <a href="#backup"><span class="ci-num">21</span><span class="ci-name">Backup &amp; Export</span><span class="ci-count">10 tools</span></a>
-      <a href="#logs"><span class="ci-num">22</span><span class="ci-name">Logs</span><span class="ci-count">10 tools</span></a>
-      <a href="#safe-mode"><span class="ci-num">23</span><span class="ci-name">Safe Mode</span><span class="ci-count">4 tools</span></a>
+      <a href="#firewall-raw"><span class="ci-num">15</span><span class="ci-name">Firewall Raw</span><span class="ci-count">16 tools</span></a>
+      <a href="#address-list"><span class="ci-num">16</span><span class="ci-name">Address Lists</span><span class="ci-count">7 tools</span></a>
+      <a href="#nat"><span class="ci-num">17</span><span class="ci-name">NAT</span><span class="ci-count">8 tools</span></a>
+      <a href="#wireguard"><span class="ci-num">18</span><span class="ci-name">WireGuard</span><span class="ci-count">15 tools</span></a>
+      <a href="#wireless"><span class="ci-num">19</span><span class="ci-name">Wireless</span><span class="ci-count">19 tools</span></a>
+      <a href="#queue"><span class="ci-num">20</span><span class="ci-name">Queues</span><span class="ci-count">19 tools</span></a>
+      <a href="#users"><span class="ci-num">21</span><span class="ci-name">Users</span><span class="ci-count">18 tools</span></a>
+      <a href="#backup"><span class="ci-num">22</span><span class="ci-name">Backup &amp; Export</span><span class="ci-count">10 tools</span></a>
+      <a href="#logs"><span class="ci-num">23</span><span class="ci-name">Logs</span><span class="ci-count">10 tools</span></a>
+      <a href="#safe-mode"><span class="ci-num">24</span><span class="ci-name">Safe Mode</span><span class="ci-count">4 tools</span></a>
     </div>
     <!-- ============ 01 INVENTORY ============ -->
     <div class="section-hd">
@@ -1377,7 +1378,145 @@
       </div>
     </div>
 
-    <!-- ============ 15 ADDRESS LISTS ============ -->
+    <!-- ============ 15 FIREWALL RAW ============ -->
+    <div class="section-hd">
+      <div>
+        <h2 id="firewall-raw">Firewall Raw — Pre-conntrack Rules</h2>
+        <p class="section-intro">Tools for the RouterOS raw tables, <code>/ip firewall raw</code> and
+          <code>/ipv6 firewall raw</code>. Raw rules run <strong>before connection tracking</strong>, in the
+          <code>prerouting</code> and <code>output</code> chains. They are used to drop unwanted traffic cheaply (for
+          example traffic from a blocklist, or bogons on the WAN) and to exempt traffic from connection tracking with
+          <code>action=notrack</code>. Raw rules see no connection state, so there is no <code>connection_state</code>
+          matcher.</p>
+        <p class="section-intro">Each tool exists twice, with the same parameters: <code>*_raw_rule(s)</code> for IPv4
+          and <code>*_ipv6_raw_rule(s)</code> for IPv6. The only parameter that differs is the TTL matcher, <code>ttl</code>
+          for IPv4 and <code>hop_limit</code> for IPv6. In IPv6 the ICMP protocol is spelled <code>icmpv6</code>. With
+          <code>--read-only</code>, only <code>list_*</code> and <code>get_*</code> are exposed.</p>
+        <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
+      </div>
+      <div class="meta"><b>16</b> tools<br>category 15</div>
+    </div>
+
+    <table class="table">
+      <thead><tr><th>IPv4</th><th>IPv6</th><th>Annotation</th></tr></thead>
+      <tbody>
+        <tr><td><code class="mono">list_raw_rules</code></td><td><code class="mono">list_ipv6_raw_rules</code></td><td>READ</td></tr>
+        <tr><td><code class="mono">get_raw_rule</code></td><td><code class="mono">get_ipv6_raw_rule</code></td><td>READ</td></tr>
+        <tr><td><code class="mono">create_raw_rule</code></td><td><code class="mono">create_ipv6_raw_rule</code></td><td>WRITE</td></tr>
+        <tr><td><code class="mono">update_raw_rule</code></td><td><code class="mono">update_ipv6_raw_rule</code></td><td>WRITE_IDEMPOTENT</td></tr>
+        <tr><td><code class="mono">enable_raw_rule</code> / <code class="mono">disable_raw_rule</code></td><td><code class="mono">enable_ipv6_raw_rule</code> / <code class="mono">disable_ipv6_raw_rule</code></td><td>WRITE_IDEMPOTENT</td></tr>
+        <tr><td><code class="mono">move_raw_rule</code></td><td><code class="mono">move_ipv6_raw_rule</code></td><td>WRITE_IDEMPOTENT</td></tr>
+        <tr><td><code class="mono">remove_raw_rule</code></td><td><code class="mono">remove_ipv6_raw_rule</code></td><td>DESTRUCTIVE</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb create">create</span>
+        <span class="tname">create_raw_rule · create_ipv6_raw_rule</span>
+      </div>
+      <div class="tool-body">
+        <p>Creates a raw rule. Runs <code>:put [&lt;menu&gt; add …]</code> and reports the new internal id. Most match parameters are optional.</p>
+        <div class="params">
+          <div class="row"><span class="pname">chain</span><span class="pkind req">required</span><span class="pdesc"><code>prerouting</code>, <code>output</code>, or a custom chain reached by a jump</span></div>
+          <div class="row"><span class="pname">action</span><span class="pkind req">required</span><span class="pdesc"><code>accept</code>, <code>drop</code>, <code>notrack</code>, <code>jump</code>, <code>return</code>, <code>log</code>, <code>passthrough</code>, <code>add-src-to-address-list</code>, <code>add-dst-to-address-list</code></span></div>
+          <div class="row"><span class="pname">jump_target</span><span class="pkind">optional</span><span class="pdesc">Required with <code>action="jump"</code></span></div>
+          <div class="row"><span class="pname">address_list · address_list_timeout</span><span class="pkind">optional</span><span class="pdesc"><code>address_list</code> is required with the <code>add-*-to-address-list</code> actions; timeout such as <code>1d</code>, <code>12h</code>, <code>00:30:00</code></span></div>
+          <div class="row"><span class="pname">src_address · dst_address</span><span class="pkind">optional</span><span class="pdesc">Match by address</span></div>
+          <div class="row"><span class="pname">src_port · dst_port · port</span><span class="pkind">optional</span><span class="pdesc">Match by port</span></div>
+          <div class="row"><span class="pname">protocol</span><span class="pkind">optional</span><span class="pdesc">Protocol — <code>icmpv6</code> (not <code>icmp</code>) on the IPv6 tool</span></div>
+          <div class="row"><span class="pname">in_interface · out_interface</span><span class="pkind">optional</span><span class="pdesc">Match by interface</span></div>
+          <div class="row"><span class="pname">in_interface_list · out_interface_list</span><span class="pkind">optional</span><span class="pdesc">Match by interface list</span></div>
+          <div class="row"><span class="pname">src_address_list · dst_address_list</span><span class="pkind">optional</span><span class="pdesc">Match by address list</span></div>
+          <div class="row"><span class="pname">src_address_type · dst_address_type</span><span class="pkind">optional</span><span class="pdesc">Match by address type</span></div>
+          <div class="row"><span class="pname">tcp_flags · icmp_options · packet_size · dscp · limit</span><span class="pkind">optional</span><span class="pdesc">Further matchers</span></div>
+          <div class="row"><span class="pname">ttl · hop_limit</span><span class="pkind">optional</span><span class="pdesc">TTL matcher: <code>ttl</code> on the IPv4 tool, <code>hop_limit</code> on the IPv6 tool</span></div>
+          <div class="row"><span class="pname">comment · disabled · log · log_prefix</span><span class="pkind">optional</span><span class="pdesc">Description; create disabled; enable logging; log prefix</span></div>
+          <div class="row"><span class="pname">place_before</span><span class="pkind">optional</span><span class="pdesc">Internal id or print position of the rule to insert before</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">create_raw_rule</span>(<span class="key">chain</span>=<span class="str">"prerouting"</span>, <span class="key">action</span>=<span class="str">"drop"</span>, <span class="key">in_interface_list</span>=<span class="str">"WAN"</span>, <span class="key">src_address_list</span>=<span class="str">"blocklist"</span>)
+<span class="fn">create_raw_rule</span>(<span class="key">chain</span>=<span class="str">"prerouting"</span>, <span class="key">action</span>=<span class="str">"notrack"</span>, <span class="key">protocol</span>=<span class="str">"udp"</span>, <span class="key">dst_port</span>=<span class="str">"53"</span>, <span class="key">dst_address_type</span>=<span class="str">"local"</span>)
+<span class="fn">create_ipv6_raw_rule</span>(<span class="key">chain</span>=<span class="str">"prerouting"</span>, <span class="key">action</span>=<span class="str">"drop"</span>, <span class="key">in_interface_list</span>=<span class="str">"WAN"</span>, <span class="key">src_address</span>=<span class="str">"fc00::/7"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb read">list · get</span>
+        <span class="tname">list_raw_rules · get_raw_rule</span>
+      </div>
+      <div class="tool-body">
+        <p>List rules with optional filters, or fetch one in detail. Runs <code>&lt;menu&gt; print [stats] [where …]</code> and <code>&lt;menu&gt; print detail where .id=…</code>. IPv6: <code>list_ipv6_raw_rules</code>, <code>get_ipv6_raw_rule</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">chain_filter · action_filter · protocol_filter</span><span class="pkind">optional</span><span class="pdesc">Exact match</span></div>
+          <div class="row"><span class="pname">src_address_filter · dst_address_filter</span><span class="pkind">optional</span><span class="pdesc"><strong>Partial</strong> match</span></div>
+          <div class="row"><span class="pname">interface_filter</span><span class="pkind">optional</span><span class="pdesc">Partial match on in/out interface and in/out interface list</span></div>
+          <div class="row"><span class="pname">comment_filter</span><span class="pkind">optional</span><span class="pdesc">Partial match on the comment</span></div>
+          <div class="row"><span class="pname">disabled_only · invalid_only · dynamic_only</span><span class="pkind">optional</span><span class="pdesc">Narrow by rule state</span></div>
+          <div class="row"><span class="pname">stats</span><span class="pkind">optional</span><span class="pdesc">Show byte and packet counters (<code>print stats</code>)</span></div>
+          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required for get</span><span class="pdesc">An internal id (<code>*1A</code>) or a print position (<code>0</code>), which is resolved to an id first</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">list_raw_rules</span>(<span class="key">chain_filter</span>=<span class="str">"prerouting"</span>, <span class="key">action_filter</span>=<span class="str">"drop"</span>)
+<span class="fn">get_raw_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1A"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb update">update</span>
+        <span class="tname">update_raw_rule · update_ipv6_raw_rule</span>
+      </div>
+      <div class="tool-body">
+        <p>Updates a raw rule. Runs <code>&lt;menu&gt; set &lt;id&gt; …</code>. Takes the same parameters as create, all optional. Pass <code>""</code> to clear a matcher (for example <code>src_address=""</code> sends <code>!src-address</code>). Any output from <code>set</code> is reported as a refusal, for example <code>not enough permissions (9)</code> for a read-only account.</p>
+        <div class="params">
+          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Internal id or print position</span></div>
+          <div class="row"><span class="pname">(same as create)</span><span class="pkind">optional</span><span class="pdesc">Every create parameter, all optional</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">update_raw_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1A"</span>, <span class="key">comment</span>=<span class="str">"Drop blocklist"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb update">enable · disable · move</span>
+        <span class="tname">enable_raw_rule · disable_raw_rule · move_raw_rule</span>
+      </div>
+      <div class="tool-body">
+        <p>Toggle a rule (<code>set &lt;id&gt; disabled=no|yes</code>) or move it to a position. <code>move_raw_rule</code> moves the rule to the 0-based <code>destination</code> position, by id, then checks it landed there. IPv6: <code>enable_ipv6_raw_rule</code>, <code>disable_ipv6_raw_rule</code>, <code>move_ipv6_raw_rule</code>.</p>
+        <div class="params">
+          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Internal id or print position</span></div>
+          <div class="row"><span class="pname">destination</span><span class="pkind req">required for move</span><span class="pdesc">0-based target position</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Examples</span><span class="fn">disable_raw_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1A"</span>)
+<span class="fn">move_raw_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1A"</span>, <span class="key">destination</span>=<span class="num">0</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="tool">
+      <div class="tool-head">
+        <span class="verb delete">remove</span>
+        <span class="tname">remove_raw_rule · remove_ipv6_raw_rule</span>
+      </div>
+      <div class="tool-body">
+        <p>Removes a rule and checks it is gone.</p>
+        <div class="params">
+          <div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Internal id or print position</span></div>
+        </div>
+        <div class="ex">
+<span class="lbl">Example</span><span class="fn">remove_raw_rule</span>(<span class="key">rule_id</span>=<span class="str">"*1A"</span>)
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 16 ADDRESS LISTS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="address-list">Address Lists — Named IP Sets</h2>
@@ -1389,7 +1528,7 @@
           <code>"ipv6"</code> rather than duplicating seven tools per family.</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
       </div>
-      <div class="meta"><b>7</b> tools<br>category 15</div>
+      <div class="meta"><b>7</b> tools<br>category 16</div>
     </div>
 
     <div class="callout">
@@ -1485,14 +1624,14 @@
       </div>
     </div>
 
-    <!-- ============ 16 NAT ============ -->
+    <!-- ============ 17 NAT ============ -->
     <div class="section-hd">
       <div>
         <h2 id="nat">NAT — Translation Rules</h2>
         <p class="section-intro">Source-NAT (masquerade) for outbound, destination-NAT (port forwarding)
           for inbound, plus rule ordering and toggle.</p>
       </div>
-      <div class="meta"><b>8</b> tools<br>category 16</div>
+      <div class="meta"><b>8</b> tools<br>category 17</div>
     </div>
     <div class="tool">
       <div class="tool-head">
@@ -1533,7 +1672,7 @@
     <div class="tool"><div class="tool-head"><span class="verb delete">remove</span><span class="tname">mikrotik_remove_nat_rule</span></div>
       <div class="tool-body"><div class="params"><div class="row"><span class="pname">rule_id</span><span class="pkind req">required</span><span class="pdesc">Rule ID</span></div></div></div>
     </div>
-    <!-- ============ 17 WIREGUARD ============ -->
+    <!-- ============ 18 WIREGUARD ============ -->
     <div class="section-hd">
       <div>
         <h2 id="wireguard">WireGuard — Tunnels &amp; Peers</h2>
@@ -1541,7 +1680,7 @@
           and generate ready-to-paste client configs. The interface's public key is returned by
           <code>get_wireguard_interface</code> — hand it to clients. WireGuard requires RouterOS v7+.</p>
       </div>
-      <div class="meta"><b>15</b> tools<br>category 17</div>
+      <div class="meta"><b>15</b> tools<br>category 18</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_wireguard_interface</span></div>
       <div class="tool-body"><p>Stands up a WireGuard interface. If no private key is supplied, one is generated; read the
@@ -1619,7 +1758,7 @@
       </div>
     </div>
 
-    <!-- ============ 18 WIRELESS ============ -->
+    <!-- ============ 19 WIRELESS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="wireless">Wireless — WiFi Interfaces &amp; Security</h2>
@@ -1627,7 +1766,7 @@
           Call <code>check_wireless_support</code> first — wireless tooling depends on the device's
           RouterOS wireless package.</p>
       </div>
-      <div class="meta"><b>19</b> tools<br>category 18</div>
+      <div class="meta"><b>19</b> tools<br>category 19</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">interface create</span><span class="tname">mikrotik_create_wireless_interface</span></div>
       <div class="tool-body"><p>Creates / configures a wireless interface (SSID, band, channel, mode, and an attached security profile).</p>
@@ -1659,7 +1798,7 @@
       </div>
     </div>
 
-    <!-- ============ 19 QUEUES ============ -->
+    <!-- ============ 20 QUEUES ============ -->
     <div class="section-hd">
       <div>
         <h2 id="queue">Queues — Traffic Shaping</h2>
@@ -1667,7 +1806,7 @@
           policies, and queue types for the underlying discipline (CAKE, fq-codel, SFQ, RED, PCQ, …).</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category</span>
       </div>
-      <div class="meta"><b>19</b> tools<br>category 19</div>
+      <div class="meta"><b>19</b> tools<br>category 20</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">simple queue</span><span class="tname">create_simple_queue · list_simple_queues · get_simple_queue · update_simple_queue · remove_simple_queue · enable_simple_queue · disable_simple_queue</span></div>
       <div class="tool-body"><p>Per-target rate limits — the simplest way to throttle a host or subnet. <code>max_limit</code> takes
@@ -1689,14 +1828,14 @@
         can't be modified or removed.</p>
       </div>
     </div>
-    <!-- ============ 20 USERS ============ -->
+    <!-- ============ 21 USERS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="users">Users — Accounts, Groups &amp; SSH Keys</h2>
         <p class="section-intro">Local users, groups, policies, active sessions, and SSH key management.
           Used to provision scoped accounts for tooling rather than sharing <code>admin</code>.</p>
       </div>
-      <div class="meta"><b>18</b> tools<br>category 20</div>
+      <div class="meta"><b>18</b> tools<br>category 21</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_add_user · mikrotik_add_user_group</span></div>
       <div class="tool-body"><p>Create users and permission groups. Groups take a <code>policy</code> list (e.g. <code>read,write,ssh</code>).</p>
@@ -1721,14 +1860,14 @@
       <div class="tool-body"><p>Remove a user or a group.</p></div>
     </div>
 
-    <!-- ============ 21 BACKUP ============ -->
+    <!-- ============ 22 BACKUP ============ -->
     <div class="section-hd">
       <div>
         <h2 id="backup">Backup &amp; Export — Configuration State</h2>
         <p class="section-intro">Binary backups, RouterOS <code>.rsc</code> exports, section dumps,
           file transfer, restore, and import.</p>
       </div>
-      <div class="meta"><b>10</b> tools<br>category 21</div>
+      <div class="meta"><b>10</b> tools<br>category 22</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb create">create</span><span class="tname">mikrotik_create_backup · mikrotik_create_export · mikrotik_export_section</span></div>
       <div class="tool-body"><p>Three formats: a binary <code>.backup</code> (full snapshot), a <code>.rsc</code> export (declarative,
@@ -1754,14 +1893,14 @@
       <div class="tool-body"><p>Removes any file from the device's filesystem.</p></div>
     </div>
 
-    <!-- ============ 22 LOGS ============ -->
+    <!-- ============ 23 LOGS ============ -->
     <div class="section-hd">
       <div>
         <h2 id="logs">Logs — System Events</h2>
         <p class="section-intro">Stream and analyze RouterOS logs by topic, severity, or free-text search.
           Pull system events and security logs, aggregate statistics, live-tail, and export to CSV.</p>
       </div>
-      <div class="meta"><b>10</b> tools<br>category 22</div>
+      <div class="meta"><b>10</b> tools<br>category 23</div>
     </div>
     <div class="tool"><div class="tool-head"><span class="verb read">read</span><span class="tname">mikrotik_get_logs · mikrotik_get_logs_by_severity · mikrotik_get_logs_by_topic · mikrotik_search_logs · mikrotik_get_system_events · mikrotik_get_security_logs · mikrotik_get_log_statistics</span></div>
       <div class="tool-body"><p>Seven lenses on the log buffer — by topic, by severity
@@ -1781,7 +1920,7 @@
       <div class="tool-body"><p>Clears the in-memory log buffer. Doesn't affect file-backed logs.</p></div>
     </div>
 
-    <!-- ============ 23 SAFE MODE ============ -->
+    <!-- ============ 24 SAFE MODE ============ -->
     <div class="section-hd">
       <div>
         <h2 id="safe-mode">Safe Mode — Atomic Sessions</h2>
@@ -1790,7 +1929,7 @@
           firewall or connectivity rules remotely.</p>
         <span class="prefix-note none">no <code>mikrotik_</code> prefix on this category · no parameters</span>
       </div>
-      <div class="meta"><b>4</b> tools<br>category 23</div>
+      <div class="meta"><b>4</b> tools<br>category 24</div>
     </div>
     <div class="callout">
       <span class="icon">HOW IT WORKS</span>
@@ -1868,15 +2007,16 @@
       <li><a href="#routes">12 — Routes</a></li>
       <li><a href="#firewall">13 — Firewall</a></li>
       <li><a href="#ipv6-firewall">14 — IPv6 Firewall</a></li>
-      <li><a href="#address-list">15 — Address Lists</a></li>
-      <li><a href="#nat">16 — NAT</a></li>
-      <li><a href="#wireguard">17 — WireGuard</a></li>
-      <li><a href="#wireless">18 — Wireless</a></li>
-      <li><a href="#queue">19 — Queues</a></li>
-      <li><a href="#users">20 — Users</a></li>
-      <li><a href="#backup">21 — Backup</a></li>
-      <li><a href="#logs">22 — Logs</a></li>
-      <li><a href="#safe-mode">23 — Safe Mode</a></li>
+      <li><a href="#firewall-raw">15 — Firewall Raw</a></li>
+      <li><a href="#address-list">16 — Address Lists</a></li>
+      <li><a href="#nat">17 — NAT</a></li>
+      <li><a href="#wireguard">18 — WireGuard</a></li>
+      <li><a href="#wireless">19 — Wireless</a></li>
+      <li><a href="#queue">20 — Queues</a></li>
+      <li><a href="#users">21 — Users</a></li>
+      <li><a href="#backup">22 — Backup</a></li>
+      <li><a href="#logs">23 — Logs</a></li>
+      <li><a href="#safe-mode">24 — Safe Mode</a></li>
     </ul>
   </aside>
 </div>
