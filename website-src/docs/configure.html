@@ -100,6 +100,7 @@
       "isAccessibleForFree": true,
       "keywords": "MikroTik, RouterOS, MCP, Model Context Protocol, AI, network automation",
       "sameAs": [
+        "https://github.com/wiresage/mikrotik-mcp",
         "https://pypi.org/project/mcp-server-mikrotik/"
       ],
       "author": {
@@ -392,6 +393,10 @@
 <span class="p">$</span> claude mcp get mikrotik     <span class="c"># show server details</span>
 <span class="p">$</span> claude mcp remove mikrotik  <span class="c"># remove the server</span></pre>
 
+    <p>Want Claude Code to know RouterOS 7 before it touches a router? The
+      <a href="skills.html">routeros-skills agent skills for Claude Code</a> teach it the console conventions and the
+      commands to propose, and they work alongside this server.</p>
+
     <!-- INSPECTOR -->
     <h2 id="inspector">MCP Inspector</h2>
     <p>The Inspector is the official debugging tool for MCP servers. It launches a server, connects to it,
@@ -422,7 +427,7 @@
       you wire a real client.</p>
 
     <!-- MCPO -->
-    <h2 id="mcpo">MCPO — REST API</h2>
+    <h2 id="mcpo"><span id="mcpo-rest-api"></span>MCPO — REST API</h2>
     <p>MCPO ("MCP-to-OpenAPI") wraps any MCP server in a FastAPI shell. Each tool becomes a POST endpoint,
       and you get auto-generated OpenAPI docs at <code>/docs</code>. Use this for:</p>
     <ul>

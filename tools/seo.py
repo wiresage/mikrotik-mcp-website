@@ -66,7 +66,10 @@ PROJECTS = {
         "license": LICENSE_URL,
         "isAccessibleForFree": True,
         "keywords": "MikroTik, RouterOS, MCP, Model Context Protocol, AI, network automation",
-        "sameAs": ["https://pypi.org/project/mcp-server-mikrotik/"],
+        "sameAs": [
+            "https://github.com/wiresage/mikrotik-mcp",
+            "https://pypi.org/project/mcp-server-mikrotik/",
+        ],
     },
     "lsp": {
         "@type": "SoftwareSourceCode",
@@ -83,7 +86,10 @@ PROJECTS = {
         "license": LICENSE_URL,
         "isAccessibleForFree": True,
         "keywords": "RouterOS, MikroTik, language server, LSP, rsc, linter",
-        "sameAs": ["https://pypi.org/project/routeros-lsp/"],
+        "sameAs": [
+            "https://github.com/wiresage/routeros-lsp",
+            "https://pypi.org/project/routeros-lsp/",
+        ],
     },
     "skills": {
         "@type": "SoftwareSourceCode",
@@ -98,7 +104,10 @@ PROJECTS = {
         "license": LICENSE_URL,
         "isAccessibleForFree": True,
         "keywords": "RouterOS, MikroTik, agent skills, Claude Code, AI agents",
-        "sameAs": ["https://www.skills.sh/wiresage/routeros-skills"],
+        "sameAs": [
+            "https://github.com/wiresage/routeros-skills",
+            "https://www.skills.sh/wiresage/routeros-skills",
+        ],
     },
 }
 
@@ -118,8 +127,8 @@ PAGES = [
         "path": "/",
         "title": "MikroTik MCP: manage RouterOS with AI in plain English",
         "description": (
-            "MikroTik MCP lets Claude and other AI assistants manage RouterOS routers in "
-            "plain English. Open source, with routeros-lsp and routeros-skills alongside."
+            "Open-source MikroTik MCP server: Claude and other AI agents manage RouterOS in "
+            "plain English, no Winbox clicking. Plus routeros-lsp and routeros-skills."
         ),
         "crumbs": [],
         "about": ["mcp", "lsp", "skills"],
@@ -226,10 +235,10 @@ PAGES = [
     {
         "file": "docs/skills.html",
         "path": "/docs/skills.html",
-        "title": "routeros-skills: agent skills for MikroTik RouterOS",
+        "title": "routeros-skills: MikroTik agent skills for Claude Code",
         "description": (
-            "routeros-skills teaches AI coding agents like Claude Code, Codex and Copilot "
-            "how RouterOS 7 works. Skills by area, each linked on GitHub and skills.sh."
+            "routeros-skills gives Claude Code, Codex, GitHub Copilot and other AI agents "
+            "MikroTik RouterOS 7 skills, grouped by area, each linked on GitHub and skills.sh."
         ),
         "crumbs": [HOME, DOCS, ("Agent skills", None)],
         "about": ["skills"],
