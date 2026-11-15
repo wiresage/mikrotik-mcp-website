@@ -161,7 +161,7 @@ PAGES = [
         "title": "MikroTik MCP API reference: RouterOS tools by category",
         "description": (
             "Every MikroTik MCP tool for RouterOS by category: firewall, NAT, DHCP, DNS, "
-            "WireGuard, wireless and more, with parameters and examples."
+            "WireGuard, IPsec, diagnostics and more, with parameters and examples."
         ),
         "crumbs": [HOME, DOCS, ("API reference", None)],
         "about": ["mcp"],
@@ -182,7 +182,7 @@ PAGES = [
         "path": "/docs/examples.html",
         "title": "MikroTik MCP examples: tool calls and RouterOS workflows",
         "description": (
-            "Hands-on MikroTik MCP examples: tool calls for every category, multi-step "
+            "Hands-on MikroTik MCP examples: tool calls for the common categories, "
             "workflows like VLANs, port forwarding and backups, and plain-English prompts."
         ),
         "crumbs": [HOME, DOCS, ("Examples", None)],

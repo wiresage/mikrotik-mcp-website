@@ -638,7 +638,7 @@
     <span class="k">--password</span> <span class="s">"&lt;PASSWORD&gt;"</span> \
     <span class="k">--port</span> <span class="n">22</span></pre>
 
-    <p>A browser tab opens with the tool catalog. Try <code>mikrotik_list_vlan_interfaces</code> with empty
+    <p>A browser tab opens with the tool catalog. Try <code>list_vlan_interfaces</code> with empty
       arguments — if you get back a JSON list, you're in. Contributors can also run the project's
       <code>pytest</code> suite against a RouterOS container; see
       <a href="https://github.com/wiresage/mikrotik-mcp/blob/master/docs/getting-started/testing.md" target="_blank" rel="noopener">testing.md</a>.</p>
@@ -666,15 +666,16 @@
 
     <!-- CONTEXT -->
     <h2 id="context">Context length optimization</h2>
-    <p>MikroTik MCP ships <strong>218 tools</strong>. At full verbosity the tool schema can occupy
-      <strong>≈ 54,000 tokens</strong> — more than the entire context window of many local LLMs
-      (LM Studio, Ollama, and similar).</p>
+    <p>MikroTik MCP ships <strong>239 tools</strong>, and the tool schema grows with every one. When the
+      titles and trimmed descriptions below were introduced (at 162 tools), the schema at full verbosity
+      occupied <strong>≈ 54,000 tokens</strong> — more than the entire context window of many local LLMs
+      (LM Studio, Ollama, and similar). It is larger now.</p>
 
     <p>To keep that manageable, every tool carries a short <code>title</code> annotation
       (per the MCP tool-annotations spec) plus a trimmed one-line description. The function signature
       already carries full type information, so the description only needs to convey <em>what</em> the
       tool does. This cuts the description token budget by roughly <strong>75%</strong> — bringing the
-      schema for a 64k-token model from <strong>≈ 54k → ≈ 48k tokens</strong> and leaving real room for
+      schema for a 64k-token model from <strong>≈ 54k → ≈ 48k tokens</strong> (as measured at 162 tools) and leaving room for
       the conversation.</p>
 
     <div class="callout tip">

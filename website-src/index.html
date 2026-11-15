@@ -320,6 +320,9 @@
     font-family: var(--mono); font-size: 10.5px;
     color: var(--ink-mute); letter-spacing: 0.06em;
   }
+  .cap-all { grid-column: span 2; justify-content: center; background: var(--bg-2); }
+  .cap-all:hover { background: var(--bg-3); }
+  .cap-all h4 { color: var(--amber); }
 
   /* ===== Architecture diagram ===== */
   .arch {
@@ -512,6 +515,7 @@
   }
   @media (max-width: 560px) {
     .caps { grid-template-columns: 1fr; }
+    .cap-all { grid-column: auto; }
     .hero h1 { font-size: 42px; }
     .cta h2 { font-size: 36px; }
   }
@@ -572,7 +576,7 @@
       </h1>
       <p class="lede">
         MikroTik MCP is an open-source MCP server, the bridge between your AI assistant and your RouterOS fleet — let Claude, ChatGPT, or any
-        MCP-capable AI agent manage VLANs, IPv4 and IPv6 firewall rules, DHCP, NAT, WireGuard, and 19 other categories from a single
+        MCP-capable AI agent manage VLANs, IPv4 and IPv6 firewall rules, DHCP, NAT, WireGuard, and 24 other categories from a single
         prompt — on one router or across a whole fleet. No web UI clicks. No Winbox tabs.
       </p>
       <div class="hero-ctas">
@@ -587,8 +591,8 @@
         </a>
       </div>
       <div class="meta-row">
-        <div><b>24</b> tool categories</div>
-        <div><b>218</b> RouterOS tools</div>
+        <div><b>30</b> tool categories</div>
+        <div><b>239</b> RouterOS tools</div>
         <div><b>3</b> transports (stdio · SSE · HTTP)</div>
         <div><b>MIT</b> licensed</div>
       </div>
@@ -610,13 +614,13 @@
           <div class="who">Claude</div>
           <div class="body">
             On it. Running four tools in order:
-            <div class="call"><span class="fn">mikrotik_create_vlan_interface</span>(<span class="key">name</span>=<span class="arg">"vlan200"</span>, <span class="key">vlan_id</span>=<span class="arg">200</span>, <span class="key">interface</span>=<span class="arg">"ether1"</span>)</div>
+            <div class="call"><span class="fn">create_vlan_interface</span>(<span class="key">name</span>=<span class="arg">"vlan200"</span>, <span class="key">vlan_id</span>=<span class="arg">200</span>, <span class="key">interface</span>=<span class="arg">"ether1"</span>)</div>
             <div class="result"><span class="ok">✓</span> vlan200 created on ether1 · tag 200</div>
-            <div class="call"><span class="fn">mikrotik_add_ip_address</span>(<span class="key">address</span>=<span class="arg">"192.168.200.1/24"</span>, <span class="key">interface</span>=<span class="arg">"vlan200"</span>)</div>
+            <div class="call"><span class="fn">add_ip_address</span>(<span class="key">address</span>=<span class="arg">"192.168.200.1/24"</span>, <span class="key">interface</span>=<span class="arg">"vlan200"</span>)</div>
             <div class="result"><span class="ok">✓</span> 192.168.200.1/24 bound to vlan200</div>
-            <div class="call"><span class="fn">mikrotik_create_dhcp_pool</span>(<span class="key">name</span>=<span class="arg">"pool-200"</span>, <span class="key">ranges</span>=<span class="arg">"192.168.200.10-192.168.200.100"</span>)</div>
+            <div class="call"><span class="fn">create_dhcp_pool</span>(<span class="key">name</span>=<span class="arg">"pool-200"</span>, <span class="key">ranges</span>=<span class="arg">"192.168.200.10-192.168.200.100"</span>)</div>
             <div class="result"><span class="ok">✓</span> Pool "pool-200" · 91 addresses</div>
-            <div class="call"><span class="fn">mikrotik_create_nat_rule</span>(<span class="key">chain</span>=<span class="arg">"srcnat"</span>, <span class="key">action</span>=<span class="arg">"masquerade"</span>, <span class="key">out_interface</span>=<span class="arg">"ether1"</span>)</div>
+            <div class="call"><span class="fn">create_nat_rule</span>(<span class="key">chain</span>=<span class="arg">"srcnat"</span>, <span class="key">action</span>=<span class="arg">"masquerade"</span>, <span class="key">out_interface</span>=<span class="arg">"ether1"</span>)</div>
             <div class="result"><span class="ok">✓</span> NAT rule added at index 0</div>
             <div style="margin-top: 14px; color: var(--ink);">Guest VLAN is live. Want me to set a rate limit?<span class="cursor"></span></div>
           </div>
@@ -659,7 +663,7 @@
           </svg>
         </div>
         <h3>Natural language → typed tools</h3>
-        <p>Every RouterOS noun has a verb. "Make a VLAN" maps onto <span style="color:var(--amber);font-family:var(--mono);font-size:12px">mikrotik_create_vlan_interface</span> with strict, validated arguments. No hallucinated CLI.</p>
+        <p>Every RouterOS noun has a verb. "Make a VLAN" maps onto <span style="color:var(--amber);font-family:var(--mono);font-size:12px">create_vlan_interface</span> with strict, validated arguments. No hallucinated CLI.</p>
       </div>
 
       <div class="pillar">
@@ -712,7 +716,7 @@
     <div class="band-head">
       <div>
         <div class="eyebrow">02 — Capabilities</div>
-        <h2>24 categories. Roughly everything you'd touch in Winbox.</h2>
+        <h2>30 categories. Roughly everything you'd touch in Winbox.</h2>
       </div>
       <p>Each category exposes typed tools — create, list, get, update, remove, plus category-specific
         verbs like <span style="color:var(--amber);font-family:var(--mono);font-size:13px">move_filter_rule</span>
@@ -843,7 +847,7 @@
       </a>
       <a class="cap" href="docs/reference.html#wireless">
         <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12.5a10 10 0 0114 0"/><path d="M8 15.4a6 6 0 018 0"/><circle cx="12" cy="19" r="1.1" fill="currentColor"/></svg>
-        <span class="count">18 tools</span>
+        <span class="count">19 tools</span>
         <h4>Wireless</h4>
         <p>Interfaces, security profiles, access lists, network scan, registration table.</p>
       </a>
@@ -864,6 +868,48 @@
         <span class="count">3 tools</span>
         <h4>PoE</h4>
         <p>Power-over-Ethernet monitoring — live PoE-out voltage, current, power, and per-port settings.</p>
+      </a>
+      <a class="cap" href="docs/reference.html#diagnostics">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>
+        <span class="count">5 tools</span>
+        <h4>Diagnostics</h4>
+        <p>Bounded ping, traceroute, torch, quick packet capture and CPU profile. Read-only: none of them changes the configuration.</p>
+      </a>
+      <a class="cap" href="docs/reference.html#ipsec">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <span class="count">6 tools</span>
+        <h4>IPsec</h4>
+        <p>Peers, policies, profiles and proposals, plus live tunnel state. Pre-shared keys are never exposed.</p>
+      </a>
+      <a class="cap" href="docs/reference.html#system">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="6" width="12" height="12" rx="1.5"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg>
+        <span class="count">6 tools</span>
+        <h4>System</h4>
+        <p>Resource, health, clock, RouterBOARD and package-update status.</p>
+      </a>
+      <a class="cap" href="docs/reference.html#scheduler">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span class="count">2 tools</span>
+        <h4>Scheduler</h4>
+        <p>Scheduled tasks and stored scripts. Script bodies are withheld unless you ask for them.</p>
+      </a>
+      <a class="cap" href="docs/reference.html#netwatch">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9M16.5 7.5a6.4 6.4 0 0 1 0 9M4.5 4.5a10.6 10.6 0 0 0 0 15M19.5 4.5a10.6 10.6 0 0 1 0 15"/></svg>
+        <span class="count">1 tool</span>
+        <h4>Netwatch</h4>
+        <p>Probes with live status and measurements: which monitored hosts are down right now.</p>
+      </a>
+      <a class="cap" href="docs/reference.html#ip-services">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v6M8 5v4M16 5v4"/><rect x="6" y="9" width="12" height="6" rx="2"/><path d="M12 15v6"/></svg>
+        <span class="count">1 tool</span>
+        <h4>IP Services</h4>
+        <p>Which management services answer, on which port and from where.</p>
+      </a>
+      <a class="cap cap-all" href="docs/reference.html">
+        <svg class="cap-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <span class="count">239 tools</span>
+        <h4>Browse the full API reference</h4>
+        <p>Every tool with its parameters and a worked example, grouped into 30 categories.</p>
       </a>
     </div>
   </div>
@@ -1193,7 +1239,7 @@
         <div class="flow">
           <div class="st"><span class="tg">Write</span><div>Your editor or AI agent drafts a <code>.rsc</code> script.</div></div>
           <div class="st"><span class="tg l">Check</span><div><strong>routeros-lsp</strong> reports what the router would reject — no router needed.</div></div>
-          <div class="st"><span class="tg m">Apply</span><div><strong>MikroTik MCP</strong> uploads and imports it: <code>mikrotik_upload_file</code>, then <code>mikrotik_import_configuration</code>.</div></div>
+          <div class="st"><span class="tg m">Apply</span><div><strong>MikroTik MCP</strong> uploads and imports it: <code>upload_file</code>, then <code>import_configuration</code>.</div></div>
         </div>
         <div class="lsp-meta">Independent tools — use either one on its own.</div>
       </div>

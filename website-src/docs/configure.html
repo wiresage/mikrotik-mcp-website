@@ -343,7 +343,7 @@
       A first easy test:</p>
     <ul>
       <li>Ask: <em>"List my VLAN interfaces."</em></li>
-      <li>Claude should call <code>mikrotik_list_vlan_interfaces</code> with empty args and surface the JSON result.</li>
+      <li>Claude should call <code>list_vlan_interfaces</code> with empty args and surface the JSON result.</li>
       <li>If the call fails with a connection error, double-check <code>--host</code>, the SSH user's policies, and that <code>/ip ssh</code> is allowed on the device.</li>
     </ul>
 
@@ -522,22 +522,22 @@
       tool's arguments.</p>
 
     <div class="code-header"><span># curl — list IP addresses</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> curl <span class="k">-X</span> POST http://localhost:8000/mikrotik-mcp-server/mikrotik_list_ip_addresses \
+    <pre class="code"><span class="p">$</span> curl <span class="k">-X</span> POST http://localhost:8000/mikrotik-mcp-server/list_ip_addresses \
     <span class="k">-H</span> <span class="s">"Authorization: Bearer your-secret-key"</span> \
     <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
     <span class="k">-d</span> <span class="s">'{}'</span></pre>
 
     <div class="endpoint">
       <span class="method">POST</span>
-      <span class="path">/mikrotik-mcp-server/<span class="ph">mikrotik_list_ip_addresses</span></span>
+      <span class="path">/mikrotik-mcp-server/<span class="ph">list_ip_addresses</span></span>
     </div>
     <div class="endpoint">
       <span class="method">POST</span>
-      <span class="path">/mikrotik-mcp-server/<span class="ph">mikrotik_create_filter_rule</span></span>
+      <span class="path">/mikrotik-mcp-server/<span class="ph">create_filter_rule</span></span>
     </div>
     <div class="endpoint">
       <span class="method">POST</span>
-      <span class="path">/mikrotik-mcp-server/<span class="ph">mikrotik_create_vlan_interface</span></span>
+      <span class="path">/mikrotik-mcp-server/<span class="ph">create_vlan_interface</span></span>
     </div>
 
     <div class="callout tip">

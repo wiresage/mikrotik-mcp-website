@@ -318,7 +318,9 @@ tests/
       <li>Import <code>execute_mikrotik_command</code> from <code>..connector</code></li>
       <li>Register tools using <code>@mcp.tool()</code> decorators —
         <strong>always use <code>annotate(BASE, "Title")</code></strong> (never a bare constant)</li>
-      <li>Follow the existing naming convention: <code>mikrotik_&lt;action&gt;_&lt;resource&gt;</code></li>
+      <li>Name the function <code>mikrotik_&lt;action&gt;_&lt;resource&gt;</code> and register it under the short name
+        <code>&lt;action&gt;_&lt;resource&gt;</code> with <code>name=</code>, as in the example below; the short name
+        is what clients see</li>
       <li>Use type hints for all parameters (including <code>Literal</code> for fixed-value params)</li>
       <li>Keep docstrings <strong>concise</strong> — a single sentence is ideal; avoid
         re-documenting every parameter</li>
@@ -524,6 +526,16 @@ tests/
       <code>docs/manual.lock.yml</code> and the manifest deliberately, run <code>--write</code>, and commit. Use <code>--strict</code>
       (or the workflow's <code>strict</code> input) when warnings should fail the run. The corpus is not committed; only the lockfile
       metadata is.</p>
+
+    <h3 id="guidelines-pr-demo">PR demo GIF</h3>
+    <p>Every pull request that targets <code>master</code> gets one comment from the <strong>PR demo</strong> workflow: a short GIF
+      that illustrates the change, a title, a one-line description and a <code>#demonstration_&lt;pr-title&gt;</code> tag (spaces
+      become <code>-</code>). The comment is updated on every push. The GIF is drawn by AI from the diff, so it is an illustration,
+      not a recording; check it against the code.</p>
+    <p>The workflow runs from <code>master</code> and never executes code from the pull request: the model gets no tools,
+      <code>scripts/pr_demo.py</code> validates its storyboard and draws the GIF, and the GIFs are stored on the orphan
+      <code>pr-demos</code> branch. Re-run it for a pull request from the Actions tab (<strong>PR demo</strong>,
+      <em>Run workflow</em>, with the number).</p>
 
     <!-- COMMIT FORMAT -->
     <h2 id="commits">Commit format and versioning</h2>
@@ -733,6 +745,7 @@ fix/issue-#-branch-two</pre>
       <li><a href="#transport">Transport modes</a></li>
       <li><a href="#guidelines">Dev guidelines</a></li>
       <li><a href="#guidelines-api-coverage">— API coverage</a></li>
+      <li><a href="#guidelines-pr-demo">— PR demo GIF</a></li>
       <li><a href="#commits">Commit format</a></li>
       <li><a href="#commits-version">— Versioning</a></li>
       <li><a href="#branching">Branching strategy</a></li>
