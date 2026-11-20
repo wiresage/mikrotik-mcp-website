@@ -130,6 +130,9 @@ p { color: var(--ink-dim); margin: 0; }
   border-radius: var(--rad-lg) var(--rad-lg) 0 0;
   background: var(--bg-2);
 }
+.code-header { gap: 12px; }
+.code-header > span { min-width: 0; overflow-wrap: anywhere; }
+.code-header .copy-btn { flex: none; }
 .code-header + .code { border-radius: 0 0 var(--rad-lg) var(--rad-lg); border-top: 0; }
 .code .c { color: var(--ink-mute); }              /* comment */
 .code .k { color: #f5cd72; }                       /* keyword */

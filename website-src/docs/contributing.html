@@ -229,27 +229,74 @@
     <p class="doc-lede">
       Thank you for your interest in contributing to the MikroTik MCP server. This MCP
       (Model Context Protocol) server provides tools for managing MikroTik RouterOS devices.
-      Contributors can extend functionality by adding new scopes (feature areas) and their
-      corresponding tools.
+      Contributors can extend functionality by adding tools to a feature area, or by adding a new
+      feature area.
     </p>
 
     <!-- PROJECT STRUCTURE -->
     <h2 id="structure">Project structure</h2>
-    <p>The codebase splits into a <code>src/mcp_mikrotik/</code> package (the server and its
-      feature scopes) and a <code>tests/</code> tree (unit + integration suites):</p>
+    <p>The codebase splits into a <code>src/mcp_mikrotik/</code> package (the server and its tools, one package per
+      feature area), a <code>tests/</code> tree (unit + integration suites) and the reference pages under
+      <code>docs/reference/</code>:</p>
 
     <div class="code-header"><span>repository layout</span><button class="copy-btn">Copy</button></div>
     <pre class="code">src/mcp_mikrotik/
-├── scope/          <span class="c"># Feature modules — each file registers MCP tools via decorators</span>
-├── app.py          <span class="c"># MCPServer instance and ToolAnnotation constants</span>
+├── scope/          <span class="c"># The tools: one package per feature area (see "Feature areas" below)</span>
+│   ├── _shared/    <span class="c">#   helpers used by several areas (quoting, selectors)</span>
+│   ├── firewall/   <span class="c">#   an area: __init__.py, filter.py, nat.py, raw.py, ...</span>
+│   └── ...
+├── app.py          <span class="c"># MCPServer instance, ToolAnnotation constants, one import per area</span>
 ├── config.py       <span class="c"># Configuration (pydantic-settings, CLI args, env vars)</span>
-├── connector.py    <span class="c"># SSH connection handling</span>
-├── server.py       <span class="c"># Entry point — imports scopes, starts the server</span>
-└── mikrotik_ssh_client.py  <span class="c"># Low-level SSH client</span>
+├── configured_mcp_server.py  <span class="c"># Read-only filtering, sensitive hiding, IP allowlist</span>
+├── connector.py    <span class="c"># Runs one command over a fresh SSH connection</span>
+├── http_security.py  <span class="c"># IP allowlist for the HTTP transports</span>
+├── inventory.py    <span class="c"># Multi-device inventory</span>
+├── mikrotik_ssh_client.py  <span class="c"># Low-level SSH client</span>
+├── safe_mode.py    <span class="c"># RouterOS safe mode sessions</span>
+├── sensitive.py    <span class="c"># Credential redaction</span>
+└── server.py       <span class="c"># Entry point: CLI parsing and transport selection</span>
 
 tests/
 ├── integration/    <span class="c"># Integration tests using testcontainers</span>
-└── unit/           <span class="c"># Unit tests</span></pre>
+└── unit/
+    ├── scope/      <span class="c"># Tests of the tools: scope/&lt;area&gt;/ for one area, scope/ for tests that span areas</span>
+    └── ...         <span class="c"># Everything else: connector, config, ssh, app, ...</span>
+
+docs/reference/     <span class="c"># Reference pages, one folder per feature area (the same areas as scope/)</span></pre>
+
+    <h3 id="feature-areas">Feature areas</h3>
+    <p>Everything for one feature lives in one place: a package under <code>src/mcp_mikrotik/scope/</code>, its tests under
+      <code>tests/unit/scope/&lt;area&gt;/</code> and its reference pages under <code>docs/reference/&lt;area&gt;/</code>.</p>
+    <table class="table">
+      <thead><tr><th>Area</th><th>What belongs in it</th><th>Modules</th></tr></thead>
+      <tbody>
+        <tr><td style="white-space:nowrap"><code>devices</code></td><td>The managed devices themselves: the inventory and the safe-mode session</td><td><code style="white-space:nowrap">inventory</code>, <code style="white-space:nowrap">safe_mode</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>dhcp</code></td><td>/ip dhcp-server and /ipv6 dhcp-server</td><td><code style="white-space:nowrap">dhcp</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>dns</code></td><td>/ip dns</td><td><code style="white-space:nowrap">dns</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>firewall</code></td><td>/ip firewall and /ipv6 firewall, IPv4 and IPv6 side by side</td><td><code style="white-space:nowrap">filter</code>, <code style="white-space:nowrap">ipv6_filter</code>, <code style="white-space:nowrap">nat</code>, <code style="white-space:nowrap">raw</code>, <code style="white-space:nowrap">ipv6_raw</code>, <code style="white-space:nowrap">address_list</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>interfaces</code></td><td>/interface, any type</td><td><code style="white-space:nowrap">generic</code>, <code style="white-space:nowrap">vlan</code>, <code style="white-space:nowrap">bridge</code>, <code style="white-space:nowrap">wireguard</code>, <code style="white-space:nowrap">wireless</code>, <code style="white-space:nowrap">poe</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>ip</code></td><td>/ip and /ipv6 menus that have no area of their own</td><td><code style="white-space:nowrap">address</code>, <code style="white-space:nowrap">ipv6_address</code>, <code style="white-space:nowrap">pool</code>, <code style="white-space:nowrap">neighbors</code>, <code style="white-space:nowrap">services</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>monitoring</code></td><td>Ways to observe a device: logs, Netwatch and the diagnostic tools (ping, traceroute, torch, packet capture, CPU profile)</td><td><code style="white-space:nowrap">logs</code>, <code style="white-space:nowrap">netwatch</code>, <code style="white-space:nowrap">diagnostics</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>queue</code></td><td>/queue</td><td><code style="white-space:nowrap">queue</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>routing</code></td><td>Routes and routing tables</td><td><code style="white-space:nowrap">routes</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>system</code></td><td>/system: resource information, scheduler and scripts, backups and files</td><td><code style="white-space:nowrap">info</code>, <code style="white-space:nowrap">scheduler</code>, <code style="white-space:nowrap">backup</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>users</code></td><td>/user</td><td><code style="white-space:nowrap">users</code></td></tr>
+        <tr><td style="white-space:nowrap"><code>vpn</code></td><td>VPN protocols other than WireGuard (an /interface type, so it lives in interfaces)</td><td><code style="white-space:nowrap">ipsec</code></td></tr>
+      </tbody>
+    </table>
+    <p>The rules:</p>
+    <ul>
+      <li><strong>Find the area</strong> whose RouterOS menu your feature extends and put the module there. If none fits, add an area
+        (see <a href="#features-register">Register your module</a>).</li>
+      <li><strong>Name a module</strong> after the RouterOS menu it manages, without repeating the area: <code>firewall/raw.py</code>,
+        not <code>firewall/firewall_raw.py</code>. An area with a single module names it after the area (<code>dns/dns.py</code>),
+        so a second module can sit next to it later.</li>
+      <li><strong>Keep an area flat</strong>: modules sit directly in the area, no sub-folders.</li>
+      <li><strong>Helpers</strong>: a helper used by one area is a module with a leading underscore in that area
+        (<code>firewall/_raw_common.py</code>); a helper used by several areas goes in <code>scope/_shared/</code>.</li>
+      <li><strong>Areas never import each other.</strong> What two areas need goes to <code>_shared</code>.</li>
+      <li><code>tests/unit/scope/test_layout.py</code> checks these rules and says what to fix when one is broken.</li>
+    </ul>
 
     <!-- DEVELOPMENT SETUP -->
     <h2 id="dev-setup">Development setup</h2>
@@ -309,13 +356,22 @@ tests/
     <h2 id="features">Contributing new features</h2>
     <p>To add a new MikroTik feature/scope to the project, follow these five steps.</p>
 
-    <h3 id="features-scope">1. Create the scope implementation</h3>
-    <p>Navigate to <code>src/mcp_mikrotik/scope/</code> and create a new Python file for your
-      feature (e.g. <code>my_feature.py</code>). Your scope file should:</p>
+    <h3 id="features-scope">1. Create the tool module</h3>
+    <p>Find the area for your feature in the table above and create a new Python file in that package, for example
+      <code>src/mcp_mikrotik/scope/firewall/mangle.py</code>. If no area fits, create a new package for it (see step 3).</p>
+    <p>Your module should:</p>
     <ul>
       <li>Import <code>mcp</code>, the appropriate <code>ToolAnnotations</code> constant,
-        <strong>and <code>annotate</code></strong> from <code>..app</code></li>
-      <li>Import <code>execute_mikrotik_command</code> from <code>..connector</code></li>
+        <strong>and <code>annotate</code></strong> from <code>...app</code> (three dots: a module sits two packages below
+        <code>mcp_mikrotik</code>)</li>
+      <li>Import <code>execute_mikrotik_command</code> from <code>...connector</code></li>
+      <li>Import shared helpers from <code>.._shared</code>, for example
+        <code>from .._shared.selectors import resolve_item_id</code></li>
+      <li>Decide whether a write worked from what RouterOS answered, with <code>refused</code>, <code>no_such_item</code> and
+        <code>is_missing</code> from <code>.._shared.results</code>: a write that works prints nothing, so any text is a refusal
+        (it does not always say "failure" or "error"), an id that is not there is answered with <code>no such item</code>, and a
+        name that is not there makes <code>[find ...]</code> silent, so count first.
+        <code>tests/unit/scope/test_write_tools_tell_the_truth.py</code> fails a write tool that reports success when it did nothing.</li>
       <li>Register tools using <code>@mcp.tool()</code> decorators —
         <strong>always use <code>annotate(BASE, "Title")</code></strong> (never a bare constant)</li>
       <li>Name the function <code>mikrotik_&lt;action&gt;_&lt;resource&gt;</code> and register it under the short name
@@ -335,36 +391,43 @@ tests/
       </div>
     </div>
 
-    <div class="code-header"><span># Example structure — scope/my_feature.py</span><button class="copy-btn">Copy</button></div>
+    <div class="code-header"><span># Example structure — src/mcp_mikrotik/scope/my_area/my_feature.py</span><button class="copy-btn">Copy</button></div>
     <pre class="code"><span class="k">from</span> typing <span class="k">import</span> Optional
+
 <span class="k">from</span> mcp.server.mcpserver <span class="k">import</span> Context
-<span class="k">from</span> ..connector <span class="k">import</span> execute_mikrotik_command
-<span class="k">from</span> ..app <span class="k">import</span> mcp, READ, WRITE, annotate
+
+<span class="k">from</span> ...app <span class="k">import</span> mcp, WRITE, annotate
+<span class="k">from</span> ...connector <span class="k">import</span> execute_mikrotik_command
+<span class="k">from</span> .._shared.quoting <span class="k">import</span> ros_quoted
+
 
 <span class="p">@mcp.tool(name=</span><span class="s">"create_my_resource"</span><span class="p">, annotations=annotate(WRITE, </span><span class="s">"Create My Resource"</span><span class="p">))</span>
 <span class="k">async def</span> mikrotik_create_my_resource(
     ctx: Context,
     name: str,
-    required_param: str,
-    optional_param: Optional[str] = None,
-    comment: Optional[str] = None
+    comment: Optional[str] = None,
+    device: Optional[str] = None,
 ) -&gt; str:
-    <span class="s">"""Creates a new resource on the MikroTik device."""</span>
-    <span class="k">await</span> ctx.info(f<span class="s">"Creating resource: name={name}"</span>)
+    <span class="s">""</span><span class="s">"Creates a resource on the MikroTik device."</span><span class="s">""</span>
+    <span class="k">await</span> ctx.info(<span class="s">f"Creating resource: name={name}"</span>)
 
-    cmd = f<span class="s">"/my/feature add name={name} param={required_param}"</span>
-
-    <span class="k">if</span> optional_param:
-        cmd += f<span class="s">" optional-param={optional_param}"</span>
+    quoted_name = ros_quoted(name)
+    cmd = <span class="s">f'/my/feature add name="{quoted_name}"'</span>
     <span class="k">if</span> comment:
-        cmd += f<span class="s">' comment="{comment}"'</span>
+        cmd += <span class="s">f' comment="{ros_quoted(comment)}"'</span>
 
-    result = <span class="k">await</span> execute_mikrotik_command(cmd, ctx)
+    <span class="c"># A successful add prints nothing, so any output is a refusal.</span>
+    result = <span class="k">await</span> execute_mikrotik_command(cmd, ctx, device=device)
+    <span class="k">if</span> result.strip():
+        <span class="k">return</span> <span class="s">f"Failed to create resource: {result}"</span>
 
-    <span class="k">if</span> <span class="s">"failure:"</span> <span class="k">in</span> result.lower() <span class="k">or</span> <span class="s">"error"</span> <span class="k">in</span> result.lower():
-        <span class="k">return</span> f<span class="s">"Failed to create resource: {result}"</span>
+    count = <span class="k">await</span> execute_mikrotik_command(
+        <span class="s">f'/my/feature print count-only where name="{quoted_name}"'</span>, ctx, device=device
+    )
+    <span class="k">if</span> count.strip() == <span class="s">"0"</span>:
+        <span class="k">return</span> <span class="s">f"Failed to create resource: '{name}' was not found afterwards."</span>
 
-    <span class="k">return</span> f<span class="s">"Resource created successfully:\n\n{result}"</span></pre>
+    <span class="k">return</span> <span class="s">f"Resource '{name}' created."</span></pre>
 
     <h3 id="annotations">2. Choose the right tool annotation</h3>
     <p>Import the appropriate annotation constant from <code>app.py</code> and pass it via
@@ -375,67 +438,84 @@ tests/
         <tr><th>Constant</th><th>Use for</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>READ</code></td><td>Read-only queries (print, list, get, export)</td></tr>
+        <tr><td><code>READ</code></td><td>Reads that change nothing on the device. <code>/export file=...</code> and <code>/system backup save</code> write files, so they are not reads</td></tr>
         <tr><td><code>WRITE</code></td><td>Non-idempotent writes (add, create)</td></tr>
-        <tr><td><code>WRITE_IDEMPOTENT</code></td><td>Idempotent writes (set, update, enable, disable)</td></tr>
-        <tr><td><code>DESTRUCTIVE</code></td><td>Idempotent destructive operations (remove, flush)</td></tr>
-        <tr><td><code>DANGEROUS</code></td><td>Non-idempotent destructive operations (reset, bulk create)</td></tr>
+        <tr><td><code>WRITE_IDEMPOTENT</code></td><td>Idempotent writes (set, update, enable, disable, move)</td></tr>
+        <tr><td><code>DESTRUCTIVE</code></td><td>Removals (remove, flush, disconnect)</td></tr>
+        <tr><td><code>DANGEROUS</code></td><td>Restore, import, reset, and anything that can lock you out</td></tr>
       </tbody>
     </table>
+    <p><code>--read-only</code> exposes only <code>READ</code> tools, so this choice is a safety control.</p>
 
-    <h3 id="features-register">3. Register your scope</h3>
-    <p>Update <code>src/mcp_mikrotik/app.py</code> to import your new scope module:</p>
+    <h3 id="features-register">3. Register your module</h3>
+    <p>Add the module's name to the <code>from . import (...)</code> list of its area's <code>__init__.py</code>, one name per line:</p>
 
-    <div class="code-header"><span># src/mcp_mikrotik/app.py</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="k">from</span> mcp_mikrotik.scope <span class="k">import</span> (  <span class="c"># noqa: F401</span>
-    backup, dhcp, dns, firewall_filter, firewall_nat,
-    ip_address, ip_pool, logs, my_feature, routes, users, vlan, wireless,
+    <div class="code-header"><span># src/mcp_mikrotik/scope/firewall/__init__.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">from</span> . <span class="k">import</span> (  <span class="c"># noqa: F401</span>
+    address_list,
+    filter,
+    ipv6_filter,
+    ipv6_raw,
+    mangle,
+    nat,
+    raw,
 )</pre>
 
-    <p>The import triggers the <code>@mcp.tool()</code> decorators, which automatically register
-      your tools with the MCP server. No manual registry is needed.</p>
+    <p>The import triggers the <code>@mcp.tool()</code> decorators, which register your tools with the MCP server. A module its area
+      does not import registers nothing, so <code>tests/unit/scope/test_layout.py</code> fails if you forget this step.</p>
+    <p><strong>A new area</strong> is a new package: create <code>src/mcp_mikrotik/scope/my_area/__init__.py</code> with a docstring that
+      says what belongs in the area and the <code>from . import (...)</code> list, then add the package to the import list in
+      <code>src/mcp_mikrotik/app.py</code> (one name per line, in alphabetical order, so two pull requests that add areas rarely conflict):</p>
 
-    <h3 id="testing">4. Write tests</h3>
-    <p>Create tests in <code>tests/</code> for unit tests or <code>tests/integration/</code> for
-      integration tests. Integration tests should:</p>
+    <div class="code-header"><span># src/mcp_mikrotik/app.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">from</span> mcp_mikrotik.scope <span class="k">import</span> (  <span class="c"># noqa: F401, E402</span>
+    devices,
+    ...
+    my_area,
+    ...
+)</pre>
+
+    <p>A new area also gets a folder for its tests (<code>tests/unit/scope/my_area/</code> with an <code>__init__.py</code>) and one
+      for its reference pages (<code>docs/reference/my_area/</code>). Then add:</p>
     <ul>
-      <li>Use testcontainers to spin up a real MikroTik RouterOS container</li>
-      <li>Follow the existing test structure and naming conventions</li>
-      <li>Test complete workflows (create, read, update, delete operations)</li>
-      <li>Include proper cleanup to ensure tests are isolated</li>
-      <li>Use the <code>@pytest.mark.integration</code> decorator</li>
+      <li>a reference page, <code>docs/reference/&lt;area&gt;/&lt;module&gt;.md</code>, named after the module with hyphens
+        (<code>ipv6_filter</code> becomes <code>ipv6-filter.md</code>; in an area with a single module the page is the area's
+        <code>README.md</code>), linked from the area's overview page and from <code>docs/reference/README.md</code></li>
+      <li>the tools to <code>docs/api-coverage.yml</code> (see <a href="#guidelines-api-coverage">API coverage</a>)</li>
     </ul>
 
-    <div class="code-header"><span># Example structure — based on test_mikrotik_user_integration.py</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="s">"""Integration tests for MikroTik my feature using testcontainers."""</span>
+    <h3 id="testing">4. Write tests</h3>
+    <p>Put unit tests in <code>tests/unit/scope/&lt;area&gt;/test_&lt;module&gt;.py</code> (a test that spans several areas goes in
+      <code>tests/unit/scope/</code>). The smoke test (<code>tests/unit/scope/test_smoke.py</code>) finds your module by itself, so
+      there is no list to update. Replace the connector with <code>FakeExecutor</code>, assert the exact command, and cover the
+      refusal and "nothing matched" paths as well as success:</p>
 
-<span class="k">import</span> pytest
-<span class="k">from</span> mcp_mikrotik.scope.my_feature <span class="k">import</span> (
-    mikrotik_create_my_resource,
-    mikrotik_list_my_resources
-)
+    <div class="code-header"><span># tests/unit/scope/my_area/test_my_feature.py</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="k">import</span> asyncio
 
-<span class="p">@pytest.mark.integration</span>
-<span class="k">class</span> TestMikroTikMyFeatureIntegration:
-    <span class="k">def</span> test_01_create_resource(self, mikrotik_container):
-        result = mikrotik_create_my_resource(
-            name=<span class="s">"test_resource"</span>,
-            required_param=<span class="s">"test_value"</span>
-        )
-        <span class="k">assert</span> <span class="s">"failed"</span> <span class="k">not in</span> result.lower()
-        <span class="k">assert</span> <span class="s">"test_resource"</span> <span class="k">in</span> result
+<span class="k">from</span> mcp_mikrotik.scope.my_area <span class="k">import</span> my_feature
+<span class="k">from</span> tests.conftest <span class="k">import</span> FakeExecutor
 
-    <span class="k">def</span> test_02_list_resources(self, mikrotik_container):
-        result = mikrotik_list_my_resources()
-        <span class="k">assert</span> <span class="s">"test_resource"</span> <span class="k">in</span> result</pre>
+
+<span class="k">def</span> test_create_sends_expected_command(ctx, monkeypatch):
+    fake = FakeExecutor()
+    monkeypatch.setattr(my_feature, <span class="s">"execute_mikrotik_command"</span>, fake)
+
+    result = asyncio.run(my_feature.mikrotik_create_my_resource(ctx, name=<span class="s">"r1"</span>))
+
+    <span class="k">assert</span> fake.commands[0] == <span class="s">'/my/feature add name="r1"'</span>
+    <span class="k">assert</span> <span class="s">"created"</span> <span class="k">in</span> result</pre>
+
+    <p>Integration tests go in <code>tests/integration/</code>, use the <code>@pytest.mark.integration</code> marker, and run against a
+      RouterOS container started with testcontainers. See <code>tests/integration/test_mikrotik_user_integration.py</code>.</p>
 
     <h3 id="features-test">5. Test your implementation</h3>
     <p>Before submitting, ensure your implementation works:</p>
     <ol>
-      <li><strong>Run integration tests</strong>:</li>
+      <li><strong>Run the unit tests</strong>:</li>
     </ol>
-    <div class="code-header"><span># run the integration suite for your feature</span><button class="copy-btn">Copy</button></div>
-    <pre class="code"><span class="p">$</span> uv run pytest tests/integration/test_my_feature_integration.py <span class="k">-v</span></pre>
+    <div class="code-header"><span># run the unit suite (no Docker needed)</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> uv run pytest <span class="k">-m</span> <span class="s">"not integration"</span></pre>
 
     <ol start="2">
       <li><strong>Use MCP Inspector</strong>: test your tools interactively using the
@@ -543,7 +623,9 @@ tests/
       versioning based on commit messages, and follows the
       <a href="https://www.conventionalcommits.org/" target="_blank" rel="noopener">Conventional Commits</a> specification.</p>
     <p>All pull requests merge directly to <code>master</code>. There are no <code>develop</code> or <code>release</code> branches.
-      Every merge that contains a non-<code>docs</code> commit publishes a new package version automatically.</p>
+      A merge publishes a new version only when it changes a shipped file: <code>src/**</code>, <code>pyproject.toml</code>,
+      <code>uv.lock</code>, <code>Dockerfile</code>, <code>.dockerignore</code>, <code>docker-entrypoint.sh</code> or
+      <code>server.json</code>.</p>
 
     <h3 id="commits-version">Version format</h3>
     <p>Published versions use a <strong>4-part</strong> format: <code>MAJOR.MINOR.PATCH.BUILD</code></p>
@@ -553,7 +635,7 @@ tests/
         <tr><td>1 (MAJOR)</td><td><code class="mono">x.0.0.0</code></td><td><strong>Never</strong> — frozen at <code>0</code></td></tr>
         <tr><td>2 (MINOR)</td><td><code class="mono">0.x.0.0</code></td><td><code>feat:</code> commits</td></tr>
         <tr><td>3 (PATCH)</td><td><code class="mono">0.0.x.0</code></td><td><code>fix:</code>, <code>chore:</code>, and other change commits</td></tr>
-        <tr><td>4 (BUILD)</td><td><code class="mono">0.0.0.x</code></td><td>Auto — commit count since the last version tag</td></tr>
+        <tr><td>4 (BUILD)</td><td><code class="mono">0.0.0.x</code></td><td>Always <code>0</code></td></tr>
         <tr><td>—</td><td>no change</td><td><code>docs:</code> commits</td></tr>
       </tbody>
     </table>
@@ -613,7 +695,7 @@ tests/
     <h3 id="commits-scopes">Scopes (optional)</h3>
     <p>Scopes indicate which area of the codebase is affected:</p>
     <ul>
-      <li>Feature areas: <code>dhcp</code>, <code>dns</code>, <code>firewall</code>, <code>wireless</code>, <code>users</code>, <code>backup</code>, <code>queue</code>, <code>safe-mode</code>, <code>wireguard</code>, etc.</li>
+      <li>Feature areas (the packages under <code>scope/</code>: <code>devices</code>, <code>dhcp</code>, <code>dns</code>, <code>firewall</code>, <code>interfaces</code>, <code>ip</code>, <code>monitoring</code>, <code>queue</code>, <code>routing</code>, <code>system</code>, <code>users</code>, <code>vpn</code>) or a more specific feature inside one, such as <code>wireless</code>, <code>wireguard</code>, <code>backup</code> or <code>safe-mode</code></li>
       <li>Infrastructure: <code>api</code>, <code>cli</code>, <code>config</code>, <code>ssh</code>, <code>connector</code></li>
     </ul>
 
@@ -642,7 +724,7 @@ operations for queue types, queue trees, and simple queues.</pre>
 
     <h3 id="commits-release">Version release process</h3>
     <ol>
-      <li>The PR is merged to <code>master</code></li>
+      <li>A PR that changes a shipped file is merged to <code>master</code></li>
       <li>GitVersion calculates the new version from the commit history</li>
       <li>GitHub Actions builds the package with the calculated version</li>
       <li>Unit tests run across Python 3.10 / 3.11 / 3.12</li>
@@ -653,6 +735,9 @@ operations for queue types, queue trees, and simple queues.</pre>
 
     <h3 id="commits-practices">Best practices</h3>
     <ul>
+      <li><strong>Be intentional with commit types</strong> — <code>feat:</code> bumps the minor version, and other change types bump the patch version</li>
+      <li><strong>Use <code>docs:</code> for documentation-only commits</strong> — they do not bump the version</li>
+      <li><strong>Do not use <code>+semver: breaking</code> or <code>+semver: major</code></strong> without explicit approval; the major version is frozen at <code>0</code></li>
       <li><strong>Write clear commit messages</strong> — they become part of the release history and changelog</li>
       <li><strong>One logical change per commit</strong> — makes version history clearer and easier to track</li>
       <li><strong>Test before committing</strong> — failed builds don't get published</li>
@@ -700,7 +785,7 @@ fix/issue-#-branch-two</pre>
     <!-- GETTING HELP -->
     <h2 id="help">Getting help</h2>
     <ul>
-      <li>Check existing scope implementations for reference</li>
+      <li>Look at the other modules of the same area for reference</li>
       <li>Review the MikroTik RouterOS documentation for command syntax</li>
       <li>Look at existing tests for testing patterns</li>
       <li>Open an issue if you need clarification on implementation details</li>
@@ -736,6 +821,7 @@ fix/issue-#-branch-two</pre>
     <h6>On this page</h6>
     <ul>
       <li><a href="#structure">Project structure</a></li>
+      <li><a href="#feature-areas">— Feature areas</a></li>
       <li><a href="#dev-setup">Development setup</a></li>
       <li><a href="#dev-tests">— Running tests</a></li>
       <li><a href="#dev-deps">— Dependencies &amp; lockfile</a></li>

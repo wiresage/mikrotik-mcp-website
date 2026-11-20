@@ -136,9 +136,9 @@ PAGES = [
     {
         "file": "docs/index.html",
         "path": "/docs/",
-        "title": "Install MikroTik MCP: uvx, Docker, MCP Registry",
+        "title": "Install MikroTik MCP: Claude Code, uvx and Docker",
         "description": (
-            "Install the MikroTik MCP server with uvx, Docker or the MCP Registry and "
+            "Install the MikroTik MCP server with Claude Code, uvx or Docker and "
             "connect it to your router over SSH. Env vars, CLI flags and Compose examples."
         ),
         "crumbs": [HOME, DOCS, ("Installation", None)],

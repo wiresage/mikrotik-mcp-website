@@ -397,6 +397,24 @@
       <a href="skills.html">routeros-skills agent skills for Claude Code</a> teach it the console conventions and the
       commands to propose, and they work alongside this server.</p>
 
+    <h3 id="claude-code-troubleshooting">Troubleshooting</h3>
+    <p><strong><code>missing required argument 'commandOrUrl'</code> on Windows.</strong> PowerShell drops a bare
+      <code>--</code> when it runs the <code>claude</code> command, so <code>uvx mcp-server-mikrotik</code> is swallowed by the
+      preceding <code>--env</code> option. Write the separator as <code>'--'</code>, or run the command from Git Bash or cmd.
+      The server name goes before the <code>--env</code> options.</p>
+    <p><strong><code>Failed to connect</code> with error <code>-32022</code>.</strong> The first start through <code>uvx</code> can
+      take several seconds: it downloads the package, and importing the MCP SDK alone takes a couple of seconds. Claude Code
+      probes a stdio server for about two seconds before it falls back, and a server that answers the probe late then rejects
+      the <code>initialize</code> request that follows (checked with Claude Code 2.1.278). Add
+      <code>MCP_PROTOCOL_NEGOTIATION=legacy</code> to the server's environment so that Claude Code skips the probe:</p>
+    <div class="code-header"><span># skip the protocol probe</span><button class="copy-btn">Copy</button></div>
+    <pre class="code"><span class="p">$</span> claude mcp add <span class="k">--transport</span> stdio mikrotik \
+    <span class="k">--env</span> MCP_PROTOCOL_NEGOTIATION=<span class="s">legacy</span> \
+    <span class="k">--env</span> MIKROTIK_HOST=<span class="s">192.168.88.1</span> \
+    <span class="k">--env</span> MIKROTIK_USERNAME=<span class="s">admin</span> \
+    <span class="k">--env</span> MIKROTIK_PASSWORD=<span class="s">your_password</span> \
+    <span class="k">--</span> uvx mcp-server-mikrotik</pre>
+
     <!-- INSPECTOR -->
     <h2 id="inspector">MCP Inspector</h2>
     <p>The Inspector is the official debugging tool for MCP servers. It launches a server, connects to it,
@@ -429,7 +447,7 @@
     <!-- MCPO -->
     <h2 id="mcpo"><span id="mcpo-rest-api"></span>MCPO — REST API</h2>
     <p>MCPO ("MCP-to-OpenAPI") wraps any MCP server in a FastAPI shell. Each tool becomes a POST endpoint,
-      and you get auto-generated OpenAPI docs at <code>/docs</code>. Use this for:</p>
+      and you get auto-generated OpenAPI docs for each server at <code>/&lt;server&gt;/docs</code>. Use this for:</p>
     <ul>
       <li>ChatGPT custom actions (which expect OpenAPI URLs).</li>
       <li>n8n / Make / Zapier-style automation.</li>
@@ -514,7 +532,7 @@
     </div>
     <div class="endpoint">
       <span class="method">DOCS</span>
-      <span class="path">http://localhost:8000/docs</span>
+      <span class="path">http://localhost:8000/mikrotik-mcp-server/docs</span>
     </div>
 
     <h3 id="mcpo-call">Calling a tool</h3>
@@ -543,7 +561,7 @@
     <div class="callout tip">
       <span class="icon">TIP</span>
       <div>
-        The Swagger UI at <code>/docs</code> auto-generates a "Try it out" form for every tool — much faster
+        The Swagger UI at <code>/mikrotik-mcp-server/docs</code> auto-generates a "Try it out" form for every tool — much faster
         than handcrafting <code>curl</code> commands when you're exploring.
       </div>
     </div>
@@ -571,6 +589,7 @@
       <li><a href="#claude-code-env">— Environment variables</a></li>
       <li><a href="#claude-code-key">— SSH key</a></li>
       <li><a href="#claude-code-verify">— Verify &amp; manage</a></li>
+      <li><a href="#claude-code-troubleshooting">— Troubleshooting</a></li>
       <li><a href="#inspector">MCP Inspector</a></li>
       <li><a href="#inspector-quick">— Quick one-liner</a></li>
       <li><a href="#inspector-config">— With config file</a></li>
